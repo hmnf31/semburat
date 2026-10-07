@@ -1,0 +1,82 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import SourceAttribution from '../../components/SourceAttribution.astro';
+import CreditVisual from '../../components/CreditVisual.astro';
+import heroImage from '../../assets/hero-placeholder.svg';
+import { articles, relatedArticles } from '../../data/articles';
+
+export function getStaticPaths() {
+  return Object.keys(articles).map((slug) => ({
+    params: { slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const article = slug ? articles[slug] : undefined;
+
+if (!article) {
+  throw new Error(`Artikel tidak ditemukan: ${slug}`);
+}
+
+const SITE_URL = 'https://semburat.example.id';
+const canonicalUrl = `${SITE_URL}/articles/${slug}`;
+const ogImage = `${SITE_URL}/og-image.png`;
+
+const breadcrumbItems = [
+  { name: 'Beranda', href: '/' },
+  { name: article.category, href: article.categoryHref },
+  { name: article.title },
+];
+---
+<ArticleLayout
+  title={article.title}
+  description={article.dek}
+  image={ogImage}
+  publishedTime={article.date}
+  modifiedTime={article.date}
+  canonicalUrl={canonicalUrl}
+  breadcrumbItems={breadcrumbItems}
+>
+  <header class="mb-8">
+    <nav class="mb-4 text-sm text-text-muted" aria-label="Breadcrumb">
+      <a href="/" class="hover:text-accent-hover">Beranda</a>
+      <span aria-hidden="true"> / </span>
+      <a href={article.categoryHref} class="hover:text-accent-hover">{article.category}</a>
+      <span aria-hidden="true"> / </span>
+      <span aria-current="page">Artikel</span>
+    </nav>
+    <a href={article.categoryHref} class="mb-3 inline-block rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-accent-hover">
+      {article.category}
+    </a>
+    <h1 class="text-3xl font-bold leading-tight text-primary sm:text-4xl">
+      {article.title}
+    </h1>
+    <p class="mt-4 text-lg leading-relaxed text-text-muted">
+      {article.dek}
+    </p>
+    <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text-muted">
+      <time datetime={article.date}>{article.date}</time>
+      <span aria-hidden="true">·</span>
+      <span>{article.readTime}</span>
+    </div>
+  </header>
+  <img src={heroImage} alt={`Visual placeholder untuk ${article.title}`} width="1200" height="630" class="mb-8 w-full rounded-lg border border-border" />
+  <div class="space-y-4">
+    {article.body.map((paragraph) => (
+      <p class="leading-relaxed text-text">{paragraph}</p>
+    ))}
+  </div>
+  <SourceAttribution sources={article.sources} />
+  <CreditVisual creator={article.credit.creator} license={article.credit.license} credit={article.credit.credit} sourceUrl={article.credit.sourceUrl} />
+  <section class="mt-12" aria-labelledby="terkait-heading">
+    <h2 id="terkait-heading" class="mb-6 text-xl font-bold text-primary">
+      Artikel Terkait
+    </h2>
+    <div class="grid gap-6 sm:grid-cols-2">
+      {relatedArticles.map((related) => (
+        <ArticleCard {...related} />
+      ))}
+    </div>
+  </section>
+</ArticleLayout>

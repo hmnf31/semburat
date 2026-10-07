@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+
+const latestArticles = [
+  {
+    title: 'Contoh artikel: tren digital Indonesia',
+    dek: 'Ringkasan placeholder. Konten sesungguhnya akan digantikan oleh artikel yang telah melewati quality gate editorial.',
+    category: 'Berita',
+    categoryHref: '/categories/berita',
+    date: '2026-10-01',
+    readTime: '5',
+    slug: 'contoh-artikel',
+  },
+  {
+    title: 'Tren kecerdasan buatan: pengantar placeholder',
+    dek: 'Ringkasan placeholder untuk artikel kedua. Sumber dan kredit visual ditampilkan pada halaman artikel.',
+    category: 'Teknologi',
+    categoryHref: '/categories/teknologi',
+    date: '2026-09-28',
+    readTime: '7',
+    slug: 'tren-kecerdasan-buatan',
+  },
+  {
+    title: 'Energi terbarukan: placeholder ketiga',
+    dek: 'Ringkasan placeholder untuk artikel ketiga. Setiap klaim dilacak ke sumber aslinya.',
+    category: 'Berita',
+    categoryHref: '/categories/berita',
+    date: '2026-09-25',
+    readTime: '4',
+    slug: 'contoh-artikel',
+  },
+];
+
+const trendingTopics = [
+  { label: 'Kecerdasan Buatan', count: 128 },
+  { label: 'Energi Terbarukan', count: 96 },
+  { label: 'Ekonomi Digital', count: 84 },
+  { label: 'Kesehatan Masyarakat', count: 72 },
+  { label: 'Kebijakan Publik', count: 61 },
+];
+---
+<BaseLayout title="Beranda" description="SEMBURAT — platform media intelligence Indonesia. Yang sedang muncul, kami rangkai menjadi cerita.">
+  <section class="bg-primary px-4 py-16 text-center sm:py-20">
+    <p class="mb-3 text-sm font-semibold uppercase tracking-widest text-accent">Media Intelligence Indonesia</p>
+    <h1 class="mx-auto max-w-2xl text-3xl font-bold leading-tight text-white sm:text-4xl">
+      Yang sedang muncul, kami rangkai menjadi cerita.
+    </h1>
+    <p class="mx-auto mt-4 max-w-xl text-base text-slate-300">
+      SEMBURAT merangkum tren, sumber, dan konteks menjadi artikel editorial yang terverifikasi dan transparan.
+    </p>
+  </section>
+  <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <h2 class="text-2xl font-bold text-primary">Artikel Terbaru</h2>
+        <p class="mt-1 text-sm text-text-muted">Konten placeholder — akan digantikan oleh artikel hasil alur kerja editorial.</p>
+      </div>
+      <a href="/trending" class="text-sm font-medium text-accent hover:text-accent-hover">
+        Lihat trending →
+      </a>
+    </div>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {latestArticles.map((article) => (
+        <ArticleCard {...article} />
+      ))}
+    </div>
+  </section>
+  <section class="border-t border-border bg-surface">
+    <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+      <h2 class="mb-6 text-2xl font-bold text-primary">Topik Trending</h2>
+      <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        {trendingTopics.map((topic, index) => (
+          <li class="rounded-lg border border-border bg-background p-4">
+            <span class="mb-2 block text-2xl font-bold text-accent">{index + 1}</span>
+            <a href="/trending" class="font-medium text-primary hover:underline">
+              {topic.label}
+            </a>
+            <p class="mt-1 text-xs text-text-muted">{topic.count} artikel</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

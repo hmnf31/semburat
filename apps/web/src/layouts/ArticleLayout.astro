@@ -1,0 +1,55 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import ArticleSchema from '../components/ArticleSchema.astro';
+
+interface BreadcrumbItem {
+  name: string;
+  href?: string;
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  canonicalUrl?: string;
+  breadcrumbItems?: BreadcrumbItem[];
+}
+
+const {
+  title,
+  description,
+  image,
+  publishedTime,
+  modifiedTime,
+  canonicalUrl,
+  breadcrumbItems,
+} = Astro.props;
+
+const SITE_URL = 'https://semburat.example.id';
+const ogImage = `${SITE_URL}/og-image.png`;
+---
+<BaseLayout
+  title={title}
+  description={description}
+  image={image}
+  publishedTime={publishedTime}
+  modifiedTime={modifiedTime}
+  canonicalUrl={canonicalUrl}
+  type="article"
+>
+  <ArticleSchema
+    slot="schema"
+    title={title}
+    description={description}
+    image={ogImage}
+    publishedTime={publishedTime}
+    modifiedTime={modifiedTime}
+    canonicalUrl={canonicalUrl}
+    breadcrumbItems={breadcrumbItems}
+  />
+  <article class="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
+    <slot />
+  </article>
+</BaseLayout>

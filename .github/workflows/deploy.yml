@@ -1,0 +1,168 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Format check
+        run: pnpm format:check
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      - name: Secret scan
+        run: scripts/check-secrets.sh
+        shell: bash
+
+  deploy-worker:
+    needs: test-and-build
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'production' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Worker
+        run: |
+          cd apps/worker
+          pnpm build
+
+      - name: Deploy Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/worker
+          wranglerVersion: 3
+
+  deploy-web:
+    needs: test-and-build
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'production' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Web
+        run: |
+          cd apps/web
+          pnpm build
+
+      - name: Deploy Web to Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          projectName: semburat-web
+          directory: apps/web/dist
+          branch: main
+
+  smoke-test:
+    needs: [deploy-worker, deploy-web]
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'production' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run smoke tests
+        run: scripts/smoke-test.sh
+        shell: bash
+        env:
+          WORKER_URL: ${{ secrets.WORKER_URL }}
+          SITE_URL: ${{ secrets.PUBLIC_SITE_URL }}
+        continue-on-error: false
+
+  notify:
+    needs: [test-and-build, deploy-worker, deploy-web, smoke-test]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Deployment status
+        run: |
+          if [ "${{ needs.smoke-test.result }}" == "success" ] && \
+             [ "${{ needs.deploy-worker.result }}" == "success" ] && \
+             [ "${{ needs.deploy-web.result }}" == "success" ]; then
+            echo "Deployment successful"
+            echo "All checks passed"
+          else
+            echo "Deployment failed"
+            echo "Smoke test: ${{ needs.smoke-test.result }}"
+            echo "Worker deploy: ${{ needs.deploy-worker.result }}"
+            echo "Web deploy: ${{ needs.deploy-web.result }}"
+            exit 1
+          fi

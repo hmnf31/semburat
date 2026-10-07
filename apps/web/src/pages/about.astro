@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Tentang"
+  description="SEMBURAT adalah platform media intelligence Indonesia yang merangkum tren, sumber, dan konteks menjadi artikel editorial yang terverifikasi dan transparan."
+>
+  <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+    <nav class="mb-6 text-sm text-text-muted" aria-label="Breadcrumb">
+      <a href="/" class="hover:text-accent-hover">Beranda</a>
+      <span aria-hidden="true"> / </span>
+      <span aria-current="page">Tentang</span>
+    </nav>
+    <h1 class="mb-6 text-3xl font-bold leading-tight text-primary sm:text-4xl">Tentang SEMBURAT</h1>
+
+    <div class="space-y-6 text-base leading-relaxed text-text">
+      <p>
+        <strong>SEMBURAT</strong> adalah platform media intelligence Indonesia. Nama kami mencerminkan misi kami: <em>yang sedang muncul, kami rangkai menjadi cerita.</em>
+      </p>
+      <p>
+        Kami menggabungkan pengumpulan sumber, verifikasi fakta, dan penulisan editorial untuk menghasilkan konten yang akurat, terukur, dan mudah diakses. Setiap klaim dilacak ke sumber aslinya, lengkap dengan waktu akses dan konteksnya.
+      </p>
+      <h2 class="text-xl font-bold text-primary">Prinsip Editorial</h2>
+      <ul class="list-disc space-y-2 pl-6">
+        <li>Akurasi fakta dan keaslian sumber.</li>
+        <li>Transparansi provenansi — setiap klaim dapat dilacak.</li>
+        <li>Nilai editorial orisinal, bukan sekadar parafrase otomatis.</li>
+        <li>Bahasa Indonesia yang terbaca dan relevan.</li>
+        <li>Penanganan konten sensitif dengan verifikasi ketat dan tinjauan manusia.</li>
+      </ul>
+      <h2 class="text-xl font-bold text-primary">Yang Tidak Kami Lakukan</h2>
+      <p>
+        Kami tidak menjalankan pipa <em>scrape ? paraphrase ? publish</em>. AI adalah asisten di dalam alur kerja editorial, bukan otoritas mutlak. Ketika bukti tidak mencukupi, sistem menyatakan ketidakpastian alih-alih mengisi celah dengan teks buatan.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

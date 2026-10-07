@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const trendingTopics = [
+  { rank: 1, label: 'Kecerdasan Buatan', count: 128, href: '/trending' },
+  { rank: 2, label: 'Energi Terbarukan', count: 96, href: '/trending' },
+  { rank: 3, label: 'Ekonomi Digital', count: 84, href: '/trending' },
+  { rank: 4, label: 'Kesehatan Masyarakat', count: 72, href: '/trending' },
+  { rank: 5, label: 'Kebijakan Publik', count: 61, href: '/trending' },
+  { rank: 6, label: 'Transformasi Digital', count: 54, href: '/trending' },
+  { rank: 7, label: 'Keamanan Siber', count: 47, href: '/trending' },
+  { rank: 8, label: 'Pendidikan Teknologi', count: 39, href: '/trending' },
+];
+---
+<BaseLayout title="Trending" description="Topik yang sedang tren di SEMBURAT — data placeholder.">
+  <section class="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <h1 class="mb-2 text-3xl font-bold text-primary">Trending</h1>
+    <p class="mb-8 text-sm text-text-muted">
+      Daftar placeholder. Peringkat sesungguhnya dihitung dari sumber terverifikasi dengan penjelasan yang dapat dilacak.
+    </p>
+    <ol class="space-y-4">
+      {trendingTopics.map((topic) => (
+        <li class="flex items-center gap-4 rounded-lg border border-border bg-surface p-4">
+          <span class="w-10 shrink-0 text-center text-2xl font-bold text-accent" aria-label={`Peringkat ${topic.rank}`}>
+            {topic.rank}
+          </span>
+          <div class="flex-1">
+            <a href={topic.href} class="font-semibold text-primary hover:underline">
+              {topic.label}
+            </a>
+            <p class="mt-0.5 text-sm text-text-muted">{topic.count} artikel</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+</BaseLayout>

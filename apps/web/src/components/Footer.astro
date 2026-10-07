@@ -1,0 +1,25 @@
+---
+const year = new Date().getFullYear();
+const footerLinks = [
+  { label: 'Tentang', href: '#' },
+  { label: 'Kebijakan Editorial', href: '#' },
+  { label: 'Kontak', href: '#' },
+  { label: 'Privacy', href: '#' },
+];
+---
+<footer class="border-t border-border bg-surface">
+  <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row sm:px-6">
+    <p class="text-sm text-text-muted">© {year} SEMBURAT. Hak cipta dilindungi.</p>
+    <nav aria-label="Navigasi footer">
+      <ul class="flex flex-wrap items-center gap-6">
+        {footerLinks.map((link) => (
+          <li>
+            <a href={link.href} class="text-sm text-secondary transition-colors hover:text-accent-hover">
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</footer>

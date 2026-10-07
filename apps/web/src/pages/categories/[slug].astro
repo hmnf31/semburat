@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { categories } from '../../data/categories';
+
+export function getStaticPaths() {
+  return Object.keys(categories).map((slug) => ({
+    params: { slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const category = slug ? categories[slug] : undefined;
+
+if (!category) {
+  throw new Error(`Kategori tidak ditemukan: ${slug}`);
+}
+
+const articles = [
+  {
+    title: `Placeholder artikel 1 — kategori ${category.name}`,
+    dek: 'Ringkasan placeholder. Konten sesungguhnya dihasilkan dari sumber terverifikasi.',
+    category: category.name,
+    categoryHref: `/categories/${slug}`,
+    date: '2026-10-01',
+    readTime: '5',
+    slug: 'contoh-artikel',
+  },
+  {
+    title: `Placeholder artikel 2 — kategori ${category.name}`,
+    dek: 'Ringkasan placeholder untuk artikel kedua dalam kategori ini.',
+    category: category.name,
+    categoryHref: `/categories/${slug}`,
+    date: '2026-09-28',
+    readTime: '6',
+    slug: 'tren-kecerdasan-buatan',
+  },
+];
+---
+<BaseLayout title={`Kategori ${category.name}`} description={category.description}>
+  <section class="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <nav class="mb-4 text-sm text-text-muted" aria-label="Breadcrumb">
+      <a href="/" class="hover:text-accent-hover">Beranda</a>
+      <span aria-hidden="true"> / </span>
+      <span aria-current="page">Kategori</span>
+    </nav>
+    <h1 class="mb-2 text-3xl font-bold text-primary">Kategori: {category.name}</h1>
+    <p class="mb-8 text-sm text-text-muted">
+      Daftar placeholder artikel dalam kategori {category.name}.
+    </p>
+    <div class="grid gap-6 sm:grid-cols-2">
+      {articles.map((article) => (
+        <ArticleCard {...article} />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

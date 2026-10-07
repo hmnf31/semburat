@@ -1,0 +1,37 @@
+---
+interface Props {
+  creator: string;
+  license: string;
+  credit: string;
+  sourceUrl?: string;
+}
+
+const { creator, license, credit, sourceUrl } = Astro.props;
+---
+<section aria-labelledby="kredit-visual-heading" class="mt-6 rounded-lg border border-border bg-surface p-5">
+  <h2 id="kredit-visual-heading" class="mb-3 text-lg font-semibold text-primary">
+    Kredit Visual
+  </h2>
+  <dl class="space-y-2 text-sm text-text">
+    <div class="flex flex-wrap gap-x-2">
+      <dt class="font-medium text-secondary">Kreator:</dt>
+      <dd>{creator}</dd>
+    </div>
+    <div class="flex flex-wrap gap-x-2">
+      <dt class="font-medium text-secondary">Lisensi:</dt>
+      <dd>{license}</dd>
+    </div>
+    <div class="flex flex-wrap gap-x-2">
+      <dt class="font-medium text-secondary">Kredit:</dt>
+      <dd>
+        {sourceUrl ? (
+          <a href={sourceUrl} target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover hover:underline">
+            {credit}
+          </a>
+        ) : (
+          credit
+        )}
+      </dd>
+    </div>
+  </dl>
+</section>

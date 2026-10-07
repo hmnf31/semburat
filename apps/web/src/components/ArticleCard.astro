@@ -1,0 +1,46 @@
+---
+interface Props {
+  title: string;
+  dek: string;
+  category: string;
+  categoryHref?: string;
+  date: string;
+  readTime: string;
+  slug: string;
+}
+
+const {
+  title,
+  dek,
+  category,
+  categoryHref = '/categories/berita',
+  date,
+  readTime,
+  slug,
+} = Astro.props;
+
+const formattedDate = new Date(date).toLocaleDateString('id-ID', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+---
+<article class="flex h-full flex-col rounded-lg border border-border bg-surface p-5 transition-shadow hover:shadow-md">
+  <div class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted">
+    <a href={categoryHref} class="rounded-full bg-accent/10 px-2.5 py-0.5 font-semibold text-accent-hover">
+      {category}
+    </a>
+    <time datetime={date}>{formattedDate}</time>
+    <span aria-hidden="true">·</span>
+    <span>{readTime} menit baca</span>
+  </div>
+  <h3 class="mb-2 text-lg font-semibold leading-snug text-primary">
+    <a href={`/articles/${slug}`} class="transition-colors hover:text-accent-hover">
+      {title}
+    </a>
+  </h3>
+  <p class="mb-4 text-sm leading-relaxed text-text-muted">{dek}</p>
+  <a href={`/articles/${slug}`} class="mt-auto inline-flex items-center text-sm font-medium text-accent hover:text-accent-hover">
+    Baca selengkapnya<span aria-hidden="true"> →</span>
+  </a>
+</article>

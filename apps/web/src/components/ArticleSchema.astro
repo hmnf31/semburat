@@ -1,0 +1,84 @@
+---
+interface BreadcrumbItem {
+  name: string;
+  href?: string;
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  canonicalUrl?: string;
+  breadcrumbItems?: BreadcrumbItem[];
+}
+
+const SITE_URL = 'https://semburat.example.id';
+const SITE_NAME = 'SEMBURAT';
+const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
+
+const {
+  title,
+  description,
+  image,
+  publishedTime,
+  modifiedTime,
+  canonicalUrl,
+  breadcrumbItems,
+} = Astro.props;
+
+const absoluteImage = image?.startsWith('http')
+  ? image
+  : image
+  ? `${SITE_URL}${image}`
+  : DEFAULT_IMAGE;
+
+const ogUrl = canonicalUrl ?? `${SITE_URL}/articles/${title}`;
+
+const articleNode: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description: description ?? '',
+  image: absoluteImage,
+  datePublished: publishedTime,
+  dateModified: modifiedTime ?? publishedTime,
+  author: {
+    '@type': 'Organization',
+    name: SITE_NAME,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: SITE_NAME,
+    url: SITE_URL,
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': ogUrl,
+  },
+};
+
+const graph: Record<string, unknown>[] = [articleNode];
+
+if (breadcrumbItems && breadcrumbItems.length > 0) {
+  graph.push({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbItems.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.href ? `${SITE_URL}${item.href}` : undefined,
+    })),
+  });
+}
+
+const schema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@graph': graph,
+};
+
+const jsonLd = JSON.stringify(schema);
+---
+<script type="application/ld+json" set:html={jsonLd} />

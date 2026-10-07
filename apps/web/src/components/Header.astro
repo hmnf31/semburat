@@ -1,0 +1,51 @@
+---
+const navItems = [
+  { label: 'Beranda', href: '/' },
+  { label: 'Trending', href: '/trending' },
+  { label: 'Kategori', href: '/categories/berita' },
+  { label: 'About', href: '/about' },
+];
+---
+<header class="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+  <nav class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6" aria-label="Navigasi utama">
+    <a href="/" class="text-xl font-bold tracking-tight text-primary">
+      SEMBURAT
+    </a>
+    <ul class="hidden items-center gap-6 md:flex">
+      {navItems.map((item) => (
+        <li>
+          <a href={item.href} class="text-sm font-medium text-secondary transition-colors hover:text-accent-hover">
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+    <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center rounded-md p-2 text-secondary hover:bg-surface hover:text-primary md:hidden" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="mobile-menu">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </nav>
+  <div id="mobile-menu" class="hidden border-t border-border md:hidden">
+    <ul class="space-y-1 px-4 py-3">
+      {navItems.map((item) => (
+        <li>
+          <a href={item.href} class="block rounded-md px-3 py-2 text-sm font-medium text-secondary hover:bg-surface hover:text-primary">
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</header>
+<script>
+  const button = document.getElementById('mobile-menu-button');
+  const menu = document.getElementById('mobile-menu');
+  if (button && menu) {
+    button.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', String(!expanded));
+      menu.classList.toggle('hidden');
+    });
+  }
+</script>

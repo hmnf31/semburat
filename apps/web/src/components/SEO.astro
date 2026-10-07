@@ -1,0 +1,55 @@
+---
+const SITE_NAME = 'SEMBURAT';
+const SITE_URL = 'https://semburat.example.id';
+const DEFAULT_DESCRIPTION =
+  'SEMBURAT — platform media intelligence Indonesia. Yang sedang muncul, kami rangkai menjadi cerita.';
+const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  canonicalUrl?: string;
+  type?: 'website' | 'article';
+}
+
+const {
+  title,
+  description = DEFAULT_DESCRIPTION,
+  image = DEFAULT_IMAGE,
+  publishedTime,
+  modifiedTime,
+  canonicalUrl,
+  type = 'website',
+} = Astro.props;
+
+const fullTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}`;
+const ogUrl = canonicalUrl ?? SITE_URL;
+const absoluteImage = image.startsWith('http') ? image : `${SITE_URL}${image}`;
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<meta name="author" content={SITE_NAME} />
+<link rel="canonical" href={canonicalUrl ?? ogUrl} />
+
+<!-- Open Graph -->
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={absoluteImage} />
+<meta property="og:url" content={ogUrl} />
+<meta property="og:type" content={type} />
+<meta property="og:locale" content="id_ID" />
+{publishedTime && <meta property="og:published_time" content={publishedTime} />}
+{modifiedTime && <meta property="og:modified_time" content={modifiedTime} />}
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={absoluteImage} />
+
+<slot />

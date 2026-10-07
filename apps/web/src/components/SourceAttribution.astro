@@ -1,0 +1,30 @@
+---
+interface Source {
+  title: string;
+  url: string;
+}
+
+interface Props {
+  sources: Source[];
+}
+
+const { sources } = Astro.props;
+---
+{
+  sources.length > 0 && (
+    <section aria-labelledby="sumber-heading" class="mt-10 rounded-lg border border-border bg-surface p-5">
+      <h2 id="sumber-heading" class="mb-3 text-lg font-semibold text-primary">
+        Sumber
+      </h2>
+      <ul class="list-inside list-disc space-y-2 text-sm leading-relaxed text-text">
+        {sources.map((source) => (
+          <li>
+            <a href={source.url} target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover hover:underline">
+              {source.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}

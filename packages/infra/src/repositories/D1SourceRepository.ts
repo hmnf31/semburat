@@ -27,6 +27,13 @@ export class D1SourceRepository implements SourceRepositoryPort {
     return (result.results ?? []).map((row) => this.fromRow(row));
   }
 
+  async findAll(): Promise<Source[]> {
+    const result = await this.db
+      .prepare('SELECT * FROM sources ORDER BY created_at')
+      .all<Record<string, unknown>>();
+    return (result.results ?? []).map((row) => this.fromRow(row));
+  }
+
   async upsert(source: Source): Promise<void> {
     const sql =
       'INSERT OR REPLACE INTO sources ' +

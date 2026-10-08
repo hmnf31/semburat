@@ -1,4 +1,4 @@
-﻿import type { ResearchProvider } from '@semburat/domain';
+import type { ResearchProvider, ResearchResult } from '@semburat/domain';
 import { NewsAdapter } from './NewsAdapter.js';
 import { RSSAdapter } from './RSSAdapter.js';
 import { GoogleTrendsAdapter } from '../trends/GoogleTrendsAdapter.js';
@@ -11,10 +11,7 @@ export class EnhancedResearchAdapter implements ResearchProvider {
     private readonly googleTrendsAdapter: GoogleTrendsAdapter
   ) {}
 
-  async search(
-    query: string,
-    maxResults: number
-  ): Promise<Array<{ url: string; title: string; snippet: string }>> {
+  async search(query: string, maxResults: number): Promise<ResearchResult[]> {
     const perAdapter = Math.ceil(maxResults / 3);
 
     const [newsResults, rssResults, trendsResults] = await Promise.all([
@@ -33,20 +30,15 @@ export class EnhancedResearchAdapter implements ResearchProvider {
     content: string;
     metadata: { title: string; publishedAt?: Date; author?: string };
   }> {
-    const domain = new URL(url).hostname.replace('www.', '');
-
-    const rssDomains = ['rss.example.com', 'feeds.example.com'];
-    if (rssDomains.some((d) => domain.includes(d))) {
+    const isFeed = /(\.xml|\.rss|\.atom)(\?|$)/i.test(url) || /\/(rss|feed)(\?|$)/i.test(url);
+    if (isFeed) {
       return this.rssAdapter.fetchPage(url);
     }
 
     return this.newsAdapter.fetchPage(url);
   }
 
-  private async searchGoogleTrends(
-    query: string,
-    maxResults: number
-  ): Promise<Array<{ url: string; title: string; snippet: string }>> {
+  private async searchGoogleTrends(query: string, maxResults: number): Promise<ResearchResult[]> {
     try {
       const trends = await this.googleTrendsAdapter.getTrendingTopics('ID');
       const filtered = trends.filter(
@@ -65,9 +57,7 @@ export class EnhancedResearchAdapter implements ResearchProvider {
     }
   }
 
-  private deduplicate(
-    results: Array<{ url: string; title: string; snippet: string }>
-  ): Array<{ url: string; title: string; snippet: string }> {
+  private deduplicate(results: ResearchResult[]): ResearchResult[] {
     const seen = new Set<string>();
     return results.filter((r) => {
       if (seen.has(r.url)) return false;

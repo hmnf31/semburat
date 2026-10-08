@@ -1,6 +1,7 @@
 export * from './mock/MockAIProvider.js';
 export * from './mock/MockResearchProvider.js';
 export * from './openrouter/OpenRouterAdapter.js';
+export * from './research/FeedParser.js';
 export * from './research/NewsAdapter.js';
 export * from './research/RSSAdapter.js';
 export * from './research/EnhancedResearchAdapter.js';

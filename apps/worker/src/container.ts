@@ -25,6 +25,7 @@ import {
   MockAIProvider,
   NewsAdapter,
   OpenRouterAdapter,
+  parseFeedList,
   RSSAdapter,
   R2StorageProvider,
   QualityGateService,
@@ -63,11 +64,15 @@ export function createAiProvider(env: Env): { provider: AIProvider; mode: AiMode
   return { provider: new MockAIProvider(), mode: 'mock' };
 }
 
-export function createResearchProvider(): ResearchProvider {
+export function createResearchProvider(
+  env?: Pick<Env, 'RESEARCH_MODE' | 'RSS_FEEDS'>
+): ResearchProvider {
+  const enabled = env?.RESEARCH_MODE !== 'offline';
+  const feeds = env?.RSS_FEEDS === undefined ? undefined : parseFeedList(env.RSS_FEEDS);
   return new EnhancedResearchAdapter(
-    new NewsAdapter(),
-    new RSSAdapter(),
-    new GoogleTrendsAdapter()
+    new NewsAdapter({ enabled }),
+    new RSSAdapter(feeds ? { enabled, feeds } : { enabled }),
+    new GoogleTrendsAdapter({ enabled })
   );
 }
 
@@ -83,7 +88,7 @@ export function createContainer(env: Env): Container {
   const assetRepo = new D1AssetRepository(env.DB);
   const analyticsRepo = new D1AnalyticsEventRepository(env.DB);
 
-  const researchProvider = createResearchProvider();
+  const researchProvider = createResearchProvider(env);
   const storage = new R2StorageProvider(env.ASSETS as unknown as R2BucketLike, {
     baseUrl: env.R2_PUBLIC_BASE_URL,
   });

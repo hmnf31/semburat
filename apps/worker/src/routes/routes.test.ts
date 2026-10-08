@@ -7,6 +7,7 @@ function makeEnv(overrides: Partial<Env> = {}): Env {
     DB: new MockD1Database() as never,
     ASSETS: undefined as never,
     ENVIRONMENT: 'test',
+    RESEARCH_MODE: 'offline',
     TELEGRAM_WEBHOOK_SECRET: 'test-secret',
     ...overrides,
   } as Env;

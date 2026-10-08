@@ -55,17 +55,7 @@ export class SourceIntelligenceService {
   }
 
   async getSourceStats(): Promise<SourceStats> {
-    // This is a simplified implementation - in production, use aggregate queries
-    const allSources: Source[] = [];
-
-    // We need to get all sources - using a workaround since the repository doesn't have findAll
-    // In practice, you would add a findAll method to the repository
-    const domains = ['example.com', 'news.example.com', 'rss.example.com']; // placeholder
-
-    for (const domain of domains) {
-      const sources = await this.sourceRepo.findByDomain(domain);
-      allSources.push(...sources);
-    }
+    const allSources: Source[] = await this.sourceRepo.findAll();
 
     const byType: Record<string, number> = {};
     const byReliability: Record<string, number> = {};

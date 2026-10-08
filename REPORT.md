@@ -45,18 +45,20 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 - Phase 12: Distribution
 - Phase 13: Analytics
 - Phase 14: Monetization
+- Research ingestion uses live Google News RSS feeds; set `RESEARCH_MODE=offline` to disable network access (used by tests)
 
 ## 4. Test Results
 
-- 280 tests passed across 41 files
+- 408 tests passed across 55 files
 - Domain: 166 tests (18 files)
-- Infra: 114 tests (23 files)
+- Infra: 222 tests (34 files)
+- Worker: 20 tests (3 files)
 - Companion kit: 40 unit tests in `tests/` (PRD rules, design validation, render smoke)
 
 ## 5. Validation
 
 - pnpm typecheck: PASS
-- pnpm test: PASS (280 tests)
+- pnpm test: PASS (408 tests)
 - pnpm lint: PASS (0 errors)
 - pnpm format:check: PASS
 - pnpm build: PASS (12 pages)
@@ -65,9 +67,9 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 ## 6. What's NOT Done
 
 - Web tests (TODO placeholder)
-- Worker tests
 - Actual Cloudflare deployment — covered by kit Phase B (`docs/02-checklist-deploy-staging.md`)
-- Real API integration (OpenRouter, Telegram, MiniMax)
+- AI provider integration (OpenRouter, MiniMax) — adapters exist, keys not configured
+- Telegram bot wiring is implemented; live bot requires `TELEGRAM_BOT_TOKEN`
 - Remotion video templates — kit provides example props only (`remotion/`)
 - Actual video rendering
 - Production monitoring setup — kit includes a `health-check.yml` workflow pattern

@@ -14,5 +14,7 @@ export interface Env {
   APP_BASE_URL?: string;
   PUBLIC_SITE_URL?: string;
   TREND_QUERIES?: string;
+  RESEARCH_MODE?: string;
+  RSS_FEEDS?: string;
   LOG_LEVEL?: string;
 }

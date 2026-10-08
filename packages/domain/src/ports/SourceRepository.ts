@@ -4,5 +4,6 @@ export interface SourceRepository {
   insert(source: Source): Promise<void>;
   findById(id: string): Promise<Source | null>;
   findByDomain(domain: string): Promise<Source[]>;
+  findAll(): Promise<Source[]>;
   upsert(source: Source): Promise<void>;
 }

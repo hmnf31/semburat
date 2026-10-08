@@ -1,38 +1,79 @@
-﻿import type { ResearchProvider } from '@semburat/domain';
+import type { ResearchProvider, ResearchResult } from '@semburat/domain';
+import { ProviderError } from '@semburat/shared';
+import {
+  extractHtmlPage,
+  fetchWithTimeout,
+  mapWithConcurrency,
+  parseFeed,
+  type FeedItem,
+  type FetchLike,
+} from './FeedParser.js';
 
-export interface RSSItem {
-  url: string;
-  title: string;
-  snippet: string;
+export const GOOGLE_NEWS_RSS_HEADLINES = 'https://news.google.com/rss';
+
+export const DEFAULT_FEEDS: readonly string[] = [GOOGLE_NEWS_RSS_HEADLINES];
+
+export interface RSSAdapterOptions {
+  feeds?: string[];
+  enabled?: boolean;
+  fetchFn?: FetchLike;
+  timeoutMs?: number;
+  maxConcurrency?: number;
+}
+
+const defaultFetch: FetchLike = (input, init) => fetch(input, init);
+
+export function parseFeedList(raw: string | undefined): string[] {
+  if (!raw) return [];
+  return raw
+    .split(',')
+    .map((feed) => feed.trim())
+    .filter((feed) => feed.length > 0);
 }
 
 export class RSSAdapter implements ResearchProvider {
-  private readonly items: RSSItem[];
+  private readonly feeds: string[];
+  private readonly enabled: boolean;
+  private readonly fetchFn: FetchLike;
+  private readonly timeoutMs: number;
+  private readonly maxConcurrency: number;
 
-  constructor(items?: RSSItem[]) {
-    this.items = items ?? [
-      {
-        url: 'https://rss.example.com/item/1',
-        title: 'RSS: Pembaruan Kebijakan Energi Terbarukan',
-        snippet: 'Kebijakan energi terbarukan di Indonesia mendapat pembaruan penting.',
-      },
-      {
-        url: 'https://rss.example.com/item/2',
-        title: 'RSS: Inovasi Transportasi Publik di Jakarta',
-        snippet: 'Jakarta melanjutkan inovasi transportasi publik untuk mengurangi kemacetan.',
-      },
-    ];
+  constructor(options: RSSAdapterOptions = {}) {
+    this.feeds = options.feeds ?? [...DEFAULT_FEEDS];
+    this.enabled = options.enabled ?? true;
+    this.fetchFn = options.fetchFn ?? defaultFetch;
+    this.timeoutMs = options.timeoutMs ?? 8000;
+    this.maxConcurrency = options.maxConcurrency ?? 4;
   }
 
-  async search(query: string, maxResults: number): Promise<RSSItem[]> {
-    const filtered = this.items.filter((item) =>
-      item.title.toLowerCase().includes(query.toLowerCase())
-    );
-    const limit = Math.max(0, Math.min(maxResults, filtered.length));
-    return filtered.slice(0, limit).map((r) => ({
-      url: r.url,
-      title: r.title,
-      snippet: r.snippet,
+  async search(query: string, maxResults: number): Promise<ResearchResult[]> {
+    const trimmed = query.trim().toLowerCase();
+    if (!this.enabled || this.feeds.length === 0 || maxResults <= 0) return [];
+    const batches = await mapWithConcurrency(this.feeds, this.maxConcurrency, async (feed) => {
+      try {
+        const response = await fetchWithTimeout(this.fetchFn, feed, this.timeoutMs);
+        if (!response.ok) return [];
+        return parseFeed(await response.text(), feed);
+      } catch {
+        return [];
+      }
+    });
+    const terms = trimmed.split(/\s+/).filter(Boolean);
+    const seen = new Set<string>();
+    const items = batches
+      .flat()
+      .filter((item) => terms.length === 0 || this.matches(item, terms))
+      .sort((a, b) => (b.publishedAt?.getTime() ?? 0) - (a.publishedAt?.getTime() ?? 0))
+      .filter((item) => {
+        if (seen.has(item.url)) return false;
+        seen.add(item.url);
+        return true;
+      });
+    return items.slice(0, maxResults).map((item) => ({
+      url: item.url,
+      title: item.title,
+      snippet: item.snippet,
+      publishedAt: item.publishedAt,
     }));
   }
 
@@ -40,13 +81,21 @@ export class RSSAdapter implements ResearchProvider {
     content: string;
     metadata: { title: string; publishedAt?: Date; author?: string };
   }> {
-    return {
-      content: 'Konten RSS dari ' + url + '. Feed ini berisi ringkasan topik terkini.',
-      metadata: {
-        title: 'RSS Feed',
-        publishedAt: new Date(),
-        author: 'RSS Publisher',
-      },
-    };
+    if (!this.enabled) return { content: '', metadata: { title: url } };
+    let response: Response;
+    try {
+      response = await fetchWithTimeout(this.fetchFn, url, this.timeoutMs);
+    } catch (error) {
+      throw new ProviderError('rss', 'request failed', error as Error, { url });
+    }
+    if (!response.ok) {
+      throw new ProviderError('rss', `unexpected status ${response.status}`, undefined, { url });
+    }
+    return extractHtmlPage(await response.text(), url);
+  }
+
+  private matches(item: FeedItem, terms: string[]): boolean {
+    const haystack = `${item.title} ${item.snippet}`.toLowerCase();
+    return terms.some((term) => haystack.includes(term));
   }
 }

@@ -12,6 +12,7 @@ describe('SourceIntelligenceService', () => {
       insert: vi.fn(),
       findById: vi.fn(),
       findByDomain: vi.fn(),
+      findAll: vi.fn(),
       upsert: vi.fn(),
     } as unknown as SourceRepository;
 
@@ -164,14 +165,13 @@ describe('SourceIntelligenceService', () => {
       }),
     ];
 
-    vi.mocked(mockSourceRepo.findByDomain).mockImplementation(async (domain) =>
-      sources.filter((s) => s.domain === domain)
-    );
+    vi.mocked(mockSourceRepo.findAll).mockResolvedValue(sources);
 
     const stats = await service.getSourceStats();
 
-    expect(stats.total).toBeGreaterThanOrEqual(0);
-    expect(stats.byType).toBeDefined();
-    expect(stats.byReliability).toBeDefined();
+    expect(stats.total).toBe(2);
+    expect(stats.byType[SourceType.OFFICIAL]).toBe(1);
+    expect(stats.byType[SourceType.ESTABLISHED_MEDIA]).toBe(1);
+    expect(stats.byReliability[ReliabilityState.MEDIUM]).toBe(1);
   });
 });

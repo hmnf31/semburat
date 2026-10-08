@@ -1,58 +1,63 @@
-﻿import type { ResearchProvider } from '@semburat/domain';
+import type { ResearchProvider, ResearchResult } from '@semburat/domain';
+import { ProviderError } from '@semburat/shared';
+import { extractHtmlPage, fetchWithTimeout, parseFeed, type FetchLike } from './FeedParser.js';
 
-export interface NewsSearchResult {
-  url: string;
-  title: string;
-  snippet: string;
+export const GOOGLE_NEWS_RSS_SEARCH = 'https://news.google.com/rss/search';
+
+export interface NewsAdapterOptions {
+  endpoint?: string;
+  enabled?: boolean;
+  fetchFn?: FetchLike;
+  timeoutMs?: number;
 }
 
-export class NewsAdapter implements ResearchProvider {
-  private readonly index: NewsSearchResult[];
+const defaultFetch: FetchLike = (input, init) => fetch(input, init);
 
-  constructor(index?: NewsSearchResult[]) {
-    this.index = index ?? [
-      {
-        url: 'https://news.example.com/artikel-1',
-        title: 'Berita Terkini: Perkembangan Teknologi AI di Indonesia',
-        snippet:
-          'Indonesia semakin mengembangkan kecerdasan buatan untuk berbagai sektor industri.',
-      },
-      {
-        url: 'https://news.example.com/artikel-2',
-        title: 'Ekonomi Digital Indonesia Tumbuh 10% pada 2026',
-        snippet: 'Perekonomian digital Indonesia menunjukkan pertumbuhan signifikan di tahun ini.',
-      },
-      {
-        url: 'https://news.example.com/artikel-3',
-        title: 'Pemerintah Luncurkan Program Transformasi Digital',
-        snippet: 'Program transformasi digital nasional resmi diluncurkan untuk mendukung UMKM.',
-      },
-    ];
+export class NewsAdapter implements ResearchProvider {
+  private readonly endpoint: string;
+  private readonly enabled: boolean;
+  private readonly fetchFn: FetchLike;
+  private readonly timeoutMs: number;
+
+  constructor(options: NewsAdapterOptions = {}) {
+    this.endpoint = options.endpoint ?? GOOGLE_NEWS_RSS_SEARCH;
+    this.enabled = options.enabled ?? true;
+    this.fetchFn = options.fetchFn ?? defaultFetch;
+    this.timeoutMs = options.timeoutMs ?? 8000;
   }
 
-  async search(query: string, maxResults: number): Promise<NewsSearchResult[]> {
-    const limit = Math.max(0, Math.min(maxResults, this.index.length));
-    return this.index.slice(0, limit).map((r) => ({
-      url: r.url,
-      title: r.title,
-      snippet: r.snippet,
-    }));
+  async search(query: string, maxResults: number): Promise<ResearchResult[]> {
+    const trimmed = query.trim();
+    if (!this.enabled || !trimmed || maxResults <= 0) return [];
+    const url = `${this.endpoint}?q=${encodeURIComponent(trimmed)}&hl=id&gl=ID&ceid=ID:id`;
+    let response: Response;
+    try {
+      response = await fetchWithTimeout(this.fetchFn, url, this.timeoutMs);
+    } catch {
+      return [];
+    }
+    if (!response.ok) return [];
+    try {
+      return parseFeed(await response.text(), url).slice(0, maxResults);
+    } catch {
+      return [];
+    }
   }
 
   async fetchPage(url: string): Promise<{
     content: string;
     metadata: { title: string; publishedAt?: Date; author?: string };
   }> {
-    return {
-      content:
-        'Konten berita dari ' +
-        url +
-        '. Artikel ini membahas perkembangan terkini dengan data yang relevan.',
-      metadata: {
-        title: 'Artikel Berita',
-        publishedAt: new Date(),
-        author: 'Redaksi',
-      },
-    };
+    if (!this.enabled) return { content: '', metadata: { title: url } };
+    let response: Response;
+    try {
+      response = await fetchWithTimeout(this.fetchFn, url, this.timeoutMs);
+    } catch (error) {
+      throw new ProviderError('news', 'request failed', error as Error, { url });
+    }
+    if (!response.ok) {
+      throw new ProviderError('news', `unexpected status ${response.status}`, undefined, { url });
+    }
+    return extractHtmlPage(await response.text(), url);
   }
 }

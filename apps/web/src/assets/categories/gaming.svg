@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Ilustrasi kategori Gaming SEMBURAT">
+  <rect width="1200" height="630" fill="#F5F4EE" />
+  <rect x="60" y="60" width="1080" height="510" rx="28" fill="#FAFAF7" />
+  <path d="M560 250 h280 a110 110 0 0 1 110 110 v0 a70 70 0 0 1 -122 47 l-38 -44 h-180 l-38 44 a70 70 0 0 1 -122 -47 a110 110 0 0 1 110 -110 z" fill="#1C1917" />
+  <g fill="#FAFAF7">
+    <rect x="556" y="336" width="96" height="20" rx="10" />
+    <rect x="594" y="298" width="20" height="96" rx="10" />
+  </g>
+  <circle cx="762" cy="322" r="18" fill="#C25E43" />
+  <circle cx="812" cy="360" r="18" fill="#C25E43" />
+  <circle cx="712" cy="360" r="18" fill="#FAFAF7" />
+  <circle cx="762" cy="398" r="18" fill="#FAFAF7" />
+  <g stroke="#C25E43" stroke-width="6" fill="none" opacity="0.9">
+    <path d="M960 220 h60 M990 190 v60" />
+    <path d="M180 430 h60 M210 400 v60" />
+  </g>
+  <text x="140" y="180" font-family="system-ui, sans-serif" font-size="72" font-weight="700" fill="#1C1917">Gaming</text>
+  <text x="142" y="232" font-family="system-ui, sans-serif" font-size="30" fill="#57534E">Industri dan komunitas game Indonesia</text>
+  <text x="140" y="540" font-family="system-ui, sans-serif" font-size="26" font-weight="700" fill="#C25E43">SEMBURAT</text>
+</svg>

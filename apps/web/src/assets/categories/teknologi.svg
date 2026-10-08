@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Ilustrasi kategori Teknologi SEMBURAT">
+  <rect width="1200" height="630" fill="#F5F4EE" />
+  <rect x="60" y="60" width="1080" height="510" rx="28" fill="#FAFAF7" />
+  <g stroke="#1C1917" stroke-width="6" fill="none" opacity="0.75">
+    <path d="M640 240 L640 170" />
+    <path d="M740 240 L740 170" />
+    <path d="M840 240 L840 170" />
+    <path d="M640 400 L640 470" />
+    <path d="M740 400 L740 470" />
+    <path d="M840 400 L840 470" />
+    <path d="M560 280 L490 280" />
+    <path d="M560 360 L490 360" />
+    <path d="M920 280 L990 280" />
+    <path d="M920 360 L990 360" />
+  </g>
+  <rect x="560" y="200" width="300" height="240" rx="26" fill="#1C1917" />
+  <rect x="612" y="252" width="196" height="136" rx="16" fill="#F5F4EE" />
+  <path d="M646 320 h50 M646 348 h120" stroke="#C25E43" stroke-width="10" stroke-linecap="round" />
+  <circle cx="782" cy="278" r="12" fill="#C25E43" />
+  <g stroke="#C25E43" stroke-width="6" fill="none" opacity="0.9">
+    <path d="M170 420 h120 l40 -60 h90" />
+    <circle cx="170" cy="420" r="16" fill="#C25E43" />
+    <circle cx="420" cy="360" r="16" fill="#C25E43" />
+  </g>
+  <text x="140" y="180" font-family="system-ui, sans-serif" font-size="72" font-weight="700" fill="#1C1917">Teknologi</text>
+  <text x="142" y="232" font-family="system-ui, sans-serif" font-size="30" fill="#57534E">Perkembangan teknologi, AI, dan dampaknya</text>
+  <text x="140" y="540" font-family="system-ui, sans-serif" font-size="26" font-weight="700" fill="#C25E43">SEMBURAT</text>
+</svg>

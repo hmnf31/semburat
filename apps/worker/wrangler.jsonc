@@ -14,12 +14,6 @@
       "migrations_dir": "../../packages/db/src/migrations",
     },
   ],
-  "r2_buckets": [
-    {
-      "binding": "ASSETS",
-      "bucket_name": "semburat-assets",
-    },
-  ],
   "vars": {
     "ENVIRONMENT": "development",
   },
@@ -29,6 +23,12 @@
       "vars": {
         "ENVIRONMENT": "production",
       },
+      "r2_buckets": [
+        {
+          "binding": "ASSETS",
+          "bucket_name": "semburat-assets",
+        },
+      ],
       "d1_databases": [
         {
           "binding": "DB",
@@ -47,7 +47,7 @@
         {
           "binding": "DB",
           "database_name": "semburat-db-staging",
-          "database_id": "@cf/db-id-staging",
+          "database_id": "91bf4878-cd19-4eb4-9fe0-a46e9326de20",
           "migrations_dir": "../../packages/db/src/migrations",
         },
       ],

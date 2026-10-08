@@ -77,7 +77,15 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 - Production monitoring setup — kit includes a `health-check.yml` workflow pattern
 - Kit-external verification (requires your accounts/network): deploy to Cloudflare, GitHub workflow runs, Telegram bot, OpenRouter calls, real SEO/monetization results; free-tier limits and monetization terms must be checked with official sources
 
-## 7. Next Steps
+## 7. Staging Deployment
+
+- Worker: https://semburat-worker-staging.theahuda.workers.dev (D1 `semburat-db-staging`, migrations applied)
+- Web: https://semburat-web.pages.dev (Cloudflare Pages, `PUBLIC_API_BASE_URL` = worker URL)
+- Public endpoints live: `/`, `/api/health`, `/api/articles`, `/api/trends`
+- Pipeline endpoints require `TELEGRAM_WEBHOOK_SECRET`; `OPENROUTER_API_KEY` unset so `aiMode=mock`
+- R2 is not enabled on the account yet; the `ASSETS` binding is configured for production only
+
+## 8. Next Steps
 
 1. Follow the roadmap starting at `docs/00-SEMBURAT_ROADMAP_TEST_REVENUE.md`
 2. Phase A: run local tests (`python -m unittest discover -s tests -v`) and the `docs/01` checklist
@@ -88,7 +96,7 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 7. Pass the go/no-go gates in `docs/05-go-no-go.md` before scaling; keep auto-publish off until Gate 3
 8. Add web component tests, worker tests, real API keys, Remotion templates, production monitoring, and end-to-end tests
 
-## 8. How to Run Locally
+## 9. How to Run Locally
 
 ```bash
 pnpm install

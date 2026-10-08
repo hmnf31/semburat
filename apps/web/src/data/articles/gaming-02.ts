@@ -45,9 +45,10 @@ Satu kebiasaan penutup yang berguna: setiap pembelian yang melalui sistem penagi
     {
       id: 'asset-sl-gaming-002',
       type: 'image',
-      title: 'Ilustrasi bawaan SEMBURAT',
-      license: 'Karya visual asli SEMBURAT, bukan foto pihak ketiga',
-      credit: 'Ilustrasi oleh SEMBURAT',
+      title: 'Children playing video games',
+      license: 'CC BY-SA 3.0',
+      credit: 'Gamesingear',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Children_playing_video_games.jpg',
     },
   ],
   keyPoints: [

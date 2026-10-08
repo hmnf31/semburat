@@ -38,9 +38,10 @@ Dua kebiasaan menutup celah paling besar: aktifkan verifikasi dua langkah pada a
     {
       id: 'asset-sl-tech-003',
       type: 'image',
-      title: 'Ilustrasi bawaan SEMBURAT',
-      license: 'Karya visual asli SEMBURAT, bukan foto pihak ketiga',
-      credit: 'Ilustrasi oleh SEMBURAT',
+      title: 'Example bank phishing email',
+      license: 'CC BY 4.0',
+      credit: 'User:Isochrone dan User:Belbury (Wikimedia Commons)',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Example_bank_phishing_email.svg',
     },
   ],
   keyPoints: [

@@ -40,9 +40,10 @@ Praktisnya bagi rumah tangga: biaya awal tetap di pihak pelanggan, penghematan m
     {
       id: 'asset-sl-explainer-002',
       type: 'image',
-      title: 'Ilustrasi bawaan SEMBURAT',
-      license: 'Karya visual asli SEMBURAT, bukan foto pihak ketiga',
-      credit: 'Ilustrasi oleh SEMBURAT',
+      title: 'Rooftop solar panels 3 kW',
+      license: 'CC BY 4.0',
+      credit: 'Dr. Chinchu C.',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Rooftop_Solar_Panels_3KW.jpg',
     },
   ],
   keyPoints: [

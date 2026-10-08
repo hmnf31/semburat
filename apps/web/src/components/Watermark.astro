@@ -1,0 +1,13 @@
+---
+interface Props {
+  label?: string;
+}
+
+const { label = 'Semburat' } = Astro.props;
+---
+<span
+  class='pointer-events-none absolute bottom-2 right-2 rounded bg-sb-ink/70 px-2 py-1 font-body text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-[2px]'
+  aria-hidden='true'
+>
+  {label}
+</span>

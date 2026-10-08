@@ -139,6 +139,7 @@ Status:
 - [x] TASK-219 Add `/categories` index page and fix header nav link
 - [x] TASK-220 Configure Telegram bot secrets, webhook and sender allow-list (production + staging)
 - [x] TASK-221 Publish the first 10 real soft-launch articles (researched sources, one module per article)
+- [x] TASK-222 Use freely licensed source images for 9 of the 10 articles (Wikimedia Commons, credits recorded) with SEMBURAT watermark, plus thumbnails on article cards
 
 ## Kilo execution rule
 

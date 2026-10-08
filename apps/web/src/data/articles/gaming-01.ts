@@ -43,9 +43,11 @@ Urutan pemasangan yang paling masuk akal: aktifkan autentikator di ponsel lebih 
     {
       id: 'asset-sl-gaming-001',
       type: 'image',
-      title: 'Ilustrasi bawaan SEMBURAT',
-      license: 'Karya visual asli SEMBURAT, bukan foto pihak ketiga',
-      credit: 'Ilustrasi oleh SEMBURAT',
+      title: 'Wells Fargo 2FA RSA token',
+      license: 'CC BY 2.0',
+      credit: 'Tony Webster',
+      sourceUrl:
+        'https://commons.wikimedia.org/wiki/File:Wells_Fargo_2FA_RSA_Token_-_Two_Factor_Authentication_-_Six_Digit_Code_(53370207137).jpg',
     },
   ],
   keyPoints: [

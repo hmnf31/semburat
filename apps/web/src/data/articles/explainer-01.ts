@@ -44,9 +44,11 @@ QRIS menyelesaikan satu masalah nyata: fragmentasi. Pedagang cukup membuka satu 
     {
       id: 'asset-sl-explainer-001',
       type: 'image',
-      title: 'Ilustrasi bawaan SEMBURAT',
-      license: 'Karya visual asli SEMBURAT, bukan foto pihak ketiga',
-      credit: 'Ilustrasi oleh SEMBURAT',
+      title: 'Terminal pembayaran dengan kode QRIS',
+      license: 'CC BY 4.0',
+      credit: 'VulcanSphere',
+      sourceUrl:
+        'https://commons.wikimedia.org/wiki/File:Ingenico_Move_2500_payment_terminal_showing_QRIS_QR_code_for_payment_(2026-04-05).jpg',
     },
   ],
   keyPoints: [

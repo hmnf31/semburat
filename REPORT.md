@@ -104,6 +104,8 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 - Struktur konten dipisah per artikel di `apps/web/src/data/articles/`, dikomposisikan lewat `apps/web/src/data/soft-launch-articles.ts`
 - Setiap artikel memakai sumber nyata yang dapat dicek (BI, JDIH BPK, CISA, Apple/Google, Science/MIT, dsb.) dan visual SEMBURAT sendiri, tanpa klaim/angka rekaan
 - Deploy Pages production harus memakai `--branch main` (cabang produksi proyek `semburat-web`), staging memakai `--branch staging`
+- Gambar artikel: 9 dari 10 artikel memakai foto/diagram asli berlisensi bebas dari Wikimedia Commons (PD, CC BY, CC BY-SA) dengan kredit + tautan sumber di "Kredit Visual" dan watermark SEMBURAT di pojok kanan bawah; artikel PSE tetap memakai ilustrasi SEMBURAT karena tidak ada gambar bebas yang relevan
+- Kartu artikel (beranda, kategori, terkait) kini menampilkan thumbnail dari gambar sumber atau ilustrasi kategori, juga diberi watermark
 
 ## 8. Next Steps
 

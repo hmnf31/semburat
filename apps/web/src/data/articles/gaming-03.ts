@@ -45,9 +45,10 @@ Praktik yang wajar bagi pemain: baca halaman peluang yang biasanya tersimpan di 
     {
       id: 'asset-sl-gaming-003',
       type: 'image',
-      title: 'Ilustrasi bawaan SEMBURAT',
-      license: 'Karya visual asli SEMBURAT, bukan foto pihak ketiga',
-      credit: 'Ilustrasi oleh SEMBURAT',
+      title: 'Video game loot box mockup',
+      license: 'CC BY-SA 4.0',
+      credit: 'Sameboat',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Video_game_loot_box_mockup.png',
     },
   ],
   keyPoints: [

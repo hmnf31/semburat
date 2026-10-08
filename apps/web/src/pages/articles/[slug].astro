@@ -3,11 +3,8 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
 import SourceAttribution from '../../components/SourceAttribution.astro';
 import CreditVisual from '../../components/CreditVisual.astro';
-import heroImage from '../../assets/hero-placeholder.svg';
-import artExplainer from '../../assets/categories/explainer.svg';
-import artGaming from '../../assets/categories/gaming.svg';
-import artTeknologi from '../../assets/categories/teknologi.svg';
-import artViral from '../../assets/categories/viral.svg';
+import Watermark from '../../components/Watermark.astro';
+import { resolveVisual } from '../../lib/visuals';
 import type { ContentArticle } from '../../lib/content';
 import { getArticles, getRelated } from '../../lib/content';
 import { DEFAULT_OG_IMAGE, SITE_URL } from '../../lib/site';
@@ -66,17 +63,12 @@ const updatedWib = isUpdated && article.updatedAt ? formatWib(article.updatedAt)
 
 const related = await getRelated(article.slug);
 
-const categoryVisuals: Record<string, typeof artViral> = {
-  Viral: artViral,
-  Teknologi: artTeknologi,
-  Gaming: artGaming,
-  Explainer: artExplainer,
-};
-const visual = categoryVisuals[article.category] ?? heroImage;
-const visualCredit =
-  article.category in categoryVisuals
-    ? `Ilustrasi kategori ${article.category} oleh SEMBURAT`
-    : 'Ilustrasi oleh SEMBURAT';
+const visual = resolveVisual(article.slug, article.category);
+const imageAsset = article.assets.find((asset) => asset.type === 'image');
+const usesSourceImage = visual.kind === 'source' && Boolean(imageAsset?.sourceUrl);
+const imageAlt = usesSourceImage
+  ? (imageAsset?.title ?? article.title)
+  : `Ilustrasi untuk ${article.title}`;
 
 const breadcrumbItems = [
   { name: 'Beranda', href: '/' },
@@ -131,7 +123,16 @@ image={ogImage}
       </span>
     </div>
   </header>
-  <img src={visual.src} alt={`Ilustrasi untuk ${article.title}`} width="1200" height="630" class="mb-8 w-full rounded-lg border border-sb-hairline" />
+  <figure class="relative mb-8 overflow-hidden rounded-lg border border-sb-hairline bg-sb-card">
+    <img
+      src={visual.src}
+      alt={imageAlt}
+      width={visual.width}
+      height={visual.height}
+      class="h-auto max-h-[520px] w-full object-cover object-center"
+    />
+    <Watermark />
+  </figure>
   <div class="space-y-4 mb-8">
     {article.body.split('\n\n').filter(Boolean).map((paragraph) => (
       <p class="font-body leading-relaxed text-sb-ink" set:html={paragraph} />
@@ -175,9 +176,18 @@ image={ogImage}
   )}
   <SourceAttribution sources={article.sources} />
   <CreditVisual
-    creator="SEMBURAT"
-    license={article.assets[0]?.license ?? 'Karya visual asli SEMBURAT, bukan foto pihak ketiga'}
-    credit={visualCredit}
+    creator={usesSourceImage ? (imageAsset?.credit ?? 'Sumber tidak diketahui') : 'SEMBURAT'}
+    license={
+      usesSourceImage
+        ? (imageAsset?.license ?? 'Lisensi tidak diketahui')
+        : 'Karya visual asli SEMBURAT, bukan foto pihak ketiga'
+    }
+    credit={
+      usesSourceImage
+        ? `Sumber gambar: ${imageAsset?.title ?? ''}`
+        : 'Ilustrasi oleh SEMBURAT'
+    }
+    sourceUrl={usesSourceImage ? imageAsset?.sourceUrl : undefined}
   />
   {related.length > 0 && (
     <section class="mt-12" aria-labelledby="terkait-heading">

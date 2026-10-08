@@ -38,9 +38,11 @@ Praktiknya untuk pembaca: karena koreksian selalu bergerak lebih lambat, keputus
     {
       id: 'asset-sl-viral-001',
       type: 'image',
-      title: 'Ilustrasi bawaan SEMBURAT',
-      license: 'Karya visual asli SEMBURAT, bukan foto pihak ketiga',
-      credit: 'Ilustrasi oleh SEMBURAT',
+      title: 'Fighting Fake News — U.S. Army Europe and Africa',
+      license: 'Public domain (PD)',
+      credit: 'U.S. Army / Sgt. Stephen Perez',
+      sourceUrl:
+        'https://commons.wikimedia.org/wiki/File:Fighting_Fake_News-_How_you_can_help_stop_the_spread_of_Misinformation,_Disinformation_(6616039).jpg',
     },
   ],
   keyPoints: [

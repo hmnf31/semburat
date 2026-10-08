@@ -40,9 +40,11 @@ Penting dibedakan: UU PDP mengatur pelindungan data pribadi, sementara kewajiban
     {
       id: 'asset-sl-tech-002',
       type: 'image',
-      title: 'Ilustrasi bawaan SEMBURAT',
-      license: 'Karya visual asli SEMBURAT, bukan foto pihak ketiga',
-      credit: 'Ilustrasi oleh SEMBURAT',
+      title: 'Cambridge Analytica data extraction cascade',
+      license: 'CC BY-SA 4.0',
+      credit: 'Carlos Eduardo Ravello Joo',
+      sourceUrl:
+        'https://commons.wikimedia.org/wiki/File:Cambridge-analytica-2018-data-extraction-cascade.svg',
     },
   ],
   keyPoints: [

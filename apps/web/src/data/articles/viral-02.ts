@@ -45,9 +45,10 @@ Untuk pembaca, artinya sederhana: adanya badge provenansi bukan jaminan kebenara
     {
       id: 'asset-sl-viral-002',
       type: 'image',
-      title: 'Ilustrasi bawaan SEMBURAT',
-      license: 'Karya visual asli SEMBURAT, bukan foto pihak ketiga',
-      credit: 'Ilustrasi oleh SEMBURAT',
+      title: 'Content Credentials logo',
+      license: 'Public domain (PD)',
+      credit: 'Coalition for Content Provenance and Authenticity (C2PA)',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Content_credentials_logo.png',
     },
   ],
   keyPoints: [

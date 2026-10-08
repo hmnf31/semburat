@@ -18,15 +18,15 @@ pemulihan.
 
 ## Informasi Lingkungan
 
-| Komponen        | Nilai                                            |
-| --------------- | ------------------------------------------------ |
-| Worker          | `semburat-worker` (Hono di Cloudflare Workers)   |
-| Database        | D1 `semburat-db` (binding `DB`)                  |
-| Aset media      | R2 `semburat-assets` (binding `ASSETS`)          |
-| Bucket backup   | R2 `semburat-backups` (prefix `d1/`)             |
+| Komponen        | Nilai                                                                  |
+| --------------- | ---------------------------------------------------------------------- |
+| Worker          | `semburat-worker` (Hono di Cloudflare Workers)                         |
+| Database        | D1 `semburat-db` (binding `DB`)                                        |
+| Aset media      | R2 `semburat-assets` (binding `ASSETS`)                                |
+| Bucket backup   | R2 `semburat-backups` (prefix `d1/`)                                   |
 | Health check    | `GET /health` -> `{"status":"ok","version":"1.0.0","timestamp":"..."}` |
-| CI/CD           | GitHub Actions (`.github/workflows/deploy.yml`)  |
-| Package manager | pnpm 9.12.0 (pinned), Node.js 20+                |
+| CI/CD           | GitHub Actions (`.github/workflows/deploy.yml`)                        |
+| Package manager | pnpm 9.12.0 (pinned), Node.js 20+                                      |
 
 Script operasional utama:
 
@@ -77,11 +77,11 @@ Pemulihan) dan pastikan job backup berhasil.
 
 ### Tingkat insiden
 
-| Tingkat  | Contoh                                              | Target respons        |
-| -------- | --------------------------------------------------- | --------------------- |
-| Rendah   | Typo kecil, job non-kritis terlambat                | Perbaiki pada operasi harian |
-| Sedang   | Job publish gagal berulang, latency tinggi, error R2 | Maksimal 1 jam        |
-| Tinggi   | Fakta salah terbit, pelanggaran hak cipta, secret bocor | Segera (kill switch)  |
+| Tingkat | Contoh                                                  | Target respons               |
+| ------- | ------------------------------------------------------- | ---------------------------- |
+| Rendah  | Typo kecil, job non-kritis terlambat                    | Perbaiki pada operasi harian |
+| Sedang  | Job publish gagal berulang, latency tinggi, error R2    | Maksimal 1 jam               |
+| Tinggi  | Fakta salah terbit, pelanggaran hak cipta, secret bocor | Segera (kill switch)         |
 
 ### Prosedur
 
@@ -256,26 +256,26 @@ halaman artikel, kategori, about, contact, serta validitas XML sitemap dan RSS.
 
 ### Masalah umum
 
-| Gejala | Penyebab dan solusi |
-| ------ | ------------------- |
-| Worker gagal deploy | Validasi sintaks `wrangler.jsonc`, pastikan secret lengkap, jalankan `pnpm typecheck` dan `pnpm build` lokal, periksa binding D1/R2 |
-| D1 tidak ditemukan | Verifikasi `D1_DATABASE_ID` sesuai UUID dari `wrangler d1 create`; cek `wrangler d1 list` |
-| R2 403/404 | Cocokkan nama bucket dengan `R2_BUCKET` dan `wrangler.jsonc`; pastikan token punya izin R2; cek `wrangler r2 ls` |
-| Web build gagal | Periksa integrasi Astro, `outDir` vs pengaturan Pages, log build di dashboard |
-| Variabel lingkungan tidak ter-inject | Cek GitHub Actions secrets, bagian `vars` di `wrangler.jsonc`, atau pengaturan variabel Pages |
-| Telegram tidak respons | Webhook URL harus publik; `TELEGRAM_WEBHOOK_SECRET` harus cocok; cek `getWebhookInfo` |
+| Gejala                               | Penyebab dan solusi                                                                                                                 |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Worker gagal deploy                  | Validasi sintaks `wrangler.jsonc`, pastikan secret lengkap, jalankan `pnpm typecheck` dan `pnpm build` lokal, periksa binding D1/R2 |
+| D1 tidak ditemukan                   | Verifikasi `D1_DATABASE_ID` sesuai UUID dari `wrangler d1 create`; cek `wrangler d1 list`                                           |
+| R2 403/404                           | Cocokkan nama bucket dengan `R2_BUCKET` dan `wrangler.jsonc`; pastikan token punya izin R2; cek `wrangler r2 ls`                    |
+| Web build gagal                      | Periksa integrasi Astro, `outDir` vs pengaturan Pages, log build di dashboard                                                       |
+| Variabel lingkungan tidak ter-inject | Cek GitHub Actions secrets, bagian `vars` di `wrangler.jsonc`, atau pengaturan variabel Pages                                       |
+| Telegram tidak respons               | Webhook URL harus publik; `TELEGRAM_WEBHOOK_SECRET` harus cocok; cek `getWebhookInfo`                                               |
 
 ### Kode error
 
-| Kode | Arti | Solusi |
-| ---- | ---- | ------ |
-| 401  | Unauthorized | Periksa API token dan izin |
-| 403  | Forbidden | Verifikasi scope token |
-| 404  | Not Found | Periksa path URL dan keberadaan resource |
-| 429  | Rate Limited | Terapkan exponential backoff |
-| 500  | Internal Server Error | Baca stack trace di Worker logs |
-| 502  | Bad Gateway | Periksa ketersediaan layanan upstream |
-| 503  | Service Unavailable | Periksa https://status.cloudflare.com |
+| Kode | Arti                  | Solusi                                   |
+| ---- | --------------------- | ---------------------------------------- |
+| 401  | Unauthorized          | Periksa API token dan izin               |
+| 403  | Forbidden             | Verifikasi scope token                   |
+| 404  | Not Found             | Periksa path URL dan keberadaan resource |
+| 429  | Rate Limited          | Terapkan exponential backoff             |
+| 500  | Internal Server Error | Baca stack trace di Worker logs          |
+| 502  | Bad Gateway           | Periksa ketersediaan layanan upstream    |
+| 503  | Service Unavailable   | Periksa https://status.cloudflare.com    |
 
 ### Eskalasi
 

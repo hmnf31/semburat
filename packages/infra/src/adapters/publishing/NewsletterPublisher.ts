@@ -23,7 +23,9 @@ export class NewsletterPublisher implements Publisher {
 
   async publish(variant: ContentVariant): Promise<{ externalId: string; url: string }> {
     if (variant.platform !== Platform.NEWSLETTER) {
-      throw new Error('NewsletterPublisher can only publish to NEWSLETTER, got ' + variant.platform);
+      throw new Error(
+        'NewsletterPublisher can only publish to NEWSLETTER, got ' + variant.platform
+      );
     }
 
     const campaignId = await this.createCampaign(variant);

@@ -67,7 +67,10 @@ export class D1ArticleRepository implements ArticleRepositoryPort {
       sql += ' LIMIT ?';
       params.push(limit);
     }
-    const result = await this.db.prepare(sql).bind(...params).all<Record<string, unknown>>();
+    const result = await this.db
+      .prepare(sql)
+      .bind(...params)
+      .all<Record<string, unknown>>();
     return (result.results ?? []).map((row) => this.fromRow(row));
   }
 

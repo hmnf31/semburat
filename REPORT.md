@@ -13,21 +13,19 @@ SEMBURAT is an Indonesian automated media/content intelligence platform. The rep
 - CI/CD: 4 GitHub Actions workflows
 - Docs: 15 documentation files
 
-## 2.5 Companion Kit (semburat-kit)
+## 2.5 Companion Kit (deduplicated)
 
-The `semburat-kit/` directory is a companion package for testing, deploying, launching, and monetizing SEMBURAT with zero rupiah. It is a companion to the main repository, not a replacement: copy only the files you need and never overwrite code in `services/` or `apps/`.
+The former `semburat-kit/` directory was a byte-identical copy of material that already lives at the repository root. It has been removed to avoid maintaining two copies of the same files. Canonical locations:
 
-- **Structure:**
-  - `docs/` — 8 roadmap/checklist docs (01–08): local test checklist, staging deploy checklist, release checklist, soft launch playbook, go/no-go gates, revenue simulation, 14-day plan, PRD analysis findings; plus a `templates/` subfolder (test logs, article review, daily/weekly logs, incident, correction)
-  - `pages/` — 8 policy pages: about, editorial policy, correction policy, source policy, AI policy, privacy, terms, contact
-  - `packages/brand/` — brand tokens (`tokens.json` → `tokens.css`) plus `brand.config.json` and `build_tokens.py`
-  - `skills/semburat-design/` — design skill with HTML templates (`og-hero`, `x-post`, `fact-card`, `story-cover`, `carousel`), render script, validator, and evals
-  - `tests/` — 40 unit tests (PRD rules, design validation, render smoke; verified passing with 2 skipped)
-  - `tools/revenue_simulator.py` — 24-month revenue simulation across 3 scenarios with editable assumptions
-  - `remotion/` — video props example (`props.example.json`) and notes
-  - `config/` — model routing example (`model-routing.example.json`)
-  - `.github/workflows/` — 3 workflows: `ci.yml`, `trend-discovery.yml` (safe job pattern to copy), `health-check.yml`
-- **Usage phases:** A = local tests (`python -m unittest discover -s tests -v`), B = staging deploy on Cloudflare, C = release checklist (publish the `pages/` drafts), D = soft launch (daily rhythm with `docs/templates/`), E = design templates and the design skill, followed by go/no-go decision gates (`docs/05-go-no-go.md`).
+- `docs/` — 8 roadmap/checklist docs (01–08): local test checklist, staging deploy checklist, release checklist, soft-launch playbook, go/no-go gates, revenue simulation, 14-day plan, PRD analysis findings; plus `docs/templates/` (test logs, article review, daily/weekly logs, incident, correction) and `docs/templates/trend-discovery.workflow.yml` (safe scheduled-job pattern to copy)
+- `docs/pages/` — 8 policy page drafts: about, editorial policy, correction policy, source policy, AI policy, privacy, terms, contact
+- `packages/brand/` — brand tokens (`tokens.json` → `tokens.css`) plus `brand.config.json` and `build_tokens.py`
+- `.kilo/skills/semburat-design/` — design skill with HTML templates (`og-hero`, `x-post`, `fact-card`, `story-cover`, `carousel`), render script, validator, evals, and `semburat-design.skill`
+- `tests/` — 40 unit tests (PRD rules, design validation, render smoke), run by the `python-tests` job in `.github/workflows/ci.yml`
+- `tools/revenue_simulator.py` — 24-month revenue simulation across 3 scenarios with editable assumptions
+- `remotion/` — video props example (`props.example.json`) and notes
+- `config/` — model routing example (`model-routing.example.json`)
+- **Usage phases:** A = local tests (`python -m unittest discover -s tests -v`), B = staging deploy on Cloudflare, C = release checklist (publish the `docs/pages/` drafts), D = soft launch (daily rhythm with `docs/templates/`), E = design templates and the design skill, followed by go/no-go decision gates (`docs/05-go-no-go.md`).
 - **Key entry point:** `docs/00-SEMBURAT_ROADMAP_TEST_REVENUE.md` — read it first, then `docs/08-temuan-analisis-prd.md` for PRD decisions to make.
 
 ## 3. Phases Completed
@@ -53,7 +51,7 @@ The `semburat-kit/` directory is a companion package for testing, deploying, lau
 - 280 tests passed across 41 files
 - Domain: 166 tests (18 files)
 - Infra: 114 tests (23 files)
-- Companion kit: 40 unit tests passed (2 skipped) in `semburat-kit/tests/`
+- Companion kit: 40 unit tests in `tests/` (PRD rules, design validation, render smoke)
 
 ## 5. Validation
 
@@ -62,7 +60,7 @@ The `semburat-kit/` directory is a companion package for testing, deploying, lau
 - pnpm lint: PASS (0 errors)
 - pnpm format:check: PASS
 - pnpm build: PASS (12 pages)
-- semburat-kit tests: PASS (40 tests, `python -m unittest discover -s semburat-kit/tests -v`)
+- companion kit tests: PASS (`python -m unittest discover -s tests -v`, run by the CI `python-tests` job)
 
 ## 6. What's NOT Done
 
@@ -77,10 +75,10 @@ The `semburat-kit/` directory is a companion package for testing, deploying, lau
 
 ## 7. Next Steps
 
-1. Follow the kit roadmap starting at `semburat-kit/docs/00-SEMBURAT_ROADMAP_TEST_REVENUE.md`
-2. Phase A: run kit local tests (`python -m unittest discover -s semburat-kit/tests -v`) and the `docs/01` checklist
-3. Phase B: deploy staging on Cloudflare per `docs/02`; copy the `trend-discovery.yml` job pattern for other workflows
-4. Phase C: complete the release checklist (`docs/03`) and publish the 8 policy pages from `kit/pages/`
+1. Follow the roadmap starting at `docs/00-SEMBURAT_ROADMAP_TEST_REVENUE.md`
+2. Phase A: run local tests (`python -m unittest discover -s tests -v`) and the `docs/01` checklist
+3. Phase B: deploy staging on Cloudflare per `docs/02`; copy `docs/templates/trend-discovery.workflow.yml` as the pattern for other scheduled workflows
+4. Phase C: complete the release checklist (`docs/03`) and publish the 8 policy pages from `docs/pages/`
 5. Phase D: run the soft launch playbook (`docs/04`) with the daily templates
 6. Phase E: customize brand tokens, then render design templates with the `semburat-design` skill
 7. Pass the go/no-go gates in `docs/05-go-no-go.md` before scaling; keep auto-publish off until Gate 3
@@ -95,10 +93,9 @@ pnpm test
 pnpm build
 ```
 
-Companion kit (zero-rupiah test/deploy/launch path):
+Companion kit content (zero-rupiah test/deploy/launch path) lives at the repository root:
 
 ```bash
-cd semburat-kit
 python -m unittest discover -s tests -v
 python tools/revenue_simulator.py
 ```

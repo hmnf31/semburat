@@ -52,11 +52,11 @@ secret (`db-id-prod` for production, `db-id-staging` for staging), resolved from
 
 ## Environment Databases
 
-| Environment  | Database Name       | Secret Reference   |
-|--------------|---------------------|--------------------|
-| Development  | semburat-db         | `@cf/db-id`        |
-| Staging      | semburat-db-staging | `@cf/db-id-staging`|
-| Production   | semburat-db         | `@cf/db-id-prod`   |
+| Environment | Database Name       | Secret Reference    |
+| ----------- | ------------------- | ------------------- |
+| Development | semburat-db         | `@cf/db-id`         |
+| Staging     | semburat-db-staging | `@cf/db-id-staging` |
+| Production  | semburat-db         | `@cf/db-id-prod`    |
 
 ## Best Practices
 

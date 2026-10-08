@@ -102,14 +102,42 @@ describe('AnalyticsService', () => {
 
     vi.mocked(mockAnalyticsRepo.findByContentId)
       .mockResolvedValueOnce([
-        { id: 'evt-1', contentId: 'article-1', eventType: 'view', value: 100, metadata: {}, occurredAt: new Date() },
-        { id: 'evt-2', contentId: 'article-1', eventType: 'click', value: 10, metadata: {}, occurredAt: new Date() },
+        {
+          id: 'evt-1',
+          contentId: 'article-1',
+          eventType: 'view',
+          value: 100,
+          metadata: {},
+          occurredAt: new Date(),
+        },
+        {
+          id: 'evt-2',
+          contentId: 'article-1',
+          eventType: 'click',
+          value: 10,
+          metadata: {},
+          occurredAt: new Date(),
+        },
       ])
       .mockResolvedValueOnce([
-        { id: 'evt-3', contentId: 'article-2', eventType: 'view', value: 200, metadata: {}, occurredAt: new Date() },
+        {
+          id: 'evt-3',
+          contentId: 'article-2',
+          eventType: 'view',
+          value: 200,
+          metadata: {},
+          occurredAt: new Date(),
+        },
       ])
       .mockResolvedValueOnce([
-        { id: 'evt-4', contentId: 'article-3', eventType: 'click', value: 5, metadata: {}, occurredAt: new Date() },
+        {
+          id: 'evt-4',
+          contentId: 'article-3',
+          eventType: 'click',
+          value: 5,
+          metadata: {},
+          occurredAt: new Date(),
+        },
       ]);
 
     const result = await service.getTopContent(10);
@@ -124,7 +152,14 @@ describe('AnalyticsService', () => {
     const articles = [createMockArticle('article-1')];
     vi.mocked(mockArticleRepo.findAll).mockResolvedValueOnce(articles);
     vi.mocked(mockAnalyticsRepo.findByContentId).mockResolvedValueOnce([
-      { id: 'evt-1', contentId: 'article-1', eventType: 'click', value: 5, metadata: {}, occurredAt: new Date() },
+      {
+        id: 'evt-1',
+        contentId: 'article-1',
+        eventType: 'click',
+        value: 5,
+        metadata: {},
+        occurredAt: new Date(),
+      },
     ]);
 
     const result = await service.getTopContent(10);
@@ -141,9 +176,36 @@ describe('AnalyticsService', () => {
     vi.mocked(mockArticleRepo.findAll).mockResolvedValueOnce(articles);
 
     vi.mocked(mockAnalyticsRepo.findByContentId)
-      .mockResolvedValueOnce([{ id: 'evt-1', contentId: 'article-1', eventType: 'view', value: 100, metadata: {}, occurredAt: new Date() }])
-      .mockResolvedValueOnce([{ id: 'evt-2', contentId: 'article-2', eventType: 'view', value: 200, metadata: {}, occurredAt: new Date() }])
-      .mockResolvedValueOnce([{ id: 'evt-3', contentId: 'article-3', eventType: 'view', value: 300, metadata: {}, occurredAt: new Date() }]);
+      .mockResolvedValueOnce([
+        {
+          id: 'evt-1',
+          contentId: 'article-1',
+          eventType: 'view',
+          value: 100,
+          metadata: {},
+          occurredAt: new Date(),
+        },
+      ])
+      .mockResolvedValueOnce([
+        {
+          id: 'evt-2',
+          contentId: 'article-2',
+          eventType: 'view',
+          value: 200,
+          metadata: {},
+          occurredAt: new Date(),
+        },
+      ])
+      .mockResolvedValueOnce([
+        {
+          id: 'evt-3',
+          contentId: 'article-3',
+          eventType: 'view',
+          value: 300,
+          metadata: {},
+          occurredAt: new Date(),
+        },
+      ]);
 
     const result = await service.getTopContent(2);
 

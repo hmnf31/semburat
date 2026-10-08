@@ -14,3 +14,8 @@ coverage
 .idea
 /tmp
 /media
+.wrangler
+__pycache__/
+*.pyc
+*.tsbuildinfo
+

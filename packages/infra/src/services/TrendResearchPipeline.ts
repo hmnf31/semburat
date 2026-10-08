@@ -121,18 +121,10 @@ export class TrendResearchPipeline {
 
       const facts = await this.extractFacts(research, article);
       const verifiedFacts = await this.verifyFacts(article);
-      const editorialArticle = await this.generateEditorial(
-        article,
-        research,
-        verifiedFacts
-      );
+      const editorialArticle = await this.generateEditorial(article, research, verifiedFacts);
 
       const assets: Asset[] = [];
-      const quality = await this.runQualityGate(
-        editorialArticle,
-        verifiedFacts,
-        assets
-      );
+      const quality = await this.runQualityGate(editorialArticle, verifiedFacts, assets);
 
       const finalArticle = this.applyQualityOutcome(editorialArticle, quality);
       await this.articleRepo.update(finalArticle);
@@ -184,10 +176,7 @@ export class TrendResearchPipeline {
       return existingResearch;
     }
 
-    const searchResults = await this.researchProvider.search(
-      trend.title,
-      RESEARCH_MAX_RESULTS
-    );
+    const searchResults = await this.researchProvider.search(trend.title, RESEARCH_MAX_RESULTS);
     if (searchResults.length === 0) {
       throw new Error(`No sources found for trend: ${trend.id}`);
     }
@@ -197,9 +186,7 @@ export class TrendResearchPipeline {
       await this.trackSource(result.url, result.title);
       try {
         const page = await this.researchProvider.fetchPage(result.url);
-        sourceBlocks.push(
-          `[Source: ${result.title} (${result.url})]\n${page.content}`
-        );
+        sourceBlocks.push(`[Source: ${result.title} (${result.url})]\n${page.content}`);
       } catch (error) {
         this.log('warn', 'Failed to fetch research source', {
           trendId: trend.id,
@@ -213,10 +200,7 @@ export class TrendResearchPipeline {
       throw new Error(`All research sources failed to fetch for trend: ${trend.id}`);
     }
 
-    const prompt = this.buildExtractionPrompt(
-      trend.title,
-      sourceBlocks.join('\n---\n')
-    );
+    const prompt = this.buildExtractionPrompt(trend.title, sourceBlocks.join('\n---\n'));
     const extraction = await this.retryWithBackoff(
       async () =>
         (await this.aiProvider.generateStructured(
@@ -228,9 +212,7 @@ export class TrendResearchPipeline {
     );
 
     if (!extraction.summary || extraction.summary.trim().length === 0) {
-      throw new Error(
-        `Research extraction returned an empty summary for trend: ${trend.id}`
-      );
+      throw new Error(`Research extraction returned an empty summary for trend: ${trend.id}`);
     }
 
     const research = new Research({
@@ -258,16 +240,9 @@ export class TrendResearchPipeline {
     return research;
   }
 
-  private async extractFacts(
-    research: Research,
-    article: Article
-  ): Promise<Fact[]> {
+  private async extractFacts(research: Research, article: Article): Promise<Fact[]> {
     const facts = await this.retryWithBackoff(
-      () =>
-        this.factExtractionService.extractFactsFromResearch(
-          research.id,
-          article.id
-        ),
+      () => this.factExtractionService.extractFactsFromResearch(research.id, article.id),
       'factExtraction',
       { researchId: research.id, articleId: article.id }
     );
@@ -365,11 +340,7 @@ export class TrendResearchPipeline {
     facts: Fact[],
     assets: Asset[]
   ): Promise<QualityGateResult> {
-    const result = await this.qualityGateService.evaluateArticle(
-      article,
-      facts,
-      assets
-    );
+    const result = await this.qualityGateService.evaluateArticle(article, facts, assets);
 
     this.log('info', 'Quality gate evaluated article', {
       articleId: article.id,
@@ -381,29 +352,19 @@ export class TrendResearchPipeline {
     return result;
   }
 
-  private applyQualityOutcome(
-    article: Article,
-    quality: QualityGateResult
-  ): Article {
+  private applyQualityOutcome(article: Article, quality: QualityGateResult): Article {
     if (!quality.passed) {
       this.log('warn', 'Quality gate failed, article needs further research', {
         articleId: article.id,
         score: quality.score,
         issues: quality.issues,
       });
-      return article
-        .withStatus(ArticleStatus.NEEDS_RESEARCH)
-        .withQualityScore(quality.score);
+      return article.withStatus(ArticleStatus.NEEDS_RESEARCH).withQualityScore(quality.score);
     }
-    return article
-      .withStatus(ArticleStatus.VERIFIED)
-      .withQualityScore(quality.score);
+    return article.withStatus(ArticleStatus.VERIFIED).withQualityScore(quality.score);
   }
 
-  private async createDraftArticle(
-    trend: Trend,
-    research: Research
-  ): Promise<Article> {
+  private async createDraftArticle(trend: Trend, research: Research): Promise<Article> {
     const article = new Article({
       id: this.buildArticleId(trend.id),
       researchId: research.id,
@@ -468,10 +429,7 @@ export class TrendResearchPipeline {
           break;
         }
 
-        const delayMs = Math.min(
-          INITIAL_BACKOFF_MS * 2 ** attempt,
-          MAX_BACKOFF_MS
-        );
+        const delayMs = Math.min(INITIAL_BACKOFF_MS * 2 ** attempt, MAX_BACKOFF_MS);
 
         this.log('warn', 'AI call failed, retrying with bounded backoff', {
           operation: operationName,
@@ -489,15 +447,10 @@ export class TrendResearchPipeline {
     if (lastError instanceof Error) {
       throw lastError;
     }
-    throw new Error(
-      `Operation ${operationName} failed after ${MAX_RETRIES + 1} attempts`
-    );
+    throw new Error(`Operation ${operationName} failed after ${MAX_RETRIES + 1} attempts`);
   }
 
-  private buildExtractionPrompt(
-    trendTitle: string,
-    sourcesText: string
-  ): string {
+  private buildExtractionPrompt(trendTitle: string, sourcesText: string): string {
     return [
       'You are an editorial research assistant for SEMBURAT, an Indonesian media intelligence platform.',
       '',

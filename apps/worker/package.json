@@ -17,10 +17,10 @@
     "hono": "^4.2.0",
     "@hono/zod-validator": "^0.2.0",
     "zod": "^3.22.0",
-    "@semburat/db": "workspace:*",
-    "@semburat/domain": "workspace:*",
-    "@semburat/infra": "workspace:*",
-    "@semburat/shared": "workspace:*"
+    "semburat-db": "workspace:*",
+    "semburat-domain": "workspace:*",
+    "semburat-infra": "workspace:*",
+    "semburat-shared": "workspace:*"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240401.0",

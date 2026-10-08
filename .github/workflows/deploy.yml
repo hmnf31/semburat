@@ -1,10 +1,10 @@
 name: Deploy
 
 # Required GitHub Secrets:
-#   - CLOUDFLARE_API_TOKEN  — Cloudflare API token with D1, Workers, and Pages access
-#   - CLOUDFLARE_ACCOUNT_ID — Cloudflare account ID
-#   - D1_DATABASE_ID_PROD   — UUID of the production D1 database
-#   - D1_DATABASE_ID_STAGING  — UUID of the staging D1 database
+#   - CLOUDFLARE_API_TOKEN  ï¿½ Cloudflare API token with D1, Workers, and Pages access
+#   - CLOUDFLARE_ACCOUNT_ID ï¿½ Cloudflare account ID
+#   - D1_DATABASE_ID_PROD   ï¿½ UUID of the production D1 database
+#   - D1_DATABASE_ID_STAGING  ï¿½ UUID of the staging D1 database
 
 on:
   push:

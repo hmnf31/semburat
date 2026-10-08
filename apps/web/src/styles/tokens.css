@@ -1,7 +1,7 @@
 /* AUTO-GENERATED dari DESIGN.MD. Jangan edit manual. */
 :root {
   /* Primary / Terracotta */
-  --sb-primary: #C25E43;
+  --sb-primary: #c25e43;
   --sb-primary-surface: #9a4027;
   --sb-primary-container: #b9573d;
   --sb-on-primary: #ffffff;
@@ -9,7 +9,7 @@
   --sb-inverse-primary: #ffb5a1;
 
   /* Secondary / Forest */
-  --sb-secondary: #2D4A3E;
+  --sb-secondary: #2d4a3e;
   --sb-secondary-container: #476558;
   --sb-secondary-fixed: #c9ead9;
   --sb-on-secondary: #ffffff;
@@ -20,29 +20,31 @@
   --sb-on-tertiary: #ffffff;
 
   /* Neutral / Warm Parchment */
-  --sb-surface: #FAFAF7;
-  --sb-surface-cream: #F5F4EE;
-  --sb-surface-card: #FFFFFF;
+  --sb-surface: #fafaf7;
+  --sb-surface-cream: #f5f4ee;
+  --sb-surface-card: #ffffff;
   --sb-surface-dim: #dadad7;
   --sb-surface-container: #eeeeeb;
 
   /* Text */
-  --sb-ink: #1C1917;
-  --sb-ink-muted: #78716C;
+  --sb-ink: #1c1917;
+  --sb-ink-muted: #78716c;
   --sb-on-surface: #1a1c1b;
 
   /* Borders */
-  --sb-border-hairline: #E7E5DF;
-  --sb-border-subtle: #D6D3CB;
+  --sb-border-hairline: #e7e5df;
+  --sb-border-subtle: #d6d3cb;
 
   /* Semantic */
-  --sb-ok: #2D4A3E;
-  --sb-warn: #C25E43;
+  --sb-ok: #2d4a3e;
+  --sb-warn: #c25e43;
   --sb-danger: #ba1a1a;
 
   /* Typography */
   --sb-font-heading: 'Newsreader', Georgia, 'Times New Roman', serif;
-  --sb-font-body: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --sb-font-body:
+    'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
 
   /* Shadows */
   --sb-shadow-ambient: 0 4px 20px -2px rgba(28, 25, 23, 0.04);

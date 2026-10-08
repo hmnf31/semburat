@@ -23,9 +23,15 @@ export interface ArticleData {
   credit: ArticleCredit;
   keyPoints?: string[];
   faq?: { question: string; answer: string }[];
-  riskLevel?: "LOW" | "MEDIUM" | "HIGH";
+  riskLevel?: 'LOW' | 'MEDIUM' | 'HIGH';
   qualityScore?: number;
-  assets?: { type: "image" | "video"; title: string; license: string; credit: string; sourceUrl?: string }[];
+  assets?: {
+    type: 'image' | 'video';
+    title: string;
+    license: string;
+    credit: string;
+    sourceUrl?: string;
+  }[];
 }
 
 export interface ArticleCardData {
@@ -38,13 +44,13 @@ export interface ArticleCardData {
   slug: string;
 }
 
-import { softLaunchArticles } from "./soft-launch-articles";
+import { softLaunchArticles } from './soft-launch-articles';
 
 const CATEGORY_HREF: Record<string, string> = {
-  Viral: "/categories/viral",
-  Teknologi: "/categories/teknologi",
-  Gaming: "/categories/gaming",
-  Explainer: "/categories/explainer",
+  Viral: '/categories/viral',
+  Teknologi: '/categories/teknologi',
+  Gaming: '/categories/gaming',
+  Explainer: '/categories/explainer',
 };
 
 function wordsPerMinute(text: string): number {
@@ -52,7 +58,7 @@ function wordsPerMinute(text: string): number {
   return Math.max(1, Math.ceil(words / 220));
 }
 
-function toArticleData(a: typeof softLaunchArticles[number]): ArticleData {
+function toArticleData(a: (typeof softLaunchArticles)[number]): ArticleData {
   const readTime = wordsPerMinute(a.body);
   return {
     title: a.title,
@@ -60,13 +66,13 @@ function toArticleData(a: typeof softLaunchArticles[number]): ArticleData {
     date: a.publishedAt,
     readTime: String(readTime),
     category: a.category,
-    categoryHref: CATEGORY_HREF[a.category] ?? "/categories",
+    categoryHref: CATEGORY_HREF[a.category] ?? '/categories',
     body: [a.body],
     sources: a.sources.map((s) => ({ title: s.title, url: s.url, accessedAt: s.accessedAt })),
     credit: {
-      creator: a.assets[0]?.credit ?? "Kreator tidak diketahui",
-      license: a.assets[0]?.license ?? "Lisensi tidak diketahui",
-      credit: a.assets[0]?.credit ?? "",
+      creator: a.assets[0]?.credit ?? 'Kreator tidak diketahui',
+      license: a.assets[0]?.license ?? 'Lisensi tidak diketahui',
+      credit: a.assets[0]?.credit ?? '',
       sourceUrl: a.assets[0]?.sourceUrl,
     },
     keyPoints: a.keyPoints,
@@ -84,7 +90,7 @@ function toArticleData(a: typeof softLaunchArticles[number]): ArticleData {
 }
 
 export const articles: Record<string, ArticleData> = Object.fromEntries(
-  softLaunchArticles.map((a) => [a.slug, toArticleData(a)]),
+  softLaunchArticles.map((a) => [a.slug, toArticleData(a)])
 );
 
 export function relatedArticlesFor(slug: string, limit = 4): ArticleCardData[] {
@@ -97,7 +103,7 @@ export function relatedArticlesFor(slug: string, limit = 4): ArticleCardData[] {
       title: a.title,
       dek: a.dek,
       category: a.category,
-      categoryHref: CATEGORY_HREF[a.category] ?? "/categories",
+      categoryHref: CATEGORY_HREF[a.category] ?? '/categories',
       date: a.publishedAt,
       readTime: String(wordsPerMinute(a.body)),
       slug: a.slug,
@@ -105,4 +111,3 @@ export function relatedArticlesFor(slug: string, limit = 4): ArticleCardData[] {
 }
 
 export const relatedArticles: ArticleCardData[] = [];
-

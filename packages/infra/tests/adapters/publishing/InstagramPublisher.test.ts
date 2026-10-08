@@ -60,7 +60,9 @@ describe('InstagramPublisher', () => {
     );
 
     const body = JSON.parse(mockFetch.mock.calls[0][1].body);
-    expect(body.image_url).toBe('https://storage.googleapis.com/semburat/550e8400-e29b-41d4-a716-446655440002');
+    expect(body.image_url).toBe(
+      'https://storage.googleapis.com/semburat/550e8400-e29b-41d4-a716-446655440002'
+    );
     expect(body.caption).toBe('Test content for Instagram');
     expect(body.access_token).toBe(ACCESS_TOKEN);
   });
@@ -79,7 +81,9 @@ describe('InstagramPublisher', () => {
     expect(result.url).toBe('https://www.instagram.com/stories/' + PAGE_ID + '/');
 
     const body = JSON.parse(mockFetch.mock.calls[0][1].body);
-    expect(body.video_url).toBe('https://storage.googleapis.com/semburat/550e8400-e29b-41d4-a716-446655440003');
+    expect(body.video_url).toBe(
+      'https://storage.googleapis.com/semburat/550e8400-e29b-41d4-a716-446655440003'
+    );
     expect(body.image_url).toBeUndefined();
   });
 

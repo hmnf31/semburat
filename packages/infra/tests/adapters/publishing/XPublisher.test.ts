@@ -68,9 +68,7 @@ describe('XPublisher', () => {
 
   it('throws on non-X platform', async () => {
     const variant = makeVariant({ platform: Platform.WEB });
-    await expect(publisher.publish(variant)).rejects.toThrow(
-      'XPublisher can only publish to X'
-    );
+    await expect(publisher.publish(variant)).rejects.toThrow('XPublisher can only publish to X');
   });
 
   it('throws on X API error with errors array', async () => {
@@ -81,9 +79,7 @@ describe('XPublisher', () => {
     });
 
     const variant = makeVariant();
-    await expect(publisher.publish(variant)).rejects.toThrow(
-      'X API error: 401 Unauthorized'
-    );
+    await expect(publisher.publish(variant)).rejects.toThrow('X API error: 401 Unauthorized');
   });
 
   it('throws on X API error with detail', async () => {

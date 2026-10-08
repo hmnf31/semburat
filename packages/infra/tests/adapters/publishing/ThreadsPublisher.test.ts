@@ -53,13 +53,17 @@ describe('ThreadsPublisher', () => {
     expect(mockFetch).toHaveBeenCalledTimes(2);
 
     // First call: create container
-    expect(mockFetch.mock.calls[0][0]).toBe('https://graph.threads.net/v1.0/' + USER_ID + '/threads');
+    expect(mockFetch.mock.calls[0][0]).toBe(
+      'https://graph.threads.net/v1.0/' + USER_ID + '/threads'
+    );
     const firstBody = JSON.parse(mockFetch.mock.calls[0][1].body);
     expect(firstBody.text).toBe('Test Threads post');
     expect(firstBody.access_token).toBe(ACCESS_TOKEN);
 
     // Second call: publish container
-    expect(mockFetch.mock.calls[1][0]).toBe('https://graph.threads.net/v1.0/' + USER_ID + '/threads_publish');
+    expect(mockFetch.mock.calls[1][0]).toBe(
+      'https://graph.threads.net/v1.0/' + USER_ID + '/threads_publish'
+    );
     const secondBody = JSON.parse(mockFetch.mock.calls[1][1].body);
     expect(secondBody.creation_id).toBe('container-123');
     expect(secondBody.access_token).toBe(ACCESS_TOKEN);
@@ -86,13 +90,11 @@ describe('ThreadsPublisher', () => {
   });
 
   it('throws on Threads API error publishing', async () => {
-    mockFetch
-      .mockResolvedValueOnce(containerResponse('container-123'))
-      .mockResolvedValueOnce({
-        ok: false,
-        status: 400,
-        json: async () => ({ error: { message: 'Container expired', code: 200 } }),
-      });
+    mockFetch.mockResolvedValueOnce(containerResponse('container-123')).mockResolvedValueOnce({
+      ok: false,
+      status: 400,
+      json: async () => ({ error: { message: 'Container expired', code: 200 } }),
+    });
 
     const variant = makeVariant();
     await expect(publisher.publish(variant)).rejects.toThrow(

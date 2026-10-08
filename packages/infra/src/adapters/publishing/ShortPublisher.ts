@@ -53,7 +53,8 @@ export class ShortPublisher implements Publisher {
   }
 
   private async uploadShort(videoUrl: string, content: string): Promise<string> {
-    const apiUrl = YOUTUBE_API_BASE + '/videos?part=snippet,status&access_token=' + this.accessToken;
+    const apiUrl =
+      YOUTUBE_API_BASE + '/videos?part=snippet,status&access_token=' + this.accessToken;
     const response = await this.fetchFn(apiUrl, {
       method: 'POST',
       headers: {

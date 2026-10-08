@@ -72,7 +72,9 @@ export class InstagramPublisher implements Publisher {
     };
   }
 
-  private async publishStory(variant: ContentVariant): Promise<{ externalId: string; url: string }> {
+  private async publishStory(
+    variant: ContentVariant
+  ): Promise<{ externalId: string; url: string }> {
     const params: Record<string, string> = {};
     if (variant.format.startsWith('video')) {
       params.video_url = this.requireAssetUrl(variant);

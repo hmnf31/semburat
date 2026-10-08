@@ -253,9 +253,7 @@ describe('TrendResearchPipeline', () => {
         verificationStatus: VerificationStatus.VERIFIED,
       }),
     ]);
-    vi.mocked(mockEditorialGenerationService.generateArticle).mockResolvedValue(
-      generatedArticle
-    );
+    vi.mocked(mockEditorialGenerationService.generateArticle).mockResolvedValue(generatedArticle);
     vi.mocked(mockQualityGateService.evaluateArticle).mockResolvedValue({
       score: 92,
       passed: true,
@@ -280,13 +278,9 @@ describe('TrendResearchPipeline', () => {
     expect(article.metaDescription).toBe(generatedArticle.meta_description);
     expect(article.factCheckStatus).toBe(FactCheckStatus.COMPLETE);
 
-    expect(mockResearchProvider.search).toHaveBeenCalledWith(
-      'Kecerdasan Buatan di Indonesia',
-      10
-    );
+    expect(mockResearchProvider.search).toHaveBeenCalledWith('Kecerdasan Buatan di Indonesia', 10);
     expect(mockAIProvider.generateStructured).toHaveBeenCalledTimes(1);
-    const extractionCall = vi.mocked(mockAIProvider.generateStructured).mock
-      .calls[0];
+    const extractionCall = vi.mocked(mockAIProvider.generateStructured).mock.calls[0];
     expect(extractionCall[0]).toContain('Kecerdasan Buatan di Indonesia');
     expect(extractionCall[0]).toContain('https://example.com/article-1');
 

@@ -1,45 +1,41 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ArticleCard from '../components/ArticleCard.astro';
+import { softLaunchArticles } from '../data/soft-launch-articles';
 
-const latestArticles = [
-  {
-    title: 'Contoh artikel: tren digital Indonesia',
-    dek: 'Ringkasan placeholder. Konten sesungguhnya akan digantikan oleh artikel yang telah melewati quality gate editorial.',
-    category: 'Berita',
-    categoryHref: '/categories/berita',
-    date: '2026-10-01',
-    readTime: '5',
-    slug: 'contoh-artikel',
-  },
-  {
-    title: 'Tren kecerdasan buatan: pengantar placeholder',
-    dek: 'Ringkasan placeholder untuk artikel kedua. Sumber dan kredit visual ditampilkan pada halaman artikel.',
-    category: 'Teknologi',
-    categoryHref: '/categories/teknologi',
-    date: '2026-09-28',
-    readTime: '7',
-    slug: 'tren-kecerdasan-buatan',
-  },
-  {
-    title: 'Energi terbarukan: placeholder ketiga',
-    dek: 'Ringkasan placeholder untuk artikel ketiga. Setiap klaim dilacak ke sumber aslinya.',
-    category: 'Berita',
-    categoryHref: '/categories/berita',
-    date: '2026-09-25',
-    readTime: '4',
-    slug: 'contoh-artikel',
-  },
-];
+function computeReadTime(body: string): string {
+  const wordCount = body.split(/\\s+/).length;
+  return String(Math.max(1, Math.ceil(wordCount / 200)));
+}
 
-const trendingTopics = [
-  { label: 'Kecerdasan Buatan', count: 128 },
-  { label: 'Energi Terbarukan', count: 96 },
-  { label: 'Ekonomi Digital', count: 84 },
-  { label: 'Kesehatan Masyarakat', count: 72 },
-  { label: 'Kebijakan Publik', count: 61 },
-];
+const latestArticles = softLaunchArticles
+  .filter((a) => a.status === 'published')
+  .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+  .slice(0, 6)
+  .map((article) => ({
+    title: article.title,
+    dek: article.dek,
+    category: article.category,
+    categoryHref: '/categories/' + article.category.toLowerCase(),
+    date: article.publishedAt,
+    readTime: computeReadTime(article.body),
+    slug: article.slug,
+  }));
+
+const trendingTopics = softLaunchArticles
+  .filter((a) => a.status === 'published')
+  .reduce((acc, article) => {
+    const key = article.category;
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+const trendingTopicsArray = Object.entries(trendingTopics)
+  .map(([label, count]) => ({ label, count }))
+  .sort((a, b) => b.count - a.count)
+  .slice(0, 5);
 ---
+
 <BaseLayout title="Beranda" description="SEMBURAT — platform media intelligence Indonesia. Yang sedang muncul, kami rangkai menjadi cerita.">
   <section class="bg-primary px-4 py-16 text-center sm:py-20">
     <p class="mb-3 text-sm font-semibold uppercase tracking-widest text-accent">Media Intelligence Indonesia</p>
@@ -54,7 +50,7 @@ const trendingTopics = [
     <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
       <div>
         <h2 class="text-2xl font-bold text-primary">Artikel Terbaru</h2>
-        <p class="mt-1 text-sm text-text-muted">Konten placeholder — akan digantikan oleh artikel hasil alur kerja editorial.</p>
+        <p class="mt-1 text-sm text-text-muted">10 artikel contoh untuk soft launch.</p>
       </div>
       <a href="/trending" class="text-sm font-medium text-accent hover:text-accent-hover">
         Lihat trending →
@@ -70,7 +66,7 @@ const trendingTopics = [
     <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
       <h2 class="mb-6 text-2xl font-bold text-primary">Topik Trending</h2>
       <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        {trendingTopics.map((topic, index) => (
+        {trendingTopicsArray.map((topic, index) => (
           <li class="rounded-lg border border-border bg-background p-4">
             <span class="mb-2 block text-2xl font-bold text-accent">{index + 1}</span>
             <a href="/trending" class="font-medium text-primary hover:underline">

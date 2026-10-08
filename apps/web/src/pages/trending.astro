@@ -1,25 +1,29 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { softLaunchArticles } from '../data/soft-launch-articles';
 
-const trendingTopics = [
-  { rank: 1, label: 'Kecerdasan Buatan', count: 128, href: '/trending' },
-  { rank: 2, label: 'Energi Terbarukan', count: 96, href: '/trending' },
-  { rank: 3, label: 'Ekonomi Digital', count: 84, href: '/trending' },
-  { rank: 4, label: 'Kesehatan Masyarakat', count: 72, href: '/trending' },
-  { rank: 5, label: 'Kebijakan Publik', count: 61, href: '/trending' },
-  { rank: 6, label: 'Transformasi Digital', count: 54, href: '/trending' },
-  { rank: 7, label: 'Keamanan Siber', count: 47, href: '/trending' },
-  { rank: 8, label: 'Pendidikan Teknologi', count: 39, href: '/trending' },
-];
+const trendingTopics = softLaunchArticles
+  .filter((a) => a.status === 'published')
+  .reduce((acc, article) => {
+    const key = article.category;
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+const trendingTopicsArray = Object.entries(trendingTopics)
+  .map(([label, count]) => ({ label, count }))
+  .sort((a, b) => b.count - a.count)
+  .map((topic, index) => ({ ...topic, rank: index + 1, href: '/categories/' + topic.label.toLowerCase() }));
 ---
-<BaseLayout title="Trending" description="Topik yang sedang tren di SEMBURAT — data placeholder.">
+
+<BaseLayout title="Trending" description="Topik yang sedang tren di SEMBURAT — data dari 10 artikel soft launch.">
   <section class="mx-auto max-w-4xl px-4 py-10 sm:px-6">
     <h1 class="mb-2 text-3xl font-bold text-primary">Trending</h1>
     <p class="mb-8 text-sm text-text-muted">
       Daftar placeholder. Peringkat sesungguhnya dihitung dari sumber terverifikasi dengan penjelasan yang dapat dilacak.
     </p>
     <ol class="space-y-4">
-      {trendingTopics.map((topic) => (
+      {trendingTopicsArray.map((topic) => (
         <li class="flex items-center gap-4 rounded-lg border border-border bg-surface p-4">
           <span class="w-10 shrink-0 text-center text-2xl font-bold text-accent" aria-label={`Peringkat ${topic.rank}`}>
             {topic.rank}

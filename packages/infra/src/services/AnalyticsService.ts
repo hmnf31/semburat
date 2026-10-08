@@ -1,4 +1,5 @@
 import type { AnalyticsEventRepository } from '@semburat/domain';
+import type { ArticleRepository } from '@semburat/domain';
 import { AnalyticsEvent } from '@semburat/domain';
 
 export interface ContentPerformance {
@@ -19,7 +20,10 @@ const ENGAGEMENT_EVENT_TYPES = new Set(['engagement', 'like', 'share', 'comment'
 const REVENUE_EVENT_TYPES = new Set(['revenue', 'conversion']);
 
 export class AnalyticsService {
-  constructor(private readonly analyticsEventRepo: AnalyticsEventRepository) {}
+  constructor(
+    private readonly analyticsEventRepo: AnalyticsEventRepository,
+    private readonly articleRepo: ArticleRepository
+  ) {}
 
   async trackEvent(
     contentId: string,
@@ -86,7 +90,8 @@ export class AnalyticsService {
     return (performance.totalRevenue / performance.totalViews) * 1000;
   }
 
-  private async resolveCandidateContentIds(_limit: number): Promise<string[]> {
-    return [];
+  private async resolveCandidateContentIds(limit: number): Promise<string[]> {
+    const articles = await this.articleRepo.findAll(limit * 3);
+    return articles.map((article) => article.id);
   }
 }

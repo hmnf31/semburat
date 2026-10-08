@@ -1,13 +1,14 @@
 export interface ArticleSource {
   title: string;
   url: string;
+  accessedAt?: string;
 }
 
 export interface ArticleCredit {
   creator: string;
   license: string;
   credit: string;
-  sourceUrl: string;
+  sourceUrl?: string;
 }
 
 export interface ArticleData {
@@ -20,6 +21,11 @@ export interface ArticleData {
   body: string[];
   sources: ArticleSource[];
   credit: ArticleCredit;
+  keyPoints?: string[];
+  faq?: { question: string; answer: string }[];
+  riskLevel?: "LOW" | "MEDIUM" | "HIGH";
+  qualityScore?: number;
+  assets?: { type: "image" | "video"; title: string; license: string; credit: string; sourceUrl?: string }[];
 }
 
 export interface ArticleCardData {
@@ -32,72 +38,71 @@ export interface ArticleCardData {
   slug: string;
 }
 
-export const articles: Record<string, ArticleData> = {
-  'contoh-artikel': {
-    title: 'Contoh Artikel: Tren Digital Indonesia',
-    dek: 'Dek placeholder. Konten sesungguhnya akan digantikan oleh artikel yang telah melewati verifikasi fakta dan quality gate editorial.',
-    date: '2026-10-01',
-    readTime: '5 menit',
-    category: 'Berita',
-    categoryHref: '/categories/berita',
-    body: [
-      'Placeholder paragraf pertama. Alur kerja editorial SEMBURAT menghasilkan konten dari sumber terverifikasi, bukan dari parafrase otomatis.',
-      'Placeholder paragraf kedua. Setiap klaim dilacak ke sumber aslinya, termasuk waktu akses dan status lisensi aset visual yang digunakan.',
-      'Placeholder paragraf ketiga. Ketika bukti tidak mencukupi, sistem menyatakan ketidakpastian alih-alih mengisi celah dengan teks buatan.',
-    ],
-    sources: [
-      { title: 'Sumber placeholder 1 (example.com)', url: 'https://example.com/sumber-1' },
-      { title: 'Sumber placeholder 2 (example.com)', url: 'https://example.com/sumber-2' },
-    ],
-    credit: {
-      creator: 'Kreator placeholder',
-      license: 'CC BY 4.0 (placeholder)',
-      credit: 'Kredit visual placeholder',
-      sourceUrl: 'https://example.com/kredit-visual',
-    },
-  },
-  'tren-kecerdasan-buatan': {
-    title: 'Tren Kecerdasan Buatan: Pengantar Placeholder',
-    dek: 'Dek placeholder untuk liputan tren kecerdasan buatan. Akan digantikan oleh konten editorial terverifikasi.',
-    date: '2026-09-28',
-    readTime: '7 menit',
-    category: 'Teknologi',
-    categoryHref: '/categories/teknologi',
-    body: [
-      'Placeholder paragraf pertama. Tren diidentifikasi dari sumber-sumber yang dapat dilacak, bukan dari spekulasi.',
-      'Placeholder paragraf kedua. Topik berisiko tinggi seperti klaim keuangan atau kesehatan memerlukan verifikasi lebih ketat dan tinjauan manusia.',
-      'Placeholder paragraf ketiga. Provenansi sumber, model, dan aset dicatat untuk setiap artikel yang diterbitkan.',
-    ],
-    sources: [
-      { title: 'Sumber placeholder 1 (example.com)', url: 'https://example.com/sumber-3' },
-      { title: 'Sumber placeholder 2 (example.com)', url: 'https://example.com/sumber-4' },
-    ],
-    credit: {
-      creator: 'Kreator placeholder',
-      license: 'CC BY-SA 4.0 (placeholder)',
-      credit: 'Kredit visual placeholder',
-      sourceUrl: 'https://example.com/kredit-visual-2',
-    },
-  },
+import { softLaunchArticles } from "./soft-launch-articles";
+
+const CATEGORY_HREF: Record<string, string> = {
+  Viral: "/categories/viral",
+  Teknologi: "/categories/teknologi",
+  Gaming: "/categories/gaming",
+  Explainer: "/categories/explainer",
 };
 
-export const relatedArticles: ArticleCardData[] = [
-  {
-    title: 'Contoh artikel: tren digital Indonesia',
-    dek: 'Ringkasan placeholder artikel terkait.',
-    category: 'Berita',
-    categoryHref: '/categories/berita',
-    date: '2026-10-01',
-    readTime: '5',
-    slug: 'contoh-artikel',
-  },
-  {
-    title: 'Tren kecerdasan buatan: pengantar placeholder',
-    dek: 'Ringkasan placeholder artikel terkait kedua.',
-    category: 'Teknologi',
-    categoryHref: '/categories/teknologi',
-    date: '2026-09-28',
-    readTime: '7',
-    slug: 'tren-kecerdasan-buatan',
-  },
-];
+function wordsPerMinute(text: string): number {
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(words / 220));
+}
+
+function toArticleData(a: typeof softLaunchArticles[number]): ArticleData {
+  const readTime = wordsPerMinute(a.body);
+  return {
+    title: a.title,
+    dek: a.dek,
+    date: a.publishedAt,
+    readTime: String(readTime),
+    category: a.category,
+    categoryHref: CATEGORY_HREF[a.category] ?? "/categories",
+    body: [a.body],
+    sources: a.sources.map((s) => ({ title: s.title, url: s.url, accessedAt: s.accessedAt })),
+    credit: {
+      creator: a.assets[0]?.credit ?? "Kreator tidak diketahui",
+      license: a.assets[0]?.license ?? "Lisensi tidak diketahui",
+      credit: a.assets[0]?.credit ?? "",
+      sourceUrl: a.assets[0]?.sourceUrl,
+    },
+    keyPoints: a.keyPoints,
+    faq: a.faq,
+    riskLevel: a.riskLevel,
+    qualityScore: a.qualityScore,
+    assets: a.assets.map((as) => ({
+      type: as.type,
+      title: as.title,
+      license: as.license,
+      credit: as.credit,
+      sourceUrl: as.sourceUrl,
+    })),
+  };
+}
+
+export const articles: Record<string, ArticleData> = Object.fromEntries(
+  softLaunchArticles.map((a) => [a.slug, toArticleData(a)]),
+);
+
+export function relatedArticlesFor(slug: string, limit = 4): ArticleCardData[] {
+  const current = softLaunchArticles.find((a) => a.slug === slug);
+  if (!current) return [];
+  return softLaunchArticles
+    .filter((a) => a.slug !== slug && a.category === current.category)
+    .slice(0, limit)
+    .map((a) => ({
+      title: a.title,
+      dek: a.dek,
+      category: a.category,
+      categoryHref: CATEGORY_HREF[a.category] ?? "/categories",
+      date: a.publishedAt,
+      readTime: String(wordsPerMinute(a.body)),
+      slug: a.slug,
+    }));
+}
+
+export const relatedArticles: ArticleCardData[] = [];
+

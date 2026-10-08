@@ -1,4 +1,4 @@
-﻿import type { Article, ArticleStatus } from '../entities/Article.js';
+import type { Article, ArticleStatus } from '../entities/Article.js';
 
 export interface ArticleRepository {
   insert(article: Article): Promise<void>;
@@ -9,6 +9,7 @@ export interface ArticleRepository {
     limit: number,
     cursor?: string
   ): Promise<{ articles: Article[]; nextCursor: string | null }>;
+  findAll(limit?: number): Promise<Article[]>;
   update(article: Article): Promise<void>;
   updateStatus(id: string, status: ArticleStatus): Promise<void>;
 }

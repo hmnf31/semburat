@@ -59,10 +59,11 @@ describe('WebPublisher', () => {
       findById: vi.fn().mockResolvedValue(article),
       findBySlug: vi.fn(),
       findByStatus: vi.fn(),
+      findAll: vi.fn().mockResolvedValue([]),
       insert: vi.fn(),
       update: vi.fn().mockResolvedValue(undefined),
       updateStatus: vi.fn(),
-    };
+    } as ArticleRepository;
     publisher = new WebPublisher(mockArticleRepo);
   });
 

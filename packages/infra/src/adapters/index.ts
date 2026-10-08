@@ -7,5 +7,12 @@ export * from './research/EnhancedResearchAdapter.js';
 export * from './trends/GoogleTrendsAdapter.js';
 
 export * from './publishing/TelegramPublisher.js';
+export * from './publishing/InstagramPublisher.js';
+export * from './publishing/FacebookPublisher.js';
+export * from './publishing/XPublisher.js';
+export * from './publishing/ThreadsPublisher.js';
 export * from './publishing/WebPublisher.js';
+export * from './publishing/ReelPublisher.js';
+export * from './publishing/ShortPublisher.js';
+export * from './publishing/NewsletterPublisher.js';
 export * from './publishing/SocialPublisherAdapter.js';

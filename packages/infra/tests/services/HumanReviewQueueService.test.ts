@@ -32,6 +32,7 @@ describe('HumanReviewQueueService', () => {
       findById: vi.fn(),
       findBySlug: vi.fn(),
       findByStatus: vi.fn(),
+      findAll: vi.fn().mockResolvedValue([]),
       update: vi.fn(),
       updateStatus: vi.fn(),
     } as ArticleRepository;

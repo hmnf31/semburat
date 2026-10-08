@@ -8,24 +8,24 @@ interface Props {
 
 const { creator, license, credit, sourceUrl } = Astro.props;
 ---
-<section aria-labelledby="kredit-visual-heading" class="mt-6 rounded-lg border border-border bg-surface p-5">
-  <h2 id="kredit-visual-heading" class="mb-3 text-lg font-semibold text-primary">
+<section aria-labelledby="kredit-visual-heading" class="mt-6 rounded-lg border border-sb-hairline bg-sb-card p-5">
+  <h2 id="kredit-visual-heading" class="mb-3 font-heading text-lg font-normal text-sb-ink">
     Kredit Visual
   </h2>
-  <dl class="space-y-2 text-sm text-text">
+  <dl class="font-body space-y-2 text-sm text-sb-ink">
     <div class="flex flex-wrap gap-x-2">
-      <dt class="font-medium text-secondary">Kreator:</dt>
+      <dt class="font-body font-medium text-sb-tertiary">Kreator:</dt>
       <dd>{creator}</dd>
     </div>
     <div class="flex flex-wrap gap-x-2">
-      <dt class="font-medium text-secondary">Lisensi:</dt>
+      <dt class="font-body font-medium text-sb-tertiary">Lisensi:</dt>
       <dd>{license}</dd>
     </div>
     <div class="flex flex-wrap gap-x-2">
-      <dt class="font-medium text-secondary">Kredit:</dt>
+      <dt class="font-body font-medium text-sb-tertiary">Kredit:</dt>
       <dd>
         {sourceUrl ? (
-          <a href={sourceUrl} target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover hover:underline">
+          <a href={sourceUrl} target="_blank" rel="noopener noreferrer" class="text-sb-primary hover:text-sb-primary-surface hover:underline">
             {credit}
           </a>
         ) : (

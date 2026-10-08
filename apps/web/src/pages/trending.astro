@@ -18,21 +18,21 @@ const trendingTopicsArray = Object.entries(trendingTopics)
 
 <BaseLayout title="Trending" description="Topik yang sedang tren di SEMBURAT — data dari 10 artikel soft launch.">
   <section class="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-    <h1 class="mb-2 text-3xl font-bold text-primary">Trending</h1>
-    <p class="mb-8 text-sm text-text-muted">
+    <h1 class="mb-2 font-heading text-3xl font-normal text-sb-ink sm:text-4xl">Trending</h1>
+    <p class="mb-8 text-sm text-sb-muted">
       Daftar placeholder. Peringkat sesungguhnya dihitung dari sumber terverifikasi dengan penjelasan yang dapat dilacak.
     </p>
     <ol class="space-y-4">
       {trendingTopicsArray.map((topic) => (
-        <li class="flex items-center gap-4 rounded-lg border border-border bg-surface p-4">
-          <span class="w-10 shrink-0 text-center text-2xl font-bold text-accent" aria-label={`Peringkat ${topic.rank}`}>
+        <li class="flex items-center gap-4 rounded-lg border border-sb-hairline bg-sb-card p-4">
+          <span class="w-10 shrink-0 text-center font-heading text-2xl font-normal text-sb-primary" aria-label={`Peringkat ${topic.rank}`}>
             {topic.rank}
           </span>
           <div class="flex-1">
-            <a href={topic.href} class="font-semibold text-primary hover:underline">
+            <a href={topic.href} class="font-body font-semibold text-sb-ink hover:text-sb-primary">
               {topic.label}
             </a>
-            <p class="mt-0.5 text-sm text-text-muted">{topic.count} artikel</p>
+            <p class="mt-0.5 text-sm text-sb-muted">{topic.count} artikel</p>
           </div>
         </li>
       ))}

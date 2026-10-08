@@ -7,14 +7,14 @@ const footerLinks = [
   { label: 'Privacy', href: '#' },
 ];
 ---
-<footer class="border-t border-border bg-surface">
+<footer class="border-t border-sb-hairline bg-sb-surface">
   <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row sm:px-6">
-    <p class="text-sm text-text-muted">Â© {year} SEMBURAT. Hak cipta dilindungi.</p>
+    <p class="text-sm text-sb-muted">© {year} SEMBURAT. Hak cipta dilindungi.</p>
     <nav aria-label="Navigasi footer">
       <ul class="flex flex-wrap items-center gap-6">
         {footerLinks.map((link) => (
           <li>
-            <a href={link.href} class="text-sm text-secondary transition-colors hover:text-accent-hover">
+            <a href={link.href} class="text-sm text-sb-muted transition-colors hover:text-sb-primary">
               {link.label}
             </a>
           </li>

@@ -1,21 +1,49 @@
-/* AUTO-GENERATED dari tokens.json. Jangan edit manual. */
+/* AUTO-GENERATED dari DESIGN.MD. Jangan edit manual. */
 :root {
-  --sb-ink-900: #0e1020;
-  --sb-ink-800: #171a33;
-  --sb-ink-700: #232748;
-  --sb-cream: #fff7ec;
-  --sb-muted: #b9bcd6;
-  --sb-sun-400: #ffb547;
-  --sb-ember-500: #ff6a3d;
-  --sb-rose-500: #e8457c;
-  --sb-ok: #3ddc97;
-  --sb-warn: #ffc857;
-  --sb-danger: #ff5c5c;
-  --sb-grad-dawn: linear-gradient(135deg, #ffb547 0%, #ff6a3d 55%, #e8457c 100%);
-  --sb-grad-night: linear-gradient(160deg, #0e1020 0%, #171a33 60%, #232748 100%);
-  --sb-font-heading:
-    'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
-    Arial, sans-serif;
-  --sb-font-body:
-    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* Primary / Terracotta */
+  --sb-primary: #C25E43;
+  --sb-primary-surface: #9a4027;
+  --sb-primary-container: #b9573d;
+  --sb-on-primary: #ffffff;
+  --sb-primary-fixed: #ffdbd1;
+  --sb-inverse-primary: #ffb5a1;
+
+  /* Secondary / Forest */
+  --sb-secondary: #2D4A3E;
+  --sb-secondary-container: #476558;
+  --sb-secondary-fixed: #c9ead9;
+  --sb-on-secondary: #ffffff;
+
+  /* Tertiary / Slate */
+  --sb-tertiary: #475569;
+  --sb-tertiary-container: #4f5d71;
+  --sb-on-tertiary: #ffffff;
+
+  /* Neutral / Warm Parchment */
+  --sb-surface: #FAFAF7;
+  --sb-surface-cream: #F5F4EE;
+  --sb-surface-card: #FFFFFF;
+  --sb-surface-dim: #dadad7;
+  --sb-surface-container: #eeeeeb;
+
+  /* Text */
+  --sb-ink: #1C1917;
+  --sb-ink-muted: #78716C;
+  --sb-on-surface: #1a1c1b;
+
+  /* Borders */
+  --sb-border-hairline: #E7E5DF;
+  --sb-border-subtle: #D6D3CB;
+
+  /* Semantic */
+  --sb-ok: #2D4A3E;
+  --sb-warn: #C25E43;
+  --sb-danger: #ba1a1a;
+
+  /* Typography */
+  --sb-font-heading: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --sb-font-body: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  /* Shadows */
+  --sb-shadow-ambient: 0 4px 20px -2px rgba(28, 25, 23, 0.04);
 }

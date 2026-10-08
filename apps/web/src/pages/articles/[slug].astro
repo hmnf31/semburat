@@ -4,28 +4,77 @@ import ArticleCard from '../../components/ArticleCard.astro';
 import SourceAttribution from '../../components/SourceAttribution.astro';
 import CreditVisual from '../../components/CreditVisual.astro';
 import heroImage from '../../assets/hero-placeholder.svg';
-import { articles, relatedArticles } from '../../data/articles';
+import { softLaunchArticles, type SoftLaunchRiskLevel } from '../../data/soft-launch-articles';
+
+const CATEGORY_HREF: Record<string, string> = {
+  Viral: '/categories/viral',
+  Teknologi: '/categories/teknologi',
+  Gaming: '/categories/gaming',
+  Explainer: '/categories/explainer',
+};
+
+function wordsPerMinute(text: string): number {
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(words / 220));
+}
+
+function formatWib(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  const parts = new Intl.DateTimeFormat('id-ID', {
+    timeZone: 'Asia/Jakarta',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).formatToParts(date);
+  const day = parts.find((p) => p.type === 'day')?.value;
+  const month = parts.find((p) => p.type === 'month')?.value;
+  const year = parts.find((p) => p.type === 'year')?.value;
+  const hour = parts.find((p) => p.type === 'hour')?.value;
+  const minute = parts.find((p) => p.type === 'minute')?.value;
+  return `${day} ${month} ${year}, ${hour}:${minute} WIB`;
+}
+
+function riskLevelClass(level: SoftLaunchRiskLevel): string {
+  switch (level) {
+    case 'LOW': return 'bg-sb-success/10 text-sb-success border-sb-success/30';
+    case 'MEDIUM': return 'bg-sb-warning/10 text-sb-warning border-sb-warning/30';
+    case 'HIGH': return 'bg-sb-error/10 text-sb-error border-sb-error/30';
+  }
+}
 
 export function getStaticPaths() {
-  return Object.keys(articles).map((slug) => ({
-    params: { slug },
+  return softLaunchArticles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
   }));
 }
 
-const { slug } = Astro.params;
-const article = slug ? articles[slug] : undefined;
+const { article } = Astro.props;
+const readTime = wordsPerMinute(article.body);
+const categoryHref = CATEGORY_HREF[article.category] ?? '/categories';
+const canonicalUrl = `https://semburat.example.id/articles/${article.slug}`;
+const ogImage = `https://semburat.example.id/og-image.png`;
+const publishedWib = formatWib(article.publishedAt);
 
-if (!article) {
-  throw new Error(`Artikel tidak ditemukan: ${slug}`);
-}
-
-const SITE_URL = 'https://semburat.example.id';
-const canonicalUrl = `${SITE_URL}/articles/${slug}`;
-const ogImage = `${SITE_URL}/og-image.png`;
+const related = softLaunchArticles
+  .filter((a) => a.slug !== article.slug && a.category === article.category)
+  .slice(0, 4)
+  .map((a) => ({
+    title: a.title,
+    dek: a.dek,
+    category: a.category,
+    categoryHref: CATEGORY_HREF[a.category] ?? '/categories',
+    date: formatWib(a.publishedAt),
+    readTime: String(wordsPerMinute(a.body)),
+    slug: a.slug,
+  }));
 
 const breadcrumbItems = [
   { name: 'Beranda', href: '/' },
-  { name: article.category, href: article.categoryHref },
+  { name: article.category, href: categoryHref },
   { name: article.title },
 ];
 ---
@@ -33,50 +82,95 @@ const breadcrumbItems = [
   title={article.title}
   description={article.dek}
   image={ogImage}
-  publishedTime={article.date}
-  modifiedTime={article.date}
+  publishedTime={article.publishedAt}
+  modifiedTime={article.publishedAt}
   canonicalUrl={canonicalUrl}
   breadcrumbItems={breadcrumbItems}
 >
   <header class="mb-8">
-    <nav class="mb-4 text-sm text-text-muted" aria-label="Breadcrumb">
-      <a href="/" class="hover:text-accent-hover">Beranda</a>
+    <nav class="mb-4 text-sm text-sb-muted" aria-label="Breadcrumb">
+      <a href="/" class="hover:text-sb-primary">Beranda</a>
       <span aria-hidden="true"> / </span>
-      <a href={article.categoryHref} class="hover:text-accent-hover">{article.category}</a>
+      <a href={categoryHref} class="hover:text-sb-primary">{article.category}</a>
       <span aria-hidden="true"> / </span>
       <span aria-current="page">Artikel</span>
     </nav>
-    <a href={article.categoryHref} class="mb-3 inline-block rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-accent-hover">
+    <a href={categoryHref} class="mb-3 inline-block rounded-full bg-sb-primary/10 px-2.5 py-0.5 font-label text-xs font-semibold text-sb-primary uppercase tracking-wider">
       {article.category}
     </a>
-    <h1 class="text-3xl font-bold leading-tight text-primary sm:text-4xl">
+    <h1 class="font-heading text-3xl font-normal leading-tight text-sb-ink sm:text-4xl">
       {article.title}
     </h1>
-    <p class="mt-4 text-lg leading-relaxed text-text-muted">
+    <p class="mt-4 font-body text-lg leading-relaxed text-sb-muted">
       {article.dek}
     </p>
-    <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text-muted">
-      <time datetime={article.date}>{article.date}</time>
-      <span aria-hidden="true">·</span>
-      <span>{article.readTime}</span>
+    <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-sb-muted">
+      <time datetime={article.publishedAt}>{publishedWib}</time>
+      <span aria-hidden="true">ï¿½</span>
+      <span>{readTime} menit baca</span>
+    </div>
+    <div class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-2">
+      <span class={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-label text-xs font-semibold ${riskLevelClass(article.riskLevel)}`}>
+        Risiko: {article.riskLevel}
+      </span>
+      <span class="inline-flex items-center rounded-full border bg-sb-primary/10 px-2.5 py-0.5 font-label text-xs font-semibold text-sb-primary border-sb-primary/30">
+        Kualitas: {article.qualityScore}/100
+      </span>
     </div>
   </header>
-  <img src={heroImage} alt={`Visual placeholder untuk ${article.title}`} width="1200" height="630" class="mb-8 w-full rounded-lg border border-border" />
-  <div class="space-y-4">
-    {article.body.map((paragraph) => (
-      <p class="leading-relaxed text-text">{paragraph}</p>
+  <img src={heroImage} alt={`Visual placeholder untuk ${article.title}`} width="1200" height="630" class="mb-8 w-full rounded-lg border border-sb-hairline" />
+  <div class="space-y-4 mb-8">
+    {article.body.split('\n\n').filter(Boolean).map((paragraph) => (
+      <p class="font-body leading-relaxed text-sb-ink" set:html={paragraph} />
     ))}
   </div>
+  {article.keyPoints.length > 0 && (
+    <section class="mb-8 p-6 rounded-lg bg-sb-primary/5 border border-sb-primary/20" aria-labelledby="key-points-heading">
+      <h2 id="key-points-heading" class="mb-4 font-heading text-lg font-semibold text-sb-ink">
+        Poin Penting
+      </h2>
+      <ul class="space-y-2 font-body text-sb-ink">
+        {article.keyPoints.map((point, i) => (
+          <li class="flex gap-2" key={i}>
+            <span class="flex-shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-sb-primary" aria-hidden="true" />
+            <span set:html={point} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+  {article.faq.length > 0 && (
+    <section class="mb-8" aria-labelledby="faq-heading">
+      <h2 id="faq-heading" class="mb-4 font-heading text-xl font-normal text-sb-ink">
+        Pertanyaan Umum
+      </h2>
+      <dl class="space-y-6">
+        {article.faq.map((item, i) => (
+          <div class="border-t border-sb-hairline pt-4" key={i}>
+            <dt class="font-heading font-semibold text-sb-ink" set:html={item.question} />
+            <dd class="mt-2 font-body text-sb-ink" set:html={item.answer} />
+          </div>
+        ))}
+      </dl>
+    </section>
+  )}
   <SourceAttribution sources={article.sources} />
-  <CreditVisual creator={article.credit.creator} license={article.credit.license} credit={article.credit.credit} sourceUrl={article.credit.sourceUrl} />
-  <section class="mt-12" aria-labelledby="terkait-heading">
-    <h2 id="terkait-heading" class="mb-6 text-xl font-bold text-primary">
-      Artikel Terkait
-    </h2>
-    <div class="grid gap-6 sm:grid-cols-2">
-      {relatedArticles.map((related) => (
-        <ArticleCard {...related} />
-      ))}
-    </div>
-  </section>
+  <CreditVisual
+    creator={article.assets[0]?.credit ?? 'Kreator tidak diketahui'}
+    license={article.assets[0]?.license ?? 'Lisensi tidak diketahui'}
+    credit={article.assets[0]?.credit ?? ''}
+    sourceUrl={article.assets[0]?.sourceUrl}
+  />
+  {related.length > 0 && (
+    <section class="mt-12" aria-labelledby="terkait-heading">
+      <h2 id="terkait-heading" class="mb-6 font-heading text-xl font-normal text-sb-ink">
+        Artikel Terkait
+      </h2>
+      <div class="grid gap-6 sm:grid-cols-2">
+        {related.map((relatedArticle) => (
+          <ArticleCard {...relatedArticle} />
+        ))}
+      </div>
+    </section>
+  )}
 </ArticleLayout>

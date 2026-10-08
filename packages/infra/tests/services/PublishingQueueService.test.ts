@@ -98,9 +98,10 @@ describe('PublishingQueueService', () => {
       findById: vi.fn().mockResolvedValue(article),
       findBySlug: vi.fn(),
       findByStatus: vi.fn(),
+      findAll: vi.fn().mockResolvedValue([]),
       update: vi.fn().mockResolvedValue(undefined),
       updateStatus: vi.fn(),
-    };
+    } as ArticleRepository;
 
     mockPublisher = {
       publish: vi.fn().mockResolvedValue({ externalId: 'web:123', url: 'https://example.com' }),

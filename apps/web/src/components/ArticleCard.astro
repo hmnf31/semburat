@@ -1,4 +1,4 @@
----
+﻿---
 interface Props {
   title: string;
   dek: string;
@@ -25,22 +25,22 @@ const formattedDate = new Date(date).toLocaleDateString('id-ID', {
   year: 'numeric',
 });
 ---
-<article class="flex h-full flex-col rounded-lg border border-border bg-surface p-5 transition-shadow hover:shadow-md">
-  <div class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted">
-    <a href={categoryHref} class="rounded-full bg-accent/10 px-2.5 py-0.5 font-semibold text-accent-hover">
+<article class='flex h-full flex-col rounded-lg border border-sb-hairline bg-sb-card p-5 transition-all hover:border-sb-border-subtle hover:shadow-ambient'>
+  <div class='mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-sb-muted tracking-wide'>
+    <a href={categoryHref} class='rounded-full bg-sb-primary/10 px-2.5 py-0.5 font-label font-semibold text-sb-primary uppercase tracking-wider'>
       {category}
     </a>
     <time datetime={date}>{formattedDate}</time>
-    <span aria-hidden="true">·</span>
+    <span aria-hidden='true'>·</span>
     <span>{readTime} menit baca</span>
   </div>
-  <h3 class="mb-2 text-lg font-semibold leading-snug text-primary">
-    <a href={`/articles/${slug}`} class="transition-colors hover:text-accent-hover">
+  <h3 class='mb-2 font-heading text-lg font-normal leading-snug text-sb-ink'>
+    <a href={'/articles/' + slug} class='transition-colors hover:text-sb-primary'>
       {title}
     </a>
   </h3>
-  <p class="mb-4 text-sm leading-relaxed text-text-muted">{dek}</p>
-  <a href={`/articles/${slug}`} class="mt-auto inline-flex items-center text-sm font-medium text-accent hover:text-accent-hover">
-    Baca selengkapnya<span aria-hidden="true"> →</span>
+  <p class='mb-4 font-body text-sm leading-relaxed text-sb-muted'>{dek}</p>
+  <a href={'/articles/' + slug} class='mt-auto inline-flex items-center font-body text-sm font-medium text-sb-primary hover:text-sb-primary-surface'>
+    Baca selengkapnya<span aria-hidden='true'> →</span>
   </a>
 </article>

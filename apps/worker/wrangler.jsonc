@@ -4,22 +4,50 @@
   "compatibility_date": "2024-12-01",
   "compatibility_flags": ["nodejs_compat"],
   "observability": {
-    "enabled": true,
+    "enabled": true
   },
   "d1_databases": [
     {
       "binding": "DB",
-      "database_id": "placeholder-database-id",
       "database_name": "semburat-db",
-    },
+      "database_id": "@cf/db-id"
+    }
   ],
   "r2_buckets": [
     {
       "binding": "ASSETS",
-      "bucket_name": "semburat-assets",
-    },
+      "bucket_name": "semburat-assets"
+    }
   ],
   "vars": {
-    "ENVIRONMENT": "development",
+    "ENVIRONMENT": "development"
   },
+  "env": {
+    "production": {
+      "name": "semburat-worker-production",
+      "vars": {
+        "ENVIRONMENT": "production"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "semburat-db",
+          "database_id": "@cf/db-id-prod"
+        }
+      ]
+    },
+    "staging": {
+      "name": "semburat-worker-staging",
+      "vars": {
+        "ENVIRONMENT": "staging"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "semburat-db-staging",
+          "database_id": "@cf/db-id-staging"
+        }
+      ]
+    }
+  }
 }

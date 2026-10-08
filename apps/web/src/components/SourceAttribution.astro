@@ -12,14 +12,14 @@ const { sources } = Astro.props;
 ---
 {
   sources.length > 0 && (
-    <section aria-labelledby="sumber-heading" class="mt-10 rounded-lg border border-border bg-surface p-5">
-      <h2 id="sumber-heading" class="mb-3 text-lg font-semibold text-primary">
+    <section aria-labelledby="sumber-heading" class="mt-10 rounded-lg border border-sb-hairline bg-sb-card p-5">
+      <h2 id="sumber-heading" class="mb-3 font-heading text-lg font-normal text-sb-ink">
         Sumber
       </h2>
-      <ul class="list-inside list-disc space-y-2 text-sm leading-relaxed text-text">
+      <ul class="font-body list-inside list-disc space-y-2 text-sm leading-relaxed text-sb-ink">
         {sources.map((source) => (
           <li>
-            <a href={source.url} target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover hover:underline">
+            <a href={source.url} target="_blank" rel="noopener noreferrer" class="text-sb-primary hover:text-sb-primary-surface hover:underline">
               {source.title}
             </a>
           </li>

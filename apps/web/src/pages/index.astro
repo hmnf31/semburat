@@ -37,22 +37,22 @@ const trendingTopicsArray = Object.entries(trendingTopics)
 ---
 
 <BaseLayout title="Beranda" description="SEMBURAT — platform media intelligence Indonesia. Yang sedang muncul, kami rangkai menjadi cerita.">
-  <section class="bg-primary px-4 py-16 text-center sm:py-20">
-    <p class="mb-3 text-sm font-semibold uppercase tracking-widest text-accent">Media Intelligence Indonesia</p>
-    <h1 class="mx-auto max-w-2xl text-3xl font-bold leading-tight text-white sm:text-4xl">
+  <section class="bg-sb-primary px-4 py-16 text-center sm:py-20">
+    <p class="mb-3 font-label text-sm font-semibold uppercase tracking-widest text-sb-surface-cream">Media Intelligence Indonesia</p>
+    <h1 class="mx-auto max-w-2xl font-heading text-3xl font-normal leading-tight text-white sm:text-4xl lg:text-5xl">
       Yang sedang muncul, kami rangkai menjadi cerita.
     </h1>
-    <p class="mx-auto mt-4 max-w-xl text-base text-slate-300">
+    <p class="mx-auto mt-4 max-w-xl font-body text-base text-sb-surface-cream">
       SEMBURAT merangkum tren, sumber, dan konteks menjadi artikel editorial yang terverifikasi dan transparan.
     </p>
   </section>
   <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
     <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h2 class="text-2xl font-bold text-primary">Artikel Terbaru</h2>
-        <p class="mt-1 text-sm text-text-muted">10 artikel contoh untuk soft launch.</p>
+        <h2 class="font-heading text-2xl font-normal text-sb-ink">Artikel Terbaru</h2>
+        <p class="mt-1 text-sm text-sb-muted">10 artikel contoh untuk soft launch.</p>
       </div>
-      <a href="/trending" class="text-sm font-medium text-accent hover:text-accent-hover">
+      <a href="/trending" class="font-body text-sm font-medium text-sb-primary hover:text-sb-primary-surface">
         Lihat trending →
       </a>
     </div>
@@ -62,17 +62,17 @@ const trendingTopicsArray = Object.entries(trendingTopics)
       ))}
     </div>
   </section>
-  <section class="border-t border-border bg-surface">
+  <section class="border-t border-sb-hairline bg-sb-surface">
     <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-      <h2 class="mb-6 text-2xl font-bold text-primary">Topik Trending</h2>
+      <h2 class="mb-6 font-heading text-2xl font-normal text-sb-ink">Topik Trending</h2>
       <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {trendingTopicsArray.map((topic, index) => (
-          <li class="rounded-lg border border-border bg-background p-4">
-            <span class="mb-2 block text-2xl font-bold text-accent">{index + 1}</span>
-            <a href="/trending" class="font-medium text-primary hover:underline">
+          <li class="rounded-lg border border-sb-hairline bg-sb-card p-4">
+            <span class="mb-2 block font-heading text-2xl font-normal text-sb-primary">{index + 1}</span>
+            <a href="/trending" class="font-body font-medium text-sb-ink hover:text-sb-primary">
               {topic.label}
             </a>
-            <p class="mt-1 text-xs text-text-muted">{topic.count} artikel</p>
+            <p class="mt-1 font-body text-xs text-sb-muted">{topic.count} artikel</p>
           </li>
         ))}
       </ul>

@@ -60,6 +60,17 @@ export class D1ArticleRepository implements ArticleRepositoryPort {
     return { articles, nextCursor };
   }
 
+  async findAll(limit?: number): Promise<Article[]> {
+    let sql = 'SELECT * FROM articles ORDER BY created_at DESC';
+    const params: unknown[] = [];
+    if (limit !== undefined) {
+      sql += ' LIMIT ?';
+      params.push(limit);
+    }
+    const result = await this.db.prepare(sql).bind(...params).all<Record<string, unknown>>();
+    return (result.results ?? []).map((row) => this.fromRow(row));
+  }
+
   async update(article: Article): Promise<void> {
     const sql =
       'UPDATE articles SET research_id = ?, title = ?, slug = ?, dek = ?, summary = ?, body = ?, ' +

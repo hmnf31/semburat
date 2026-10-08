@@ -176,7 +176,7 @@ Kegagalan di tahap mana pun menghentikan deployment.
 
 ```
 cd apps/worker && pnpm deploy
-cd apps/web && astro build && wrangler pages push dist --project-name semburat-web
+cd apps/web && astro build && wrangler pages deploy dist --project-name semburat-web --branch main
 ```
 
 ### Verifikasi pasca-deploy

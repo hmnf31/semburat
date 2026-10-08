@@ -95,7 +95,15 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 - URL situs dipusatkan di `src/lib/site.ts` (dari `PUBLIC_SITE_URL`)
 - Structured data `WebSite` + `Organization` (semua halaman) dan `Article` + `BreadcrumbList` (artikel)
 - Label "Diperbarui" tampil bila `updated_at` berbeda; pernyataan transparansi AI di footer
-- Sisa: isi placeholder data operator dan label afiliasi (lihat `docs/03-checklist-rilis.md`)
+- Sisa: label afiliasi dan konten sponsor (TASK-216, TASK-217)
+
+### Tahap D — soft launch (awal)
+
+- Bot Telegram `@SemburatId_bot` aktif: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET`, `TELEGRAM_ALLOWED_USER_IDS` terpasang di production dan staging; webhook terdaftar di production worker
+- 10 artikel pertama terbit, menggantikan seluruh fixture contoh: 2 viral, 3 teknologi, 3 gaming, 2 explainer
+- Struktur konten dipisah per artikel di `apps/web/src/data/articles/`, dikomposisikan lewat `apps/web/src/data/soft-launch-articles.ts`
+- Setiap artikel memakai sumber nyata yang dapat dicek (BI, JDIH BPK, CISA, Apple/Google, Science/MIT, dsb.) dan visual SEMBURAT sendiri, tanpa klaim/angka rekaan
+- Deploy Pages production harus memakai `--branch main` (cabang produksi proyek `semburat-web`), staging memakai `--branch staging`
 
 ## 8. Next Steps
 

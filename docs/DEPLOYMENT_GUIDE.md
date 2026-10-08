@@ -194,10 +194,13 @@ Deploy via CLI:
 \\\ash
 cd apps/web
 astro build
-wrangler pages push dist --project-name semburat-web
+wrangler pages deploy dist --project-name semburat-web --branch main
 \\\
 
 Or connect the GitHub repository for automatic deployments on push to main.
+
+Note: the `semburat-web` Pages project uses `main` as its production branch. A deploy sent with
+another branch name (for example the repository's working branch) only creates a preview URL.
 
 Verify:
 \\\ash

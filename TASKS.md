@@ -138,6 +138,7 @@ Status:
 - [x] TASK-218 Centralize operator data in `apps/web/src/data/site-config.ts` (values to be filled by owner)
 - [x] TASK-219 Add `/categories` index page and fix header nav link
 - [x] TASK-220 Configure Telegram bot secrets, webhook and sender allow-list (production + staging)
+- [x] TASK-221 Publish the first 10 real soft-launch articles (researched sources, one module per article)
 
 ## Kilo execution rule
 

@@ -221,6 +221,21 @@ curl -I https://semburat.example.com/
    curl "https://api.telegram.org/bot/getWebhookInfo"
    \\\
 
+#### Live setup (Oktober 2026)
+
+- Bot: `@SemburatId_bot`.
+- Secrets dipasang dengan `wrangler secret put ... --env production` **dan** `--env staging`:
+  `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET` (64 karakter hex acak), `TELEGRAM_ALLOWED_USER_IDS` (operator).
+- Webhook terdaftar di **production** saja (Telegram hanya mengizinkan satu webhook per bot):
+  `https://semburat-worker-production.theahuda.workers.dev/api/telegram/webhook` dengan `secret_token`.
+- Staging diverifikasi dengan POST langsung ke
+  `https://semburat-worker-staging.theahuda.workers.dev/api/telegram/webhook` memakai header
+  `x-telegram-bot-api-secret-token`.
+- Endpoint menolak permintaan tanpa secret (401) dan mengabaikan pengirim yang tidak ada di
+  `TELEGRAM_ALLOWED_USER_IDS`.
+- Catatan: hostname `workers.dev` yang baru dibuat butuh beberapa menit sampai DNS-nya terbaca Telegram;
+  bila `setWebhook` menjawab `Failed to resolve host`, ulangi setelah beberapa menit.
+
 ### 6. Verification Steps
 
 After deployment, run the smoke test:

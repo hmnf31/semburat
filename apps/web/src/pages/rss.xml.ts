@@ -1,10 +1,7 @@
 export const prerender = true;
 
 import { getArticles } from '../lib/content';
-
-const SITE_URL = import.meta.env.PUBLIC_SITE_URL ?? 'https://semburat.example.id';
-const SITE_NAME = 'SEMBURAT';
-const SITE_DESCRIPTION = 'Yang sedang muncul, kami rangkai menjadi cerita.';
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '../lib/site';
 
 function escapeXml(s: string): string {
   return s

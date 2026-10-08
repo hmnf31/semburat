@@ -2,8 +2,8 @@ export const prerender = true;
 
 import { categories } from '../data/categories';
 import { getArticles } from '../lib/content';
+import { SITE_URL } from '../lib/site';
 
-const SITE_URL = import.meta.env.PUBLIC_SITE_URL ?? 'https://semburat.example.id';
 const TODAY = new Date().toISOString().split('T')[0];
 
 interface SitemapPage {
@@ -18,6 +18,8 @@ const staticPages: SitemapPage[] = [
   { loc: '/trending', lastmod: TODAY, changefreq: 'daily', priority: '0.8' },
   { loc: '/about', lastmod: TODAY, changefreq: 'monthly', priority: '0.5' },
   { loc: '/editorial-policy', lastmod: TODAY, changefreq: 'monthly', priority: '0.3' },
+  { loc: '/source-policy', lastmod: TODAY, changefreq: 'monthly', priority: '0.3' },
+  { loc: '/ai-policy', lastmod: TODAY, changefreq: 'monthly', priority: '0.3' },
   { loc: '/correction-policy', lastmod: TODAY, changefreq: 'yearly', priority: '0.3' },
   { loc: '/contact', lastmod: TODAY, changefreq: 'monthly', priority: '0.4' },
   { loc: '/privacy', lastmod: TODAY, changefreq: 'yearly', priority: '0.2' },

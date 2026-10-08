@@ -19,12 +19,21 @@ Gunakan `templates/article-review-checklist.md` untuk setiap artikel.
 
 ## Halaman dan teknis wajib
 
-- [ ] Halaman dari folder `pages/` sudah diisi (ganti semua `[...]`) dan tayang: About, Editorial Policy, Correction Policy, Source Policy, AI Policy, Contact, Privacy, Terms.
-- [ ] Pernyataan transparansi AI tampil jelas.
-- [ ] `sitemap`, `robots.txt`, RSS berfungsi.
-- [ ] Canonical, Open Graph, kartu X, breadcrumbs berfungsi.
-- [ ] Structured data sesuai isi yang terlihat (cek Rich Results Test).
-- [ ] Label "Diperbarui" dan catatan koreksi berfungsi.
-- [ ] Tidak ada popup agresif.
-- [ ] Label afiliasi dan "Konten Bersponsor" siap dipakai.
-- [ ] Situs bisa diakses tanpa JavaScript untuk konten artikel (Astro statis).
+## Halaman dan teknis wajib
+
+- [x] Halaman dari folder `pages/` sudah tayang: About, Editorial Policy, Correction Policy, Source Policy, AI Policy, Contact, Privacy, Terms. **Catatan:** masih ada placeholder data operator (`[NAMA/BADAN]`, `[EMAIL ...]`, `[TANGGAL]`, `[USIA]`, `[DAFTAR PENYEDIA]`, `[X] hari`) yang harus diisi pemilik sebelum rilis publik.
+- [x] Pernyataan transparansi AI tampil (footer semua halaman + halaman AI Policy).
+- [x] `sitemap.xml`, `robots.txt`, RSS berfungsi (`robots.txt` menunjuk sitemap, `PUBLIC_SITE_URL`).
+- [x] Canonical, Open Graph, kartu X, breadcrumbs berfungsi.
+- [x] Structured data sesuai isi yang terlihat: `WebSite`, `Organization`, `Article`, `BreadcrumbList`.
+- [~] Label "Diperbarui" tampil bila `updated_at` berbeda ≥1 jam; catatan koreksi per artikel belum ada.
+- [x] Tidak ada popup agresif.
+- [ ] Label afiliasi dan "Konten Bersponsor" belum disiapkan.
+- [x] Situs bisa diakses tanpa JavaScript untuk konten artikel (Astro statis).
+
+## Sisa untuk operator (data pribadi/brand)
+
+- Ganti placeholder `[...]` di `about`, `contact`, `privacy`, `terms`, `editorial-policy` (nama badan, alamat, email, tanggal, usia minimum, daftar penyedia).
+- Ganti email contoh `editorial@semburat.example.id` di `contact.astro`.
+- Aktifkan R2 lalu deploy ulang worker production (binding `ASSETS` masih dikomentari).
+- Tambahkan `PUBLIC_SITE_URL` saat build web agar canonical/robots/sitemap memakai domain final.

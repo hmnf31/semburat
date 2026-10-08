@@ -77,13 +77,25 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 - Production monitoring setup — kit includes a `health-check.yml` workflow pattern
 - Kit-external verification (requires your accounts/network): deploy to Cloudflare, GitHub workflow runs, Telegram bot, OpenRouter calls, real SEO/monetization results; free-tier limits and monetization terms must be checked with official sources
 
-## 7. Staging Deployment
+## 7. Cloudflare Deployment
 
-- Worker: https://semburat-worker-staging.theahuda.workers.dev (D1 `semburat-db-staging`, migrations applied)
-- Web: https://semburat-web.pages.dev (Cloudflare Pages, `PUBLIC_API_BASE_URL` = worker URL)
+- Staging worker: https://semburat-worker-staging.theahuda.workers.dev (D1 `semburat-db-staging`)
+- Production worker: https://semburat-worker-production.theahuda.workers.dev (D1 `semburat-db`)
+- Web (Cloudflare Pages): https://semburat-web.pages.dev (production + preview)
+- Migrations `0001`/`0002` applied to both D1 databases
 - Public endpoints live: `/`, `/api/health`, `/api/articles`, `/api/trends`
 - Pipeline endpoints require `TELEGRAM_WEBHOOK_SECRET`; `OPENROUTER_API_KEY` unset so `aiMode=mock`
-- R2 is not enabled on the account yet; the `ASSETS` binding is configured for production only
+- R2 not enabled on the account yet; the `ASSETS` binding is commented out until it is
+- Web build takes `PUBLIC_SITE_URL` and `PUBLIC_API_BASE_URL` at build time
+- Source repo: https://github.com/hmnf31/semburat
+
+### Tahap C — kesiapan rilis (Seo teknis)
+
+- `robots.txt`, `favicon.svg`, `og-image.svg` ditambahkan
+- URL situs dipusatkan di `src/lib/site.ts` (dari `PUBLIC_SITE_URL`)
+- Structured data `WebSite` + `Organization` (semua halaman) dan `Article` + `BreadcrumbList` (artikel)
+- Label "Diperbarui" tampil bila `updated_at` berbeda; pernyataan transparansi AI di footer
+- Sisa: isi placeholder data operator dan label afiliasi (lihat `docs/03-checklist-rilis.md`)
 
 ## 8. Next Steps
 

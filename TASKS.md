@@ -127,6 +127,14 @@ Status:
 - [x] TASK-204 Web ↔ API integration with fixture fallback
 - [x] TASK-205 Public article list/detail endpoints (published only)
 - [x] TASK-206 Env/docs refresh (RESEARCH_MODE, RSS_FEEDS, PUBLIC_API_BASE_URL)
+- [x] TASK-210 Deploy staging + production (D1, Worker, Pages) and GitHub remote
+- [x] TASK-211 Centralize PUBLIC_SITE_URL (lib/site.ts) across SEO/schema/RSS/sitemap
+- [x] TASK-212 Add robots.txt, favicon, default OG image
+- [x] TASK-213 Structured data (WebSite, Organization, Article, BreadcrumbList)
+- [x] TASK-214 Footer policy links + AI transparency statement
+- [ ] TASK-215 Replace operator placeholders in policy/contact pages (owner data)
+- [ ] TASK-216 Affiliate and sponsored-content labels
+- [ ] TASK-217 Enable R2 and re-deploy production worker
 
 ## Kilo execution rule
 

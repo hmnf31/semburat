@@ -26,6 +26,7 @@ export interface ContentArticle {
   body: string;
   category: string;
   publishedAt: string;
+  updatedAt?: string;
   riskLevel: ContentRiskLevel;
   qualityScore: number;
   sourceCount: number;
@@ -100,6 +101,7 @@ function fromApi(article: ApiArticle): ContentArticle {
     body: article.body,
     category: article.category,
     publishedAt: article.publishedAt ?? article.updatedAt,
+    updatedAt: article.updatedAt,
     riskLevel: article.riskLevel,
     qualityScore: article.qualityScore,
     sourceCount: article.sourceCount,

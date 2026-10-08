@@ -6,6 +6,7 @@ import CreditVisual from '../../components/CreditVisual.astro';
 import heroImage from '../../assets/hero-placeholder.svg';
 import type { ContentArticle } from '../../lib/content';
 import { getArticles, getRelated } from '../../lib/content';
+import { DEFAULT_OG_IMAGE, SITE_URL } from '../../lib/site';
 
 function wordsPerMinute(text: string): number {
   const words = text.trim().split(/\s+/).filter(Boolean).length;
@@ -48,12 +49,16 @@ export async function getStaticPaths() {
 }
 
 const { article } = Astro.props as { article: ContentArticle };
-const SITE_URL = import.meta.env.PUBLIC_SITE_URL ?? 'https://semburat.example.id';
 const readTime = wordsPerMinute(article.body);
 const categoryHref = `/categories/${article.category.toLowerCase()}`;
 const canonicalUrl = `${SITE_URL}/articles/${article.slug}`;
-const ogImage = `${SITE_URL}/og-image.png`;
+const ogImage = DEFAULT_OG_IMAGE;
 const publishedWib = formatWib(article.publishedAt);
+
+const isUpdated =
+  article.updatedAt !== undefined &&
+  new Date(article.updatedAt).getTime() - new Date(article.publishedAt).getTime() > 60 * 60 * 1000;
+const updatedWib = isUpdated && article.updatedAt ? formatWib(article.updatedAt) : null;
 
 const related = await getRelated(article.slug);
 
@@ -66,11 +71,12 @@ const breadcrumbItems = [
 <ArticleLayout
   title={article.title}
   description={article.dek}
-  image={ogImage}
+image={ogImage}
   publishedTime={article.publishedAt}
-  modifiedTime={article.publishedAt}
+  modifiedTime={article.updatedAt ?? article.publishedAt}
   canonicalUrl={canonicalUrl}
   breadcrumbItems={breadcrumbItems}
+  section={article.category}
 >
   <header class="mb-8">
     <nav class="mb-4 text-sm text-sb-muted" aria-label="Breadcrumb">
@@ -89,10 +95,16 @@ const breadcrumbItems = [
     <p class="mt-4 font-body text-lg leading-relaxed text-sb-muted">
       {article.dek}
     </p>
-    <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-sb-muted">
+<div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-sb-muted">
       <time datetime={article.publishedAt}>{publishedWib}</time>
-      <span aria-hidden="true">�</span>
+      <span aria-hidden="true">·</span>
       <span>{readTime} menit baca</span>
+      {updatedWib && (
+        <>
+          <span aria-hidden="true">·</span>
+          <span>Diperbarui {updatedWib}</span>
+        </>
+      )}
     </div>
     <div class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-2">
       <span class={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-label text-xs font-semibold ${riskLevelClass(article.riskLevel)}`}>

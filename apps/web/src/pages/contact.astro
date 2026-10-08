@@ -1,5 +1,6 @@
 ﻿---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { emailHtml, siteConfig } from '../data/site-config';
 ---
 
 <BaseLayout
@@ -22,34 +23,32 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </tr>
         </thead>
         <tbody>
-          <tr>
+<tr>
             <td class="border-b border-sb-hairline py-2 pr-4">Redaksi umum</td>
-            <td class="border-b border-sb-hairline py-2 pr-4">[EMAIL REDAKSI]</td>
+            <td class="border-b border-sb-hairline py-2 pr-4"><span set:html={emailHtml(siteConfig.emails.editorial)} /></td>
           </tr>
           <tr>
             <td class="border-b border-sb-hairline py-2 pr-4">Koreksi fakta</td>
-            <td class="border-b border-sb-hairline py-2 pr-4">[EMAIL KOREKSI]</td>
+            <td class="border-b border-sb-hairline py-2 pr-4"><span set:html={emailHtml(siteConfig.emails.correction)} /></td>
           </tr>
           <tr>
             <td class="border-b border-sb-hairline py-2 pr-4">Hak cipta / permintaan penurunan konten</td>
-            <td class="border-b border-sb-hairline py-2 pr-4">[EMAIL HAK CIPTA]</td>
+            <td class="border-b border-sb-hairline py-2 pr-4"><span set:html={emailHtml(siteConfig.emails.copyright)} /></td>
           </tr>
           <tr>
             <td class="border-b border-sb-hairline py-2 pr-4">Kerja sama &amp; sponsor</td>
-            <td class="border-b border-sb-hairline py-2 pr-4">[EMAIL KERJASAMA]</td>
+            <td class="border-b border-sb-hairline py-2 pr-4"><span set:html={emailHtml(siteConfig.emails.partnership)} /></td>
           </tr>
           <tr>
             <td class="border-b border-sb-hairline py-2 pr-4">Privasi data</td>
-            <td class="border-b border-sb-hairline py-2 pr-4">[EMAIL PRIVASI]</td>
+            <td class="border-b border-sb-hairline py-2 pr-4"><span set:html={emailHtml(siteConfig.emails.privacy)} /></td>
           </tr>
         </tbody>
       </table>
-      <p>Kami berupaya membalas dalam [X] hari kerja.</p>
+      <p>Kami berupaya membalas dalam {siteConfig.responseBusinessDays} hari kerja.</p>
       <p class="text-sm text-sb-muted">
         Untuk keperluan editorial, koreksi, atau kerja sama, kirim email ke
-        <a href="mailto:editorial@semburat.example.id" class="text-sb-primary hover:text-sb-primary-surface hover:underline">
-          editorial@semburat.example.id
-        </a>.
+        <span set:html={emailHtml(siteConfig.emails.editorial)} />.
       </p>
     </div>
   </section>

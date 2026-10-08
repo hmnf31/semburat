@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { categories } from '../../data/categories';
+import { getCategoryCounts } from '../../lib/content';
+
+const counts = new Map((await getCategoryCounts()).map((entry) => [entry.label, entry.count]));
+const entries = Object.entries(categories).map(([slug, category]) => ({
+  slug,
+  name: category.name,
+  description: category.description,
+  count: counts.get(category.name) ?? 0,
+}));
+---
+
+<BaseLayout
+  title="Kategori"
+  description="Semua kategori artikel SEMBURAT: viral, teknologi, gaming, dan explainer."
+>
+  <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <p class="mb-3 font-label text-xs font-semibold uppercase tracking-widest text-sb-primary">Kategori</p>
+    <h1 class="mb-2 font-heading text-3xl font-normal text-sb-ink">Kategori</h1>
+    <p class="mb-8 font-body text-sm text-sb-muted">Pilih topik untuk membaca artikel yang sudah terbit.</p>
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {entries.map((entry) => (
+        <li class="flex flex-col rounded-lg border border-sb-hairline bg-sb-card p-5">
+          <a href={`/categories/${entry.slug}`} class="font-heading text-lg font-normal text-sb-ink hover:text-sb-primary">
+            {entry.name}
+          </a>
+          <p class="mt-2 flex-1 font-body text-sm text-sb-muted">{entry.description}</p>
+          <p class="mt-4 font-body text-xs text-sb-muted">{entry.count} artikel terbit</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

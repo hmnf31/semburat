@@ -132,9 +132,11 @@ Status:
 - [x] TASK-212 Add robots.txt, favicon, default OG image
 - [x] TASK-213 Structured data (WebSite, Organization, Article, BreadcrumbList)
 - [x] TASK-214 Footer policy links + AI transparency statement
-- [ ] TASK-215 Replace operator placeholders in policy/contact pages (owner data)
+- [ ] TASK-215 Fill `site-config.ts` with operator identity, emails and policy dates (owner task)
 - [ ] TASK-216 Affiliate and sponsored-content labels
 - [ ] TASK-217 Enable R2 and re-deploy production worker
+- [x] TASK-218 Centralize operator data in `apps/web/src/data/site-config.ts` (values to be filled by owner)
+- [x] TASK-219 Add `/categories` index page and fix header nav link
 
 ## Kilo execution rule
 

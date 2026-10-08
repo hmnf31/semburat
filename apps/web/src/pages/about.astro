@@ -1,5 +1,6 @@
 ﻿---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { emailHtml, siteConfig } from '../data/site-config';
 ---
 
 <BaseLayout
@@ -25,10 +26,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <li>Kami membedakan yang <strong class="font-body font-semibold text-sb-ink">terkonfirmasi</strong>, <strong class="font-body font-semibold text-sb-ink">dilaporkan</strong>, <strong class="font-body font-semibold text-sb-ink">belum terverifikasi</strong>, dan <strong class="font-body font-semibold text-sb-ink">diperdebatkan</strong>.</li>
         <li>Kesalahan kami koreksi secara terbuka. Lihat <a href="/correction-policy" class="text-sb-primary hover:text-sb-primary-surface hover:underline">Kebijakan Koreksi</a>.</li>
       </ul>
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Tim</h2>
-      <p>[NAMA PENGELOLA / REDAKSI] — [PERAN]</p>
+<h2 class="font-heading text-xl font-normal text-sb-ink">Tim</h2>
+      <p>{siteConfig.operator.displayName} — {siteConfig.operator.role}</p>
       <h2 class="font-heading text-xl font-normal text-sb-ink">Kontak</h2>
-      <p>[EMAIL REDAKSI] · Halaman <a href="/contact" class="text-sb-primary hover:text-sb-primary-surface hover:underline">Kontak</a></p>
+      <p><span set:html={emailHtml(siteConfig.emails.editorial)} /> · Halaman <a href="/contact" class="text-sb-primary hover:text-sb-primary-surface hover:underline">Kontak</a></p>
     </div>
   </section>
 </BaseLayout>

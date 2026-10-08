@@ -1,5 +1,6 @@
 ﻿---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../data/site-config';
 ---
 
 <BaseLayout
@@ -14,7 +15,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </nav>
     <h1 class="mb-6 font-heading text-3xl font-normal leading-tight text-sb-ink sm:text-4xl">Syarat &amp; Ketentuan</h1>
     <div class="space-y-6 font-body text-base leading-relaxed text-sb-ink">
-      <p>Terakhir diperbarui: [TANGGAL]</p>
+      <p>Terakhir diperbarui: {siteConfig.policyLastUpdated}</p>
       <blockquote class="border-l-2 border-sb-primary pl-4 italic font-body text-sb-muted">Draf umum. Tinjau dengan ahli hukum sebelum dipakai secara resmi.</blockquote>
       <ol class="font-body list-decimal space-y-2 pl-6">
         <li><strong class="font-body font-semibold text-sb-ink">Penggunaan.</strong> Konten SEMBURAT disediakan untuk informasi umum, bukan nasihat hukum, medis, atau keuangan.</li>
@@ -24,7 +25,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <li><strong class="font-body font-semibold text-sb-ink">Afiliasi dan sponsor.</strong> Sebagian halaman dapat memuat tautan afiliasi atau konten bersponsor yang ditandai jelas. Kami dapat memperoleh komisi tanpa biaya tambahan bagi Anda.</li>
         <li><strong class="font-body font-semibold text-sb-ink">Batasan tanggung jawab.</strong> Sejauh diizinkan hukum, kami tidak bertanggung jawab atas kerugian yang timbul dari penggunaan informasi di situs ini.</li>
         <li><strong class="font-body font-semibold text-sb-ink">Perubahan.</strong> Ketentuan dapat diperbarui; versi terbaru berlaku sejak dipublikasikan.</li>
-        <li><strong class="font-body font-semibold text-sb-ink">Hukum yang berlaku.</strong> [Hukum Republik Indonesia / yurisdiksi Anda].</li>
+        <li><strong class="font-body font-semibold text-sb-ink">Hukum yang berlaku.</strong> Hukum {siteConfig.jurisdiction}.</li>
       </ol>
     </div>
   </section>

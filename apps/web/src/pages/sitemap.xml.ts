@@ -16,6 +16,7 @@ interface SitemapPage {
 const staticPages: SitemapPage[] = [
   { loc: '/', lastmod: TODAY, changefreq: 'daily', priority: '1.0' },
   { loc: '/trending', lastmod: TODAY, changefreq: 'daily', priority: '0.8' },
+  { loc: '/categories', lastmod: TODAY, changefreq: 'weekly', priority: '0.7' },
   { loc: '/about', lastmod: TODAY, changefreq: 'monthly', priority: '0.5' },
   { loc: '/editorial-policy', lastmod: TODAY, changefreq: 'monthly', priority: '0.3' },
   { loc: '/source-policy', lastmod: TODAY, changefreq: 'monthly', priority: '0.3' },

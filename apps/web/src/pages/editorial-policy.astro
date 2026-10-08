@@ -1,5 +1,6 @@
 ﻿---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../data/site-config';
 ---
 
 <BaseLayout
@@ -14,7 +15,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </nav>
     <h1 class="mb-6 font-heading text-3xl font-normal leading-tight text-sb-ink sm:text-4xl">Kebijikan Editorial</h1>
     <div class="space-y-6 font-body text-base leading-relaxed text-sb-ink">
-      <p>Terakhir diperbarui: [TANGGAL]</p>
+      <p>Terakhir diperbarui: {siteConfig.policyLastUpdated}</p>
       <h2 class="font-heading text-xl font-normal text-sb-ink">Prinsip</h2>
       <ol class="font-body list-decimal space-y-2 pl-6">
         <li><strong class="font-body font-semibold text-sb-ink">Orisinalitas.</strong> Kami tidak menyalin atau sekadar menulis ulang artikel pihak lain. Artikel kami merangkum beberapa sumber, memberi konteks, dan menjelaskan.</li>
@@ -30,11 +31,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <li><strong class="font-body font-semibold text-sb-ink">Tinggi</strong> (politik, kriminal, kesehatan, saran keuangan, tuduhan, anak di bawah umur, bencana, kejadian yang faktanya belum jelas): wajib ditinjau manusia, atau tidak kami terbitkan bila faktanya belum cukup.</li>
       </ul>
       <h2 class="font-heading text-xl font-normal text-sb-ink">Independensi</h2>
-      <p>Hubungan afiliasi dan sponsor tidak memengaruhi isi ulasan atau kesimpulan kami. Konten bersponsor diberi label <strong class="font-body font-semibold text-sb-ink">Konten Bersponsor</strong>.</p>
+      <p>Hubungan afiliasi dan sponsor tidak memengaruhi isi ulasan atau kesimpulan kami. Konten bersponsor diberi label <strong class="font-body font-semibold text-sb-ink">{siteConfig.sponsorLabel}</strong>.</p>
       <h2 class="font-heading text-xl font-normal text-sb-ink">Pembaruan</h2>
       <p>Artikel yang berkembang kami perbarui dan tandai "Diperbarui [jam] WIB" alih-alih membuat artikel nyaris sama.</p>
       <h2 class="font-heading text-xl font-normal text-sb-ink">Ulasan produk</h2>
-      <p>[Jelaskan bagaimana Anda menguji/mengumpulkan data ulasan. Jangan mengklaim pengujian langsung bila tidak dilakukan.]</p>
+      <p>{siteConfig.reviewMethodologyNote}</p>
     </div>
   </section>
 </BaseLayout>

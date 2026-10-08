@@ -1,27 +1,10 @@
 export const prerender = true;
 
-const SITE_URL = 'https://semburat.example.id';
+import { getArticles } from '../lib/content';
+
+const SITE_URL = import.meta.env.PUBLIC_SITE_URL ?? 'https://semburat.example.id';
 const SITE_NAME = 'SEMBURAT';
 const SITE_DESCRIPTION = 'Yang sedang muncul, kami rangkai menjadi cerita.';
-
-const items = [
-  {
-    title: 'Contoh Artikel: Tren Digital Indonesia',
-    link: `${SITE_URL}/articles/contoh-artikel`,
-    description:
-      'Dek placeholder. Konten sesungguhnya akan digantikan oleh artikel yang telah melewati verifikasi fakta dan quality gate editorial.',
-    pubDate: 'Sat, 01 Oct 2026 00:00:00 GMT',
-    guid: `${SITE_URL}/articles/contoh-artikel`,
-  },
-  {
-    title: 'Tren Kecerdasan Buatan: Pengantar Placeholder',
-    link: `${SITE_URL}/articles/tren-kecerdasan-buatan`,
-    description:
-      'Dek placeholder untuk liputan tren kecerdasan buatan. Akan digantikan oleh konten editorial terverifikasi.',
-    pubDate: 'Mon, 28 Sep 2026 00:00:00 GMT',
-    guid: `${SITE_URL}/articles/tren-kecerdasan-buatan`,
-  },
-];
 
 function escapeXml(s: string): string {
   return s
@@ -32,17 +15,21 @@ function escapeXml(s: string): string {
     .replace(/'/g, '&apos;');
 }
 
-export function GET() {
-  const itemElements = items
-    .map(
-      (item) => `    <item>
-      <title>${escapeXml(item.title)}</title>
-      <link>${escapeXml(item.link)}</link>
-      <guid>${escapeXml(item.guid)}</guid>
-      <pubDate>${item.pubDate}</pubDate>
-      <description>${escapeXml(item.description)}</description>
-    </item>`
-    )
+export async function GET(): Promise<Response> {
+  const articles = await getArticles();
+
+  const itemElements = articles
+    .map((article) => {
+      const link = `${SITE_URL}/articles/${article.slug}`;
+      const pubDate = new Date(article.publishedAt).toUTCString();
+      return `    <item>
+      <title>${escapeXml(article.title)}</title>
+      <link>${escapeXml(link)}</link>
+      <guid>${escapeXml(link)}</guid>
+      <pubDate>${pubDate}</pubDate>
+      <description>${escapeXml(article.dek)}</description>
+    </item>`;
+    })
     .join('\n');
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>
@@ -52,7 +39,7 @@ export function GET() {
     <link>${escapeXml(SITE_URL)}</link>
     <description>${escapeXml(SITE_DESCRIPTION)}</description>
     <language>id</language>
-    <lastBuildDate>Sat, 07 Oct 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
 ${itemElements}
   </channel>
 </rss>`;

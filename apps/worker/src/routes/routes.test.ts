@@ -19,6 +19,37 @@ type DiscoverBody = { data: { trends: unknown[] }; meta: { queries: string[]; ai
 type HealthBody = { status: string };
 type TrendsBody = { data: unknown[] };
 type ReceivedBody = { data: { received: boolean } };
+type ArticleListBody = { data: Array<{ slug: string; body: string }>; meta: { limit: number } };
+type ArticleDetailBody = { data: { slug: string; qualityScore: number } };
+
+function seedArticle(db: MockD1Database, overrides: Record<string, unknown> = {}): void {
+  db.table('articles').push({
+    id: 'art_1',
+    research_id: 'res_1',
+    title: 'Judul artikel uji',
+    slug: 'artikel-uji',
+    dek: 'Ringkasan singkat artikel uji untuk pengujian.',
+    summary: '',
+    body: 'Isi artikel yang cukup panjang untuk memenuhi validasi domain. '.repeat(3),
+    category: 'Teknologi',
+    subcategory: null,
+    status: 'published',
+    risk_level: 'low',
+    quality_score: 80,
+    seo_title: null,
+    meta_description: null,
+    canonical_url: null,
+    hero_asset_id: null,
+    topic_id: null,
+    source_count: 2,
+    fact_check_status: 'complete',
+    version: 1,
+    published_at: '2026-10-01T00:00:00.000Z',
+    created_at: '2026-10-01T00:00:00.000Z',
+    updated_at: '2026-10-01T00:00:00.000Z',
+    ...overrides,
+  });
+}
 const readBody = <T>(res: Response): Promise<T> => res.json() as Promise<T>;
 describe('pipeline routes', () => {
   it('rejects requests without an authorization token', async () => {
@@ -106,5 +137,35 @@ describe('read routes', () => {
     expect(res.status).toBe(201);
     const body = await readBody<ReceivedBody>(res);
     expect(body.data.received).toBe(true);
+  });
+});
+describe('public article routes', () => {
+  it('lists only published articles', async () => {
+    const db = new MockD1Database();
+    seedArticle(db);
+    seedArticle(db, { id: 'art_2', slug: 'draft-uji', status: 'draft' });
+    const res = await app.request('/api/articles', {}, makeEnv({ DB: db as never }));
+    expect(res.status).toBe(200);
+    const body = await readBody<ArticleListBody>(res);
+    expect(body.data).toHaveLength(1);
+    expect(body.data[0].slug).toBe('artikel-uji');
+    expect(body.meta.limit).toBe(20);
+  });
+  it('returns a published article by slug', async () => {
+    const db = new MockD1Database();
+    seedArticle(db);
+    const res = await app.request('/api/articles/artikel-uji', {}, makeEnv({ DB: db as never }));
+    expect(res.status).toBe(200);
+    const body = await readBody<ArticleDetailBody>(res);
+    expect(body.data.slug).toBe('artikel-uji');
+    expect(body.data.qualityScore).toBe(80);
+  });
+  it('hides drafts and unknown slugs', async () => {
+    const db = new MockD1Database();
+    seedArticle(db, { id: 'art_2', slug: 'draft-uji', status: 'draft' });
+    const draft = await app.request('/api/articles/draft-uji', {}, makeEnv({ DB: db as never }));
+    expect(draft.status).toBe(404);
+    const missing = await app.request('/api/articles/tidak-ada', {}, makeEnv({ DB: db as never }));
+    expect(missing.status).toBe(404);
   });
 });

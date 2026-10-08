@@ -4,14 +4,8 @@ import ArticleCard from '../../components/ArticleCard.astro';
 import SourceAttribution from '../../components/SourceAttribution.astro';
 import CreditVisual from '../../components/CreditVisual.astro';
 import heroImage from '../../assets/hero-placeholder.svg';
-import { softLaunchArticles, type SoftLaunchRiskLevel } from '../../data/soft-launch-articles';
-
-const CATEGORY_HREF: Record<string, string> = {
-  Viral: '/categories/viral',
-  Teknologi: '/categories/teknologi',
-  Gaming: '/categories/gaming',
-  Explainer: '/categories/explainer',
-};
+import type { ContentArticle } from '../../lib/content';
+import { getArticles, getRelated } from '../../lib/content';
 
 function wordsPerMinute(text: string): number {
   const words = text.trim().split(/\s+/).filter(Boolean).length;
@@ -37,7 +31,7 @@ function formatWib(iso: string): string {
   return `${day} ${month} ${year}, ${hour}:${minute} WIB`;
 }
 
-function riskLevelClass(level: SoftLaunchRiskLevel): string {
+function riskLevelClass(level: ContentArticle['riskLevel']): string {
   switch (level) {
     case 'LOW': return 'bg-sb-success/10 text-sb-success border-sb-success/30';
     case 'MEDIUM': return 'bg-sb-warning/10 text-sb-warning border-sb-warning/30';
@@ -45,32 +39,23 @@ function riskLevelClass(level: SoftLaunchRiskLevel): string {
   }
 }
 
-export function getStaticPaths() {
-  return softLaunchArticles.map((article) => ({
+export async function getStaticPaths() {
+  const articles = await getArticles();
+  return articles.map((article) => ({
     params: { slug: article.slug },
     props: { article },
   }));
 }
 
-const { article } = Astro.props;
+const { article } = Astro.props as { article: ContentArticle };
+const SITE_URL = import.meta.env.PUBLIC_SITE_URL ?? 'https://semburat.example.id';
 const readTime = wordsPerMinute(article.body);
-const categoryHref = CATEGORY_HREF[article.category] ?? '/categories';
-const canonicalUrl = `https://semburat.example.id/articles/${article.slug}`;
-const ogImage = `https://semburat.example.id/og-image.png`;
+const categoryHref = `/categories/${article.category.toLowerCase()}`;
+const canonicalUrl = `${SITE_URL}/articles/${article.slug}`;
+const ogImage = `${SITE_URL}/og-image.png`;
 const publishedWib = formatWib(article.publishedAt);
 
-const related = softLaunchArticles
-  .filter((a) => a.slug !== article.slug && a.category === article.category)
-  .slice(0, 4)
-  .map((a) => ({
-    title: a.title,
-    dek: a.dek,
-    category: a.category,
-    categoryHref: CATEGORY_HREF[a.category] ?? '/categories',
-    date: formatWib(a.publishedAt),
-    readTime: String(wordsPerMinute(a.body)),
-    slug: a.slug,
-  }));
+const related = await getRelated(article.slug);
 
 const breadcrumbItems = [
   { name: 'Beranda', href: '/' },
@@ -153,6 +138,12 @@ const breadcrumbItems = [
         ))}
       </dl>
     </section>
+  )}
+  {article.sources.length === 0 && (
+    <p class="mt-10 rounded-lg border border-sb-hairline bg-sb-card p-5 font-body text-sm text-sb-muted">
+      Tautan sumber terperinci belum tersedia untuk artikel ini. Proses verifikasi dan atribusi sumber tetap
+      tercatat di pipeline editorial.
+    </p>
   )}
   <SourceAttribution sources={article.sources} />
   <CreditVisual

@@ -46,27 +46,28 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 - Phase 13: Analytics
 - Phase 14: Monetization
 - Research ingestion uses live Google News RSS feeds; set `RESEARCH_MODE=offline` to disable network access (used by tests)
+- The web app reads published articles/trends from the worker API at build time (`PUBLIC_API_BASE_URL`), falling back to bundled fixtures when the API is unreachable
 
 ## 4. Test Results
 
-- 408 tests passed across 55 files
+- 411 tests passed across 55 files
 - Domain: 166 tests (18 files)
 - Infra: 222 tests (34 files)
-- Worker: 20 tests (3 files)
+- Worker: 23 tests (3 files)
 - Companion kit: 40 unit tests in `tests/` (PRD rules, design validation, render smoke)
 
 ## 5. Validation
 
 - pnpm typecheck: PASS
-- pnpm test: PASS (408 tests)
+- pnpm test: PASS (411 tests)
 - pnpm lint: PASS (0 errors)
 - pnpm format:check: PASS
-- pnpm build: PASS (12 pages)
+- pnpm build: PASS (24 pages)
 - companion kit tests: PASS (`python -m unittest discover -s tests -v`, run by the CI `python-tests` job)
 
 ## 6. What's NOT Done
 
-- Web tests (TODO placeholder)
+- Web tests (TODO placeholder) — the static site builds against the worker API with fixture fallback, but has no unit tests yet
 - Actual Cloudflare deployment — covered by kit Phase B (`docs/02-checklist-deploy-staging.md`)
 - AI provider integration (OpenRouter, MiniMax) — adapters exist, keys not configured
 - Telegram bot wiring is implemented; live bot requires `TELEGRAM_BOT_TOKEN`

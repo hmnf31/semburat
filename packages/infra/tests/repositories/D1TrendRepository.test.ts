@@ -91,10 +91,9 @@ describe('D1TrendRepository', () => {
     await repo.insert(trendHigh);
 
     const results = await repo.findByScore(50, 10);
-    expect(results).toHaveLength(3);
-    expect(results[0].score).toBe(30);
+    expect(results).toHaveLength(2);
+    expect(results[0].score).toBe(90);
     expect(results[1].score).toBe(60);
-    expect(results[2].score).toBe(90);
   });
 
   it('upsert updates existing trend with same id', async () => {

@@ -2,56 +2,41 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
 import { categories } from '../../data/categories';
+import { getArticles, toCard } from '../../lib/content';
 
 export function getStaticPaths() {
-  return Object.keys(categories).map((slug) => ({
+  return Object.entries(categories).map(([slug, category]) => ({
     params: { slug },
+    props: { categoryName: category.name },
   }));
 }
 
-const { slug } = Astro.params;
-const category = slug ? categories[slug] : undefined;
-
-if (!category) {
-  throw new Error(`Kategori tidak ditemukan: ${slug}`);
-}
-
-const articles = [
-  {
-    title: `Placeholder artikel 1 — kategori ${category.name}`,
-    dek: 'Ringkasan placeholder. Konten sesungguhnya dihasilkan dari sumber terverifikasi.',
-    category: category.name,
-    categoryHref: `/categories/${slug}`,
-    date: '2026-10-01',
-    readTime: '5',
-    slug: 'contoh-artikel',
-  },
-  {
-    title: `Placeholder artikel 2 — kategori ${category.name}`,
-    dek: 'Ringkasan placeholder untuk artikel kedua dalam kategori ini.',
-    category: category.name,
-    categoryHref: `/categories/${slug}`,
-    date: '2026-09-28',
-    readTime: '6',
-    slug: 'tren-kecerdasan-buatan',
-  },
-];
+const { categoryName } = Astro.props;
+const articles = (await getArticles())
+  .filter((article) => article.category.toLowerCase() === categoryName.toLowerCase())
+  .map(toCard);
 ---
-<BaseLayout title={`Kategori ${category.name}`} description={category.description}>
-  <section class="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-    <nav class="mb-4 text-sm text-sb-muted" aria-label="Breadcrumb">
-      <a href="/" class="hover:text-sb-primary">Beranda</a>
-      <span aria-hidden="true"> / </span>
-      <span aria-current="page">Kategori</span>
-    </nav>
-    <h1 class="mb-2 font-heading text-3xl font-normal text-sb-ink">Kategori: {category.name}</h1>
-    <p class="mb-8 text-sm text-sb-muted">
-      Daftar placeholder artikel dalam kategori {category.name}.
+
+<BaseLayout
+  title={`Kategori ${categoryName}`}
+  description={`Artikel kategori ${categoryName} di SEMBURAT.`}
+>
+  <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <p class="mb-3 font-label text-xs font-semibold uppercase tracking-widest text-sb-primary">Kategori</p>
+    <h1 class="mb-2 font-heading text-3xl font-normal text-sb-ink">{categoryName}</h1>
+    <p class="mb-8 font-body text-sm text-sb-muted">
+      {articles.length} artikel terbit dalam kategori ini.
     </p>
-    <div class="grid gap-6 sm:grid-cols-2">
-      {articles.map((article) => (
-        <ArticleCard {...article} />
-      ))}
-    </div>
+    {articles.length > 0 ? (
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {articles.map((article) => (
+          <ArticleCard {...article} />
+        ))}
+      </div>
+    ) : (
+      <p class="rounded-lg border border-sb-hairline bg-sb-card p-6 font-body text-sm text-sb-muted">
+        Belum ada artikel terbit di kategori ini.
+      </p>
+    )}
   </section>
 </BaseLayout>

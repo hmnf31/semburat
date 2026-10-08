@@ -70,8 +70,8 @@ describe('D1AssetRepository', () => {
     );
 
     const results = await repo.findByArticleId('550e8400-e29b-41d4-a716-446655440101');
-    expect(results).toHaveLength(3);
-    expect(results.map((a) => a.id).sort()).toEqual(['asset-1', 'asset-2', 'asset-3']);
+    expect(results).toHaveLength(2);
+    expect(results.map((a) => a.id).sort()).toEqual(['asset-1', 'asset-2']);
   });
 
   it('findByArticleId returns empty array when no assets exist', async () => {

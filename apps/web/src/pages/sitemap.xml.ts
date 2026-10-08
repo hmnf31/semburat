@@ -1,6 +1,9 @@
 export const prerender = true;
 
-const SITE_URL = 'https://semburat.example.id';
+import { categories } from '../data/categories';
+import { getArticles } from '../lib/content';
+
+const SITE_URL = import.meta.env.PUBLIC_SITE_URL ?? 'https://semburat.example.id';
 const TODAY = new Date().toISOString().split('T')[0];
 
 interface SitemapPage {
@@ -21,36 +24,6 @@ const staticPages: SitemapPage[] = [
   { loc: '/terms', lastmod: TODAY, changefreq: 'yearly', priority: '0.2' },
 ];
 
-const categoryPages: SitemapPage[] = [
-  'berita',
-  'teknologi',
-  'ekonomi',
-  'kesehatan',
-  'kebijaran-publik',
-].map((slug) => ({
-  loc: `/categories/${slug}`,
-  lastmod: TODAY,
-  changefreq: 'weekly',
-  priority: '0.6',
-}));
-
-interface ArticleEntry {
-  slug: string;
-  date: string;
-}
-
-const articlePages: SitemapPage[] = [
-  { slug: 'contoh-artikel', date: '2026-10-01' },
-  { slug: 'tren-kecerdasan-buatan', date: '2026-09-28' },
-].map((article: ArticleEntry) => ({
-  loc: `/articles/${article.slug}`,
-  lastmod: article.date,
-  changefreq: 'monthly',
-  priority: '0.7',
-}));
-
-const allPages = [...staticPages, ...categoryPages, ...articlePages];
-
 function escapeXml(s: string): string {
   return s
     .replace(/&/g, '&amp;')
@@ -60,7 +33,23 @@ function escapeXml(s: string): string {
     .replace(/'/g, '&apos;');
 }
 
-export function GET(): Response {
+export async function GET(): Promise<Response> {
+  const categoryPages: SitemapPage[] = Object.keys(categories).map((slug) => ({
+    loc: `/categories/${slug}`,
+    lastmod: TODAY,
+    changefreq: 'weekly',
+    priority: '0.6',
+  }));
+
+  const articlePages: SitemapPage[] = (await getArticles()).map((article) => ({
+    loc: `/articles/${article.slug}`,
+    lastmod: article.publishedAt.split('T')[0],
+    changefreq: 'monthly',
+    priority: '0.7',
+  }));
+
+  const allPages = [...staticPages, ...categoryPages, ...articlePages];
+
   const urls = allPages
     .map((page) => {
       const tags: string[] = [`<loc>${escapeXml(`${SITE_URL}${page.loc}`)}</loc>`];

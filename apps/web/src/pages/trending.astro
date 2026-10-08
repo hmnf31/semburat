@@ -1,26 +1,19 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { softLaunchArticles } from '../data/soft-launch-articles';
+import { getCategoryCounts } from '../lib/content';
 
-const trendingTopics = softLaunchArticles
-  .filter((a) => a.status === 'published')
-  .reduce((acc, article) => {
-    const key = article.category;
-    acc[key] = (acc[key] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-const trendingTopicsArray = Object.entries(trendingTopics)
-  .map(([label, count]) => ({ label, count }))
-  .sort((a, b) => b.count - a.count)
-  .map((topic, index) => ({ ...topic, rank: index + 1, href: '/categories/' + topic.label.toLowerCase() }));
+const trendingTopicsArray = (await getCategoryCounts()).map((topic, index) => ({
+  ...topic,
+  rank: index + 1,
+  href: '/categories/' + topic.label.toLowerCase(),
+}));
 ---
 
-<BaseLayout title="Trending" description="Topik yang sedang tren di SEMBURAT — data dari 10 artikel soft launch.">
+<BaseLayout title="Trending" description="Topik yang sedang tren di SEMBURAT — dihitung dari artikel terbit.">
   <section class="mx-auto max-w-4xl px-4 py-10 sm:px-6">
     <h1 class="mb-2 font-heading text-3xl font-normal text-sb-ink sm:text-4xl">Trending</h1>
     <p class="mb-8 text-sm text-sb-muted">
-      Daftar placeholder. Peringkat sesungguhnya dihitung dari sumber terverifikasi dengan penjelasan yang dapat dilacak.
+      Peringkat dihitung dari jumlah artikel terbit per kategori. Setiap artikel dapat dilacak ke sumbernya.
     </p>
     <ol class="space-y-4">
       {trendingTopicsArray.map((topic) => (

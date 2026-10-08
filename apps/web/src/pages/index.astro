@@ -1,39 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ArticleCard from '../components/ArticleCard.astro';
-import { softLaunchArticles } from '../data/soft-launch-articles';
+import { getArticleCards, getCategoryCounts } from '../lib/content';
 
-function computeReadTime(body: string): string {
-  const wordCount = body.split(/\\s+/).length;
-  return String(Math.max(1, Math.ceil(wordCount / 200)));
-}
+const latestArticles = await getArticleCards(6);
 
-const latestArticles = softLaunchArticles
-  .filter((a) => a.status === 'published')
-  .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-  .slice(0, 6)
-  .map((article) => ({
-    title: article.title,
-    dek: article.dek,
-    category: article.category,
-    categoryHref: '/categories/' + article.category.toLowerCase(),
-    date: article.publishedAt,
-    readTime: computeReadTime(article.body),
-    slug: article.slug,
-  }));
-
-const trendingTopics = softLaunchArticles
-  .filter((a) => a.status === 'published')
-  .reduce((acc, article) => {
-    const key = article.category;
-    acc[key] = (acc[key] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-const trendingTopicsArray = Object.entries(trendingTopics)
-  .map(([label, count]) => ({ label, count }))
-  .sort((a, b) => b.count - a.count)
-  .slice(0, 5);
+const trendingTopicsArray = (await getCategoryCounts())
+  .slice(0, 5)
+  .map((topic, index) => ({ ...topic, rank: index + 1 }));
 ---
 
 <BaseLayout title="Beranda" description="SEMBURAT — platform media intelligence Indonesia. Yang sedang muncul, kami rangkai menjadi cerita.">
@@ -50,7 +24,7 @@ const trendingTopicsArray = Object.entries(trendingTopics)
     <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
       <div>
         <h2 class="font-heading text-2xl font-normal text-sb-ink">Artikel Terbaru</h2>
-        <p class="mt-1 text-sm text-sb-muted">10 artikel contoh untuk soft launch.</p>
+        <p class="mt-1 text-sm text-sb-muted">Artikel terverifikasi terbaru dari pipeline editorial.</p>
       </div>
       <a href="/trending" class="font-body text-sm font-medium text-sb-primary hover:text-sb-primary-surface">
         Lihat trending →

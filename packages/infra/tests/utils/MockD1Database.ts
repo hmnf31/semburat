@@ -198,16 +198,17 @@ export class MockD1Statement implements D1PreparedStatement {
   }
 
   private parseSelect(): { table: string; where?: string; order?: string; limit?: string } {
-    const m =
-      /^SELECT\s+(.+?)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.+))?(?:\s+ORDER\s+BY\s+(.+))?(?:\s+LIMIT\s+(.+))?$/i.exec(
-        this.sql
-      );
+    const m = /^SELECT\s+(.+?)\s+FROM\s+(\w+)([\s\S]*)$/i.exec(this.sql);
     if (!m) return { table: '' };
+    const tail = m[3] ?? '';
+    const whereM = /\bWHERE\s+(.+?)(?=\s+ORDER\s+BY\b|\s+LIMIT\b|$)/i.exec(tail);
+    const orderM = /\bORDER\s+BY\s+(.+?)(?=\s+LIMIT\b|$)/i.exec(tail);
+    const limitM = /\bLIMIT\s+(.+)$/i.exec(tail);
     return {
       table: parseIdentifier(m[2]),
-      where: m[3] ? m[3].trim() : undefined,
-      order: m[4] ? m[4].trim() : undefined,
-      limit: m[5] ? m[5].trim() : undefined,
+      where: whereM ? whereM[1].trim() : undefined,
+      order: orderM ? orderM[1].trim() : undefined,
+      limit: limitM ? limitM[1].trim() : undefined,
     };
   }
 

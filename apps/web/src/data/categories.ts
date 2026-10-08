@@ -4,12 +4,20 @@ export interface CategoryData {
 }
 
 export const categories: Record<string, CategoryData> = {
-  berita: {
-    name: 'Berita',
-    description: 'Kategori placeholder untuk berita terkini.',
+  viral: {
+    name: 'Viral',
+    description: 'Tren yang menyebar cepat di media sosial Indonesia beserta konteksnya.',
   },
   teknologi: {
     name: 'Teknologi',
-    description: 'Kategori placeholder untuk liputan teknologi.',
+    description: 'Perkembangan teknologi, kecerdasan buatan, dan dampaknya di Indonesia.',
+  },
+  gaming: {
+    name: 'Gaming',
+    description: 'Industri dan komunitas game Indonesia.',
+  },
+  explainer: {
+    name: 'Explainer',
+    description: 'Penjelasan latar belakang topik yang sedang ramai dibahas.',
   },
 };

@@ -23,17 +23,19 @@
       "vars": {
         "ENVIRONMENT": "production",
       },
-      "r2_buckets": [
-        {
-          "binding": "ASSETS",
-          "bucket_name": "semburat-assets",
-        },
-      ],
+      // R2 is not enabled on the account yet; enable it and create the
+      // "semburat-assets" bucket before enabling this binding.
+      // "r2_buckets": [
+      //   {
+      //     "binding": "ASSETS",
+      //     "bucket_name": "semburat-assets",
+      //   },
+      // ],
       "d1_databases": [
         {
           "binding": "DB",
           "database_name": "semburat-db",
-          "database_id": "@cf/db-id-prod",
+          "database_id": "0314425f-0ef4-48e0-9ed3-01b8e880093a",
           "migrations_dir": "../../packages/db/src/migrations",
         },
       ],

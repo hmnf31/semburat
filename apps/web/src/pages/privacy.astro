@@ -1,55 +1,39 @@
----
+﻿---
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="Kebijakan Privasi"
-  description="Kebijakan privasi SEMBURAT: bagaimana kami mengumpulkan, menggunakan, dan melindungi data pengguna."
+  title="Kebijikan Privasi"
+  description="Data apa yang dikumpulkan SEMBURAT dan bagaimana digunakan."
 >
   <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
     <nav class="mb-6 text-sm text-text-muted" aria-label="Breadcrumb">
       <a href="/" class="hover:text-accent-hover">Beranda</a>
       <span aria-hidden="true"> / </span>
-      <span aria-current="page">Privasi</span>
+      <span aria-current="page">Kebijikan Privasi</span>
     </nav>
-    <h1 class="mb-6 text-3xl font-bold leading-tight text-primary sm:text-4xl">Kebijakan Privasi</h1>
-
+    <h1 class="mb-6 text-3xl font-bold leading-tight text-primary sm:text-4xl">Kebijikan Privasi</h1>
     <div class="space-y-6 text-base leading-relaxed text-text">
-      <p>
-        Kebijakan privasi ini menjelaskan bagaimana SEMBURAT mengumpulkan, menggunakan, dan melindungi data yang Anda berikan saat menggunakan situs web kami.
-      </p>
-
-      <h2 class="text-xl font-bold text-primary">1. Data yang Kami Kumpulkan</h2>
-      <p>
-        Kami mengumpulkan data minimum yang diperlukan untuk berfungsi, antara lain:
-      </p>
+      <p>Terakhir diperbarui: [TANGGAL]<br />Pengelola: [NAMA/BADAN], [ALAMAT/EMAIL]</p>
+      <blockquote class="border-l-2 border-accent pl-4 italic text-text-muted">Draf ini harus disesuaikan dengan layanan yang benar-benyanya Anda pakai (analitik, iklan, newsletter, afiliasi) dan ditinjau ahli hukum. Di Indonesia berlaku UU Pelindungan Data Pribadi (UU No. 27 Tahun 2022).</blockquote>
+      <h2 class="text-xl font-bold text-primary">Data yang kami kumpulkan</h2>
       <ul class="list-disc space-y-2 pl-6">
-        <li>Informasi teknis seperti alamat IP, browser, dan perangkat.</li>
-        <li>Data yang Anda kirim melalui formulir kontak (nama, email, pesan).</li>
-        <li>Log akses untuk tujuan keamanan dan analisis performa.</li>
+        <li><strong>Data penggunaan situs</strong> (halaman dilihat, perangkat, perkiraan lokasi) lewat [NAMA ALAT ANALITIK].</li>
+        <li><strong>Alamat email</strong> bila Anda berlangganan newsletter, melalui [LAYANAN NEWSLETTER].</li>
+        <li><strong>Pesan</strong> yang Anda kirim lewat formulir kontak.</li>
       </ul>
-
-      <h2 class="text-xl font-bold text-primary">2. Penggunaan Data</h2>
-      <p>
-        Data digunakan untuk merespon permintaan Anda, meningkatkan kualitas situs, dan memastikan keamanan. Kami tidak menjual data ke pihak ketiga.
-      </p>
-
-      <h2 class="text-xl font-bold text-primary">3. Perlindungan Data</h2>
-      <p>
-        Kami menerapkan langkah keamanan yang sesuai untuk melindungi data dari akses, penggunaan, atau pengungkapan yang tidak sah. Namun, tidak ada sistem yang sepenuhnya aman.
-      </p>
-
-      <h2 class="text-xl font-bold text-primary">4. Hak Anda</h2>
-      <p>
-        Anda berhak mengakses, memperbarui, atau menghapus data yang Anda berikan. Silakan hubungi kami melalui halaman <a href="/contact" class="text-accent-hover hover:underline">Kontak</a>.
-      </p>
-
-      <h2 class="text-xl font-bold text-primary">5. Perubahan Kebijakan</h2>
-      <p>
-        Kebijakan ini dapat diperbarui. Tanggal pembarunan tercantum di bagian bawah halaman ini.
-      </p>
-
-      <p class="text-sm text-text-muted">Terakhir diperbarui: 07 Oktober 2026.</p>
+      <h2 class="text-xl font-bold text-primary">Cookie dan iklan</h2>
+      <p>[Jelaskan cookie yang dipakai. Jika memakai jaringan iklan (mis. AdSense) atau afiliasi, jelaskan bahwa pihak ketiga dapat memasang cookie dan sebutkan cara menolak/mengelola.]</p>
+      <h2 class="text-xl font-bold text-primary">Tujuan penggunaan</h2>
+      <p>Mengoperasikan dan meningkatkan situs, mengirim newsletter yang Anda minta, menanggapi pesan, dan mengukur kinerja konten.</p>
+      <h2 class="text-xl font-bold text-primary">Berbagi data</h2>
+      <p>Kami tidak menjual data pribadi. Data dapat diproses penyedia layanan (hosting, analitik, newsletter) untuk menjalankan layanan tersebut: [DAFTAR PENYEDIA].</p>
+      <h2 class="text-xl font-bold text-primary">Hak Anda</h2>
+      <p>Anda dapat meminta akses, koreksi, atau penghapusan data, dan berhenti berlangganan kapan saja melalui [EMAIL PRIVASI] atau tautan di newsletter.</p>
+      <h2 class="text-xl font-bold text-primary">Keamanan dan penyimpanan</h2>
+      <p>[Jelaskan berapa lama data disimpan dan langkah keamanan dasar.]</p>
+      <h2 class="text-xl font-bold text-primary">Anak-anak</h2>
+      <p>Situs ini tidak ditujukan bagi anak di bawah [USIA] tahun dan kami tidak sengaja mengumpulkan data mereka.</p>
     </div>
   </section>
 </BaseLayout>

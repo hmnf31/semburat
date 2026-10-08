@@ -1,48 +1,31 @@
----
+ï»¿---
 import BaseLayout from '../layouts/BaseLayout.astro';
-
-const year = new Date().getFullYear();
 ---
+
 <BaseLayout
-  title="Syarat Penggunaan"
-  description="Syarat penggunaan platform SEMBURAT. Baca ketentuan penggunaan situs ini sebelum mengakses atau menggunakan layanan kami."
+  title="Syarat & Ketentuan"
+  description="Ketentuan penggunaan situs SEMBURAT."
 >
   <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
     <nav class="mb-6 text-sm text-text-muted" aria-label="Breadcrumb">
       <a href="/" class="hover:text-accent-hover">Beranda</a>
       <span aria-hidden="true"> / </span>
-      <span aria-current="page">Syarat Penggunaan</span>
+      <span aria-current="page">Syarat &amp; Ketentuan</span>
     </nav>
-    <h1 class="mb-6 text-3xl font-bold leading-tight text-primary sm:text-4xl">
-      Syarat Penggunaan
-    </h1>
-
+    <h1 class="mb-6 text-3xl font-bold leading-tight text-primary sm:text-4xl">Syarat &amp; Ketentuan</h1>
     <div class="space-y-6 text-base leading-relaxed text-text">
-      <p>
-        Syarat Penggunaan ini adalah placeholder. Dokumen lengkap akan ditayangkan
-        setelah melalui tinjauan editorial dan hukum. Dengan mengakses
-        <strong>SEMBURAT</strong>, Anda setuju mematuhi ketentuan berikut ini.
-      </p>
-      <h2 class="text-xl font-bold text-primary">1. Hak Cipta</h2>
-      <p>
-        Konten pada situs ini dilindungi hak cipta. Kecuali yang dinyatakan
-        eksplisit (misalnya lisensi aset terbuka yang dapat dilacak), segala hak
-        dilindungi oleh undang-undang.
-      </p>
-      <h2 class="text-xl font-bold text-primary">2. Akurasi dan Provenansi</h2>
-      <p>
-        SEMBURAT berusaha menyajikan klaim yang dapat dilacak ke sumber tepercaya.
-        Aset visual dikreditkan sesuai lisensinya, dan status penggunaan dicatat
-        pada setiap artikel.
-      </p>
-      <h2 class="text-xl font-bold text-primary">3. Penggunaan yang Dilarang</h2>
-      <p>
-        Dilarang menyalin, memanipulasi, atau mempublikasikan ulang konten kami
-        untuk keperluan otomatisasi parasitik tanpa izin tertulis.
-      </p>
-      <p class="text-sm text-text-muted">
-        © {year} SEMBURAT. Hak cipta dilindungi.
-      </p>
+      <p>Terakhir diperbarui: [TANGGAL]</p>
+      <blockquote class="border-l-2 border-accent pl-4 italic text-text-muted">Draf umum. Tinjau dengan ahli hukum sebelum dipakai secara resmi.</blockquote>
+      <ol class="list-decimal space-y-2 pl-6">
+        <li><strong>Penggunaan.</strong> Konten SEMBURAT disediakan untuk informasi umum, bukan nasihat hukum, medis, atau keuangan.</li>
+        <li><strong>Hak cipta.</strong> Teks, desain, dan merek SEMBURAT dilindungi. Anda boleh mengutip secukupnya dengan mencantumkan sumber dan tautan. Dilarang menyalin artikel utuh tanpa izin. Konten pihak ketiga tetap milik pemiliknya.</li>
+        <li><strong>Akurasi.</strong> Kami berupaya akurat tetapi tidak menjamin kelengkapan atau ketepatan setiap saat. Lihat <a href="/correction-policy" class="text-accent-hover hover:underline">Kebijikan Koreksi</a>.</li>
+        <li><strong>Tautan eksternal.</strong> Kami tidak bertanggung jawab atas isi situs pihak lain.</li>
+        <li><strong>Afiliasi dan sponsor.</strong> Sebagian halaman dapat memuat tautan afiliasi atau konten bersponsor yang ditandai jelas. Kami dapat memperoleh komisi tanpa biaya tambahan bagi Anda.</li>
+        <li><strong>Batasan tanggung jawab.</strong> Sejauh diizinkan hukum, kami tidak bertanggung jawab atas kerugian yang timbul dari penggunaan informasi di situs ini.</li>
+        <li><strong>Perubahan.</strong> Ketentuan dapat diperbarui; versi terbaru berlaku sejak dipublikasikan.</li>
+        <li><strong>Hukum yang berlaku.</strong> [Hukum Republik Indonesia / yurisdiksi Anda].</li>
+      </ol>
     </div>
   </section>
 </BaseLayout>

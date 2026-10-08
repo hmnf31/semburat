@@ -1,4 +1,4 @@
-# SEMBURAT Task Board
+﻿# SEMBURAT Task Board
 
 Status:
 
@@ -48,6 +48,7 @@ Status:
 - [x] TASK-034 Add SEO metadata
 - [x] TASK-035 Add sitemap/RSS
 - [x] TASK-036 Add structured data
+- [x] TASK-037 Integrate policy pages from semburat-kit
 
 ## Trend intelligence
 

@@ -1,0 +1,23 @@
+# Cek kesehatan situs setelah deploy dan secara berkala.
+name: health-check
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: "7 * * * *"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Cek halaman utama, sitemap, robots
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          if [ -z "$SITE_URL" ]; then echo "Setel Repository Variable SITE_URL"; exit 1; fi
+          for path in "/" "/sitemap-index.xml" "/robots.txt" "/rss.xml"; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" -L "$SITE_URL$path")
+            echo "$path -> $code"
+            if [ "$code" != "200" ]; then echo "GAGAL: $path"; fail=1; fi
+          done
+          exit ${fail:-0}

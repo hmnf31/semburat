@@ -1,0 +1,31 @@
+﻿---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Kebijikan AI"
+  description="Bagaimana SEMBURAT menggunakan kecerdasan buatan."
+>
+  <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+    <nav class="mb-6 text-sm text-text-muted" aria-label="Breadcrumb">
+      <a href="/" class="hover:text-accent-hover">Beranda</a>
+      <span aria-hidden="true"> / </span>
+      <span aria-current="page">Kebijikan AI</span>
+    </nav>
+    <h1 class="mb-6 text-3xl font-bold leading-tight text-primary sm:text-4xl">Kebijikan AI</h1>
+    <div class="space-y-6 text-base leading-relaxed text-text">
+      <p>SEMBURAT menggunakan teknologi AI untuk membantu riset, pengolahan informasi, produksi visual, dan distribusi konten. Setiap konten tetap mengikuti proses verifikasi dan kebijikan editorial sesuai tingkat risikonya.</p>
+      <h2 class="text-xl font-bold text-primary">Yang AI kerjakan</h2>
+      <p>Membantu mengumpulkan dan merangkum informasi dari sumber, mengusulkan sudut dan draf, membuat ringkasan, metadata, dan teks media sosial.</p>
+      <h2 class="text-xl font-bold text-primary">Yang manusia kerjakan</h2>
+      <p>Menentukan standar editorial, meninjau konten berisiko, menyetujui terbit, dan menangani koreksi.</p>
+      <h2 class="text-xl font-bold text-primary">Batasan</h2>
+      <ul class="list-disc space-y-2 pl-6">
+        <li>AI tidak dipakai untuk membuat kutipan atau narasumber fiktif.</li>
+        <li>Gambar AI hanya untuk ilustrasi konsep dan diberi label.</li>
+        <li>Topik berisiko tinggi tidak diterbitkan otomatis.</li>
+        <li>AI dapat salah; karena itu kami mencantumkan sumber dan menyediakan <a href="/correction-policy" class="text-accent-hover hover:underline">jalur koreksi</a>.</li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

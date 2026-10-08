@@ -1,0 +1,57 @@
+# TEMPLATE workflow terjadwal. Salin pola ini untuk research.yml, content-generation.yml, distribution.yml, analytics.yml.
+# Pola pengaman: kill switch, dry-run default, concurrency, timeout, tanpa secret di log.
+name: trend-discovery
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Jalankan tanpa menulis/ publish (true/false)'
+        default: 'true'
+  # Aktifkan jadwal SETELAH uji manual berhasil. Mulai pelan (tiap 1-2 jam), bukan tiap 15 menit.
+  # schedule:
+  #   - cron: "17 */2 * * *"
+
+concurrency:
+  group: trend-discovery
+  cancel-in-progress: false # jangan potong job yang sedang berjalan; hindari data setengah jadi
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    # Kill switch: setel Repository Variable SEMBURAT_KILL_SWITCH=true (Settings > Variables) untuk menghentikan job.
+    if: ${{ vars.SEMBURAT_KILL_SWITCH != 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependensi
+        run: |
+          if [ -f services/trend-engine/requirements.txt ]; then pip install -r services/trend-engine/requirements.txt; fi
+      - name: Jalankan trend discovery
+        env:
+          SEMBURAT_DRY_RUN: ${{ github.event.inputs.dry_run || vars.SEMBURAT_DRY_RUN || 'true' }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          # GANTI dengan entrypoint engine Anda, mis.:
+          # python -m services.trend-engine.main
+          echo "Ganti baris ini dengan perintah trend engine. DRY_RUN=$SEMBURAT_DRY_RUN"
+      - name: Beri tahu Telegram jika gagal
+        if: ${{ failure() }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+            curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              -d chat_id="$TELEGRAM_CHAT_ID" \
+              -d text="SEMBURAT: workflow trend-discovery GAGAL (run ${GITHUB_RUN_ID})" > /dev/null
+          fi

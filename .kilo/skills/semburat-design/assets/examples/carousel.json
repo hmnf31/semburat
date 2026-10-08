@@ -1,0 +1,44 @@
+{
+  "slug": "contoh-carousel",
+  "domain": "semburat.example",
+  "image_type": "none",
+  "slides": [
+    { "type": "cover", "kicker": "Gaming", "title": "Patch baru MLBB: peran tank berubah total?" },
+    {
+      "type": "content",
+      "kicker": "Apa yang terjadi",
+      "title": "Pembaruan dirilis",
+      "body": "Pengembang merilis patch dengan penyesuaian pada beberapa hero tank."
+    },
+    {
+      "type": "content",
+      "kicker": "Fakta kunci",
+      "title": "Tiga perubahan utama",
+      "body": "Ketahanan dasar turun, cooldown skill naik, efek kontrol diperjelas."
+    },
+    {
+      "type": "content",
+      "kicker": "Konteks",
+      "title": "Kenapa diubah",
+      "body": "Catatan resmi menyebut keseimbangan lane sebagai alasan utama."
+    },
+    {
+      "type": "content",
+      "kicker": "Kenapa penting",
+      "title": "Dampak ke meta",
+      "body": "Komposisi tim kemungkinan bergeser, tetapi dampaknya baru terlihat di turnamen."
+    },
+    {
+      "type": "content",
+      "kicker": "Kesimpulan",
+      "title": "Yang perlu dipantau",
+      "body": "Tunggu data pick rate beberapa minggu sebelum menarik kesimpulan."
+    },
+    {
+      "type": "sources",
+      "title": "Sumber & kredit",
+      "sources": ["Catatan patch resmi (contoh)", "Pengumuman pengembang (contoh)"],
+      "cta": "Baca selengkapnya di semburat.example"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      {{tokens_css}}
+      {{base_css}}
+      .cv { width: 1080px; height: 1350px; }
+
+      .cv { padding: 72px; }
+      .top { display: flex; justify-content: space-between; align-items: center; }
+      .kicker { font-size: 24px; padding: 8px 22px; }
+      .num { font-family: var(--sb-font-heading); font-weight: 800; font-size: 26px; color: var(--sb-muted); }
+      .title { margin-top: 28px; font-size: 64px; }
+      .list { margin-top: 36px; font-size: 38px; display: grid; gap: 22px; }
+      .credit-block { margin-top: 40px; font-size: 28px; color: var(--sb-muted); }
+      .cta { margin-top: 36px; font-size: 34px; font-weight: 700; color: var(--sb-sun-400); }
+      .wm { font-size: 26px; }
+      .glow { width: 520px; height: 520px; left: -200px; bottom: -220px; }
+    </style>
+  </head>
+  <body>
+    <div class="cv">
+      <div class="glow"></div>
+      <div>
+        <div class="top">
+          <span class="kicker">Sumber</span><span class="num">{{slide_no}} / {{slide_total}}</span>
+        </div>
+        <h2 class="title">{{title}}</h2>
+        <ul class="list">
+          {{sources_html}}
+        </ul>
+        <div class="credit-block">{{credit_html}}</div>
+        <div class="cta">{{cta}}</div>
+      </div>
+      <div class="footer">
+        <div class="wm">SEMBURAT</div>
+        <div class="credit">{{domain}}</div>
+      </div>
+    </div>
+  </body>
+</html>

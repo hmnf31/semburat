@@ -1,0 +1,125 @@
+{
+  "catatan": "20 topik uji untuk evaluasi prompt. Ganti dengan topik nyata dari niche Anda. 'expected_risk' = lantai minimal yang harus ditandai sistem.",
+  "topics": [
+    {
+      "id": 1,
+      "jenis": "gadget",
+      "topic": "Peluncuran smartphone baru di Indonesia",
+      "expected_risk": "low"
+    },
+    {
+      "id": 2,
+      "jenis": "gadget",
+      "topic": "Pembaruan sistem operasi ponsel dengan fitur baru",
+      "expected_risk": "low"
+    },
+    {
+      "id": 3,
+      "jenis": "gadget",
+      "topic": "Aplikasi populer merilis fitur AI",
+      "expected_risk": "low"
+    },
+    {
+      "id": 4,
+      "jenis": "gadget",
+      "topic": "Perbandingan dua laptop untuk mahasiswa",
+      "expected_risk": "low"
+    },
+    {
+      "id": 5,
+      "jenis": "game",
+      "topic": "Patch terbaru MLBB mengubah peran tank",
+      "expected_risk": "low"
+    },
+    {
+      "id": 6,
+      "jenis": "game",
+      "topic": "Jadwal turnamen esports nasional",
+      "expected_risk": "low"
+    },
+    {
+      "id": 7,
+      "jenis": "game",
+      "topic": "Game baru rilis di PC dan konsol",
+      "expected_risk": "low"
+    },
+    {
+      "id": 8,
+      "jenis": "game",
+      "topic": "Perubahan sistem ranked pada game populer",
+      "expected_risk": "low"
+    },
+    {
+      "id": 9,
+      "jenis": "explainer",
+      "topic": "Bagaimana AI agent bekerja",
+      "expected_risk": "low"
+    },
+    {
+      "id": 10,
+      "jenis": "explainer",
+      "topic": "Apa itu cloud computing dan kenapa penting",
+      "expected_risk": "low"
+    },
+    {
+      "id": 11,
+      "jenis": "explainer",
+      "topic": "Cara kerja autentikasi dua langkah",
+      "expected_risk": "low"
+    },
+    {
+      "id": 12,
+      "jenis": "explainer",
+      "topic": "Kenapa baterai ponsel cepat turun seiring waktu",
+      "expected_risk": "low"
+    },
+    {
+      "id": 13,
+      "jenis": "komparasi",
+      "topic": "Layanan streaming A vs B untuk keluarga",
+      "expected_risk": "low"
+    },
+    {
+      "id": 14,
+      "jenis": "komparasi",
+      "topic": "Earbuds nirkabel terbaik di bawah harga tertentu",
+      "expected_risk": "low"
+    },
+    {
+      "id": 15,
+      "jenis": "komparasi",
+      "topic": "Aplikasi catatan: mana yang cocok untuk kuliah",
+      "expected_risk": "low"
+    },
+    {
+      "id": 16,
+      "jenis": "viral",
+      "topic": "Kreator konten dikritik karena iklan terselubung",
+      "expected_risk": "medium"
+    },
+    {
+      "id": 17,
+      "jenis": "viral",
+      "topic": "Tren internet baru yang viral di media sosial",
+      "expected_risk": "medium"
+    },
+    {
+      "id": 18,
+      "jenis": "viral",
+      "topic": "Komplain pelanggan viral terhadap layanan paylater",
+      "expected_risk": "medium"
+    },
+    {
+      "id": 19,
+      "jenis": "sensitif",
+      "topic": "Tersangka kasus penipuan investasi kripto ditangkap polisi",
+      "expected_risk": "high"
+    },
+    {
+      "id": 20,
+      "jenis": "sensitif",
+      "topic": "Isu vaksin dan penyakit baru yang ramai dibicarakan",
+      "expected_risk": "high"
+    }
+  ]
+}

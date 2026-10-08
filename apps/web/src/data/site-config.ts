@@ -31,30 +31,33 @@ export interface SiteConfig {
 
 export const siteConfig: SiteConfig = {
   operator: {
-    displayName: '[NAMA PENGELOLA / REDAKSI]',
-    legalName: '[NAMA/BADAN]',
-    role: '[PERAN]',
-    address: '[ALAMAT/EMAIL]',
+    displayName: 'Huda Muhamad Nur Fauzi',
+    legalName: 'Sawadina.Co',
+    role: 'Owner',
+    address: 'hudamuhamadnf31@gmail.com',
   },
   emails: {
-    editorial: '[EMAIL REDAKSI]',
-    correction: '[EMAIL KOREKSI]',
-    copyright: '[EMAIL HAK CIPTA]',
-    partnership: '[EMAIL KERJASAMA]',
-    privacy: '[EMAIL PRIVASI]',
+    editorial: 'semburatproject@gmail.com',
+    correction: 'semburatproject@gmail.com',
+    copyright: 'semburatproject@gmail.com',
+    partnership: 'semburatproject@gmail.com',
+    privacy: 'semburatproject@gmail.com',
   },
   responseBusinessDays: 3,
-  policyLastUpdated: '[TANGGAL]',
+  policyLastUpdated: '8 Oktober 2026',
   jurisdiction: 'Republik Indonesia',
   minimumAge: 13,
-  analyticsProvider: '[NAMA ALAT ANALITIK]',
-  newsletterProvider: '[LAYANAN NEWSLETTER]',
-  serviceProviders: '[DAFTAR PENYEDIA]',
+  analyticsProvider:
+    'log bawaan Cloudflare Pages sebagai data agregat tanpa cookie pelacakan pihak ketiga',
+  newsletterProvider: 'layanan email redaksi (belum ada penyedia newsletter pihak ketiga)',
+  serviceProviders:
+    'Cloudflare (hosting Pages/Workers/D1 dan keamanan jaringan), GitHub (penyimpanan kode), serta penyedia email yang dipakai redaksi',
   cookieNote:
-    '[Jelaskan cookie yang dipakai. Jika memakai jaringan iklan (mis. AdSense) atau afiliasi, jelaskan bahwa pihak ketiga dapat memasang cookie dan sebutkan cara menolak/mengelola.]',
-  dataRetentionNote: '[Jelaskan berapa lama data disimpan dan langkah keamanan dasar.]',
+    'Situs ini tidak memakai cookie analitik atau iklan. Cookie hanya dapat dipakai bila fitur yang membutuhkannya ditambahkan (misalnya pendaftaran newsletter atau preferensi), dan Anda dapat menghapus atau memblokir cookie kapan saja lewat pengaturan browser. Bila kelak situs memakai jaringan iklan atau tautan afiliasi, pihak ketiga dapat memasang cookie dan bagian ini akan kami perbarui sekaligus ditandai di halaman terkait.',
+  dataRetentionNote:
+    'Data yang Anda kirim lewat kontak hanya disimpan selama diperlukan untuk menanggapi laporan atau pertanyaan, lalu dihapus bila tidak lagi diperlukan. Catatan teknis seperti log ditangani penyedia hosting sesuai kebijakannya. Anda dapat meminta akses, koreksi, atau penghapusan data melalui email privasi sewaktu-waktu.',
   reviewMethodologyNote:
-    '[Jelaskan bagaimana Anda menguji/mengumpulkan data ulasan. Jangan mengklaim pengujian langsung bila tidak dilakukan.]',
+    'Ulasan dan artikel produk disusun dari sumber resmi (spesifikasi, rilis, dokumen publik), catatan redaksi, dan konfirmasi langsung bila tersedia. Kami tidak mengklaim pengujian atau pengalaman langsung yang tidak kami lakukan. Metode pengumpulan, tanggal akses, dan sumbernya dicantumkan pada artikel terkait.',
   sponsorLabel: 'Konten Bersponsor',
 };
 

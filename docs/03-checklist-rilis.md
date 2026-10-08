@@ -19,7 +19,7 @@ Gunakan `templates/article-review-checklist.md` untuk setiap artikel.
 
 ## Halaman dan teknis wajib
 
-- [x] Halaman dari folder `pages/` sudah tayang: About, Editorial Policy, Correction Policy, Source Policy, AI Policy, Contact, Privacy, Terms. **Catatan:** teks yang bergantung pada data operator kini dibaca dari `apps/web/src/data/site-config.ts` dan masih berisi placeholder sampai diisi pemilik.
+- [x] Halaman dari folder `pages/` sudah tayang: About, Editorial Policy, Correction Policy, Source Policy, AI Policy, Contact, Privacy, Terms. Data operator dibaca dari `apps/web/src/data/site-config.ts` dan sudah diisi; teks draft/placeholder sudah diganti teks umum.
 - [x] Pernyataan transparansi AI tampil (footer semua halaman + halaman AI Policy).
 - [x] `sitemap.xml`, `robots.txt`, RSS berfungsi (`robots.txt` menunjuk sitemap, `PUBLIC_SITE_URL`).
 - [x] Canonical, Open Graph, kartu X, breadcrumbs berfungsi.
@@ -31,12 +31,7 @@ Gunakan `templates/article-review-checklist.md` untuk setiap artikel.
 
 ## Sisa untuk operator (data pribadi/brand)
 
-Semua data operator sekarang terpusat di **`apps/web/src/data/site-config.ts`** — isi file itu saja:
-
-- nama pengelola/badan, alamat, peran, tanggal diperbarui, yurisdiksi, usia minimum
-- 5 email redaksi/koreksi/hak cipta/kerja sama/privasi + hari kerja balasan
-- penyedia analitik, newsletter, daftar penyedia layanan, catatan cookie/retensi/evaluasi ulasan
-
-- Ganti email contoh di `contact.astro` tidak diperlukan lagi (sudah memakai `site-config`).
-- Aktifkan R2 lalu deploy ulang worker production (binding `ASSETS` masih dikomentari).
-- Set `PUBLIC_SITE_URL` saat build web (sudah dipakai untuk canonical/robots/sitemap).
+- [x] Data operator diisi di `apps/web/src/data/site-config.ts` (identitas, 5 email, tanggal kebijakan, yurisdiksi, penyedia, catatan cookie/retensi/evaluasi ulasan).
+- [ ] Label afiliasi dan "Konten Bersponsor" disiapkan bila monetisasi diaktifkan.
+- [ ] Aktifkan R2 lalu deploy ulang worker production (binding `ASSETS` masih dikomentari).
+- [ ] Tinjau ulang `site-config.ts` bila layanan berubah (analitik, newsletter, iklan, penyedia).

@@ -137,6 +137,7 @@ Status:
 - [ ] TASK-217 Enable R2 and re-deploy production worker
 - [x] TASK-218 Centralize operator data in `apps/web/src/data/site-config.ts` (values to be filled by owner)
 - [x] TASK-219 Add `/categories` index page and fix header nav link
+- [x] TASK-220 Configure Telegram bot secrets, webhook and sender allow-list (production + staging)
 
 ## Kilo execution rule
 

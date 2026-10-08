@@ -1,0 +1,93 @@
+import { Hono } from 'hono';
+import { z } from 'zod';
+import { createContainer } from '../container.js';
+import type { Env } from '../env.js';
+
+const app = new Hono<{ Bindings: Env }>();
+
+const DEFAULT_QUERIES = ['gaming indonesia', 'teknologi indonesia'];
+
+const discoverBody = z.object({
+  queries: z.array(z.string().trim().min(2)).min(1).max(20).optional(),
+});
+
+const batchBody = z.object({
+  limit: z.number().int().min(1).max(20).optional(),
+});
+
+function parseQueries(raw: string | undefined): string[] {
+  if (!raw) return DEFAULT_QUERIES;
+  const queries = raw
+    .split(',')
+    .map((q) => q.trim())
+    .filter((q) => q.length > 0);
+  return queries.length > 0 ? queries : DEFAULT_QUERIES;
+}
+
+app.post('/discover', async (c) => {
+  const parsed = discoverBody.safeParse(await c.req.json().catch(() => ({})));
+  if (!parsed.success) {
+    return c.json(
+      {
+        error: { code: 'VALIDATION_ERROR', message: 'Invalid body', details: parsed.error.issues },
+      },
+      400
+    );
+  }
+
+  const container = createContainer(c.env);
+  const queries = parsed.data.queries ?? parseQueries(c.env.TREND_QUERIES);
+  const trends = await container.trendDiscovery.discoverTrends(queries);
+
+  return c.json({
+    data: { trends, count: trends.length },
+    meta: { queries, aiMode: container.aiMode, environment: c.env.ENVIRONMENT },
+  });
+});
+
+app.post('/process/:trendId', async (c) => {
+  const trendId = c.req.param('trendId');
+  const container = createContainer(c.env);
+  const article = await container.pipeline.processTrend(trendId);
+
+  return c.json({
+    data: article,
+    meta: { trendId, aiMode: container.aiMode, environment: c.env.ENVIRONMENT },
+  });
+});
+
+app.post('/process-batch', async (c) => {
+  const parsed = batchBody.safeParse(await c.req.json().catch(() => ({})));
+  if (!parsed.success) {
+    return c.json(
+      {
+        error: { code: 'VALIDATION_ERROR', message: 'Invalid body', details: parsed.error.issues },
+      },
+      400
+    );
+  }
+
+  const container = createContainer(c.env);
+  const articles = await container.pipeline.processTrendBatch(parsed.data.limit ?? 5);
+
+  return c.json({
+    data: { articles, count: articles.length },
+    meta: { aiMode: container.aiMode, environment: c.env.ENVIRONMENT },
+  });
+});
+
+app.get('/status', async (c) => {
+  const container = createContainer(c.env);
+  const trends = await container.trendRepo.findByScore(0, 1000);
+
+  return c.json({
+    data: {
+      trends: { total: trends.length },
+      aiMode: container.aiMode,
+      researchProvider: container.researchProvider.constructor.name,
+      environment: c.env.ENVIRONMENT,
+    },
+  });
+});
+
+export default app;

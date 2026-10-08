@@ -11,6 +11,7 @@
       "binding": "DB",
       "database_name": "semburat-db",
       "database_id": "@cf/db-id",
+      "migrations_dir": "../../packages/db/src/migrations",
     },
   ],
   "r2_buckets": [
@@ -33,6 +34,7 @@
           "binding": "DB",
           "database_name": "semburat-db",
           "database_id": "@cf/db-id-prod",
+          "migrations_dir": "../../packages/db/src/migrations",
         },
       ],
     },
@@ -46,6 +48,7 @@
           "binding": "DB",
           "database_name": "semburat-db-staging",
           "database_id": "@cf/db-id-staging",
+          "migrations_dir": "../../packages/db/src/migrations",
         },
       ],
     },

@@ -18,3 +18,10 @@ export * from './AnalyticsService.js';
 export * from './AffiliateService.js';
 
 export * from './ErrorAlertingService.js';
+
+export * from './FactExtractionService.js';
+export * from './FactVerificationService.js';
+export * from './EditorialGenerationService.js';
+export * from './QualityGateService.js';
+export * from './HumanReviewQueueService.js';
+export * from './TrendResearchPipeline.js';

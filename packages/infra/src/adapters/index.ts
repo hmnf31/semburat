@@ -5,6 +5,8 @@ export * from './research/NewsAdapter.js';
 export * from './research/RSSAdapter.js';
 export * from './research/EnhancedResearchAdapter.js';
 export * from './trends/GoogleTrendsAdapter.js';
+export * from './storage/MockStorageProvider.js';
+export * from './storage/R2StorageProvider.js';
 
 export * from './publishing/TelegramPublisher.js';
 export * from './publishing/InstagramPublisher.js';

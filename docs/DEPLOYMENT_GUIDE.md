@@ -51,26 +51,31 @@ Edit .env and fill in real values. Never commit .env or any file containing real
 
 ### Environment Variable Categories
 
-| Variable                       | Scope  | Description                      |
-| ------------------------------ | ------ | -------------------------------- |
-| NODE_ENV                       | PUBLIC | development, staging, production |
-| CLOUDFLARE_ACCOUNT_ID          | SERVER | Cloudflare account ID            |
-| CLOUDFLARE_API_TOKEN           | SERVER | Scoped Cloudflare API token      |
-| D1_DATABASE_ID                 | SERVER | UUID of the D1 database          |
-| R2_BUCKET                      | SERVER | Name of the R2 storage bucket    |
-| OPENROUTER_API_KEY             | SERVER | OpenRouter API key               |
-| OPENROUTER_DEFAULT_MODEL       | SERVER | Default model identifier         |
-| OLLAMA_BASE_URL                | SERVER | Optional local Ollama base URL   |
-| OLLAMA_DEFAULT_MODEL           | SERVER | Optional local Ollama model      |
-| TELEGRAM_BOT_TOKEN             | SERVER | Bot token from @BotFather        |
-| TELEGRAM_WEBHOOK_SECRET        | SERVER | Webhook validation secret        |
-| MINIMAX_API_KEY                | SERVER | MiniMax API key                  |
-| MINIMAX_MODEL                  | SERVER | MiniMax model identifier         |
-| GOOGLE_SHEETS_CREDENTIALS_JSON | SERVER | Service-account credentials JSON |
-| GOOGLE_SHEETS_SPREADSHEET_ID   | SERVER | Operational spreadsheet ID       |
-| APP_BASE_URL                   | SERVER | Backend base URL                 |
-| PUBLIC_SITE_URL                | PUBLIC | Public website URL               |
-| LOG_LEVEL                      | SERVER | debug, info, warn, error         |
+| Variable                       | Scope  | Description                           |
+| ------------------------------ | ------ | ------------------------------------- |
+| NODE_ENV                       | PUBLIC | development, staging, production      |
+| CLOUDFLARE_ACCOUNT_ID          | SERVER | Cloudflare account ID                 |
+| CLOUDFLARE_API_TOKEN           | SERVER | Scoped Cloudflare API token           |
+| D1_DATABASE_ID                 | SERVER | UUID of the D1 database               |
+| R2_BUCKET                      | SERVER | Name of the R2 storage bucket         |
+| R2_PUBLIC_BASE_URL             | SERVER | Public base URL for signed assets     |
+| RESEARCH_MODE                  | SERVER | live (default) or offline             |
+| RSS_FEEDS                      | SERVER | Extra RSS feeds, comma separated      |
+| OPENROUTER_API_KEY             | SERVER | OpenRouter API key                    |
+| OPENROUTER_DEFAULT_MODEL       | SERVER | Default model identifier              |
+| OLLAMA_BASE_URL                | SERVER | Optional local Ollama base URL        |
+| OLLAMA_DEFAULT_MODEL           | SERVER | Optional local Ollama model           |
+| TELEGRAM_BOT_TOKEN             | SERVER | Bot token from @BotFather             |
+| TELEGRAM_WEBHOOK_SECRET        | SERVER | Webhook validation secret             |
+| MINIMAX_API_KEY                | SERVER | MiniMax API key                       |
+| MINIMAX_MODEL                  | SERVER | MiniMax model identifier              |
+| GOOGLE_SHEETS_CREDENTIALS_JSON | SERVER | Service-account credentials JSON      |
+| GOOGLE_SHEETS_SPREADSHEET_ID   | SERVER | Operational spreadsheet ID            |
+| APP_BASE_URL                   | SERVER | Backend base URL                      |
+| PUBLIC_SITE_URL                | PUBLIC | Public website URL                    |
+| PUBLIC_API_BASE_URL            | PUBLIC | Worker API base URL for the web build |
+| TELEGRAM_ALLOWED_USER_IDS      | SERVER | Allowed Telegram user IDs             |
+| LOG_LEVEL                      | SERVER | debug, info, warn, error              |
 
 ### Secrets Management
 

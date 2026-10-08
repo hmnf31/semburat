@@ -68,6 +68,7 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 ## 6. What's NOT Done
 
 - Web tests (TODO placeholder) — the static site builds against the worker API with fixture fallback, but has no unit tests yet
+- Policy pages (privacy, terms, editorial, correction) still contain `[TANGGAL]` / `[NAMA/BADAN]` placeholders that require the publisher's legal details
 - Actual Cloudflare deployment — covered by kit Phase B (`docs/02-checklist-deploy-staging.md`)
 - AI provider integration (OpenRouter, MiniMax) — adapters exist, keys not configured
 - Telegram bot wiring is implemented; live bot requires `TELEGRAM_BOT_TOKEN`

@@ -116,6 +116,18 @@ Status:
 - [x] TASK-113 Deployment documentation
 - [x] TASK-114 Production runbook
 
+- [x] TASK-114 Production runbook
+
+## Delivery sprint
+
+- [x] TASK-200 Repo cleanup and CI hardening
+- [x] TASK-201 Worker composition root, pipeline API and Telegram control plane
+- [x] TASK-202 Real research sources (Google News RSS) with offline mode
+- [x] TASK-203 Source statistics via SourceRepository.findAll
+- [x] TASK-204 Web ↔ API integration with fixture fallback
+- [x] TASK-205 Public article list/detail endpoints (published only)
+- [x] TASK-206 Env/docs refresh (RESEARCH_MODE, RSS_FEEDS, PUBLIC_API_BASE_URL)
+
 ## Kilo execution rule
 
 Kilo should normally work on one coherent task or small dependency group at a time.

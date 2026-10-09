@@ -1,33 +1,42 @@
 ﻿---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { emailHtml, siteConfig } from '../data/site-config';
+import PolicyLayout from '../layouts/PolicyLayout.astro';
+import { siteConfig } from '../data/site-config';
+
+const email = siteConfig.emails.correction;
+const days = siteConfig.responseBusinessDays;
 ---
 
-<BaseLayout
-  title="Kebijikan Koreksi"
+<PolicyLayout
+  title="Kebijakan Koreksi"
   description="Cara SEMBURAT memperbaiki kesalahan."
+  activeSlug="correction-policy"
 >
-  <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-    <nav class="mb-6 text-sm text-sb-muted" aria-label="Breadcrumb">
-      <a href="/" class="hover:text-sb-primary">Beranda</a>
-      <span aria-hidden="true"> / </span>
-      <span aria-current="page">Kebijikan Koreksi</span>
-    </nav>
-    <h1 class="mb-6 font-heading text-3xl font-normal leading-tight text-sb-ink sm:text-4xl">Kebijikan Koreksi</h1>
-    <div class="space-y-6 font-body text-base leading-relaxed text-sb-ink">
-      <p>Kami berusaha akurat, tetapi bisa salah. Bila Anda menemukan kekeliruan, kirim ke <span set:html={emailHtml(siteConfig.emails.correction)} /> dengan tautan artikel dan bukti pendukung.</p>
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Proses</h2>
-      <ol class="font-body list-decimal space-y-2 pl-6">
-        <li>Kami menerima dan mencatat laporan.</li>
-        <li>Kami memeriksa dengan sumber primer atau resmi.</li>
-        <li>Jika terbukti salah, artikel diperbaiki.</li>
-        <li>Untuk kesalahan yang signifikan, kami menampilkan <strong class="font-body font-semibold text-sb-ink">catatan koreksi</strong> di artikel (apa yang salah dan apa yang benar).</li>
-        <li>Kami mencatat perubahan secara internal.</li>
-      </ol>
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Target waktu</h2>
-<p>Kami berupaya menanggapi laporan dalam {siteConfig.responseBusinessDays} hari kerja. Kesalahan yang berpotensi merugikan orang ditangani lebih dahulu.</p>
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Permintaan penghapusan / hak cipta</h2>
-      <p>Jika Anda pemilik hak atas teks atau gambar yang kami gunakan dan ingin kami menurunkan, hubungi <span set:html={emailHtml(siteConfig.emails.copyright)} /> dengan bukti kepemilikan dan tautan konten. Kami akan meninjau dan menindaklanjuti sesegera mungkin.</p>
-    </div>
-  </section>
-</BaseLayout>
+  <p class="lead">
+    Kami berusaha akurat, tetapi bisa salah. Bila Anda menemukan kekeliruan, kirim ke
+    <a href={`mailto:${email}`}>{email}</a> dengan tautan artikel dan bukti pendukung.
+  </p>
+  <h2>Proses</h2>
+  <ol class="principles">
+    <li><div>Kami menerima dan mencatat laporan.</div></li>
+    <li><div>Kami memeriksa dengan sumber primer atau resmi.</div></li>
+    <li><div>Jika terbukti salah, artikel diperbaiki.</div></li>
+    <li>
+      <div>
+        Untuk kesalahan yang signifikan, kami menampilkan <strong>catatan koreksi</strong> di artikel (apa yang
+        salah dan apa yang benar).
+      </div>
+    </li>
+    <li><div>Kami mencatat perubahan secara internal.</div></li>
+  </ol>
+  <h2>Target waktu</h2>
+  <p>
+    Kami berupaya menanggapi laporan dalam {days} hari kerja. Kesalahan yang berpotensi merugikan orang ditangani
+    lebih dahulu.
+  </p>
+  <h2>Permintaan penghapusan / hak cipta</h2>
+  <p>
+    Jika Anda pemilik hak atas teks atau gambar yang kami gunakan dan ingin kami menurunkan, hubungi
+    <a href={`mailto:${siteConfig.emails.copyright}`}>{siteConfig.emails.copyright}</a> dengan bukti kepemilikan
+    dan tautan konten. Kami akan meninjau dan menindaklanjuti sesegera mungkin.
+  </p>
+</PolicyLayout>

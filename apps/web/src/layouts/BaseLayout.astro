@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import CategorySprite from '../components/CategorySprite.astro';
 import SEO from '../components/SEO.astro';
 import '../styles/global.css';
 
@@ -12,6 +13,9 @@ interface Props {
   modifiedTime?: string;
   canonicalUrl?: string;
   type?: 'website' | 'article';
+  active?: string;
+  bigMast?: boolean;
+  progress?: boolean;
 }
 
 const {
@@ -22,13 +26,17 @@ const {
   modifiedTime,
   canonicalUrl,
   type = 'website',
+  active = '',
+  bigMast = false,
+  progress = false,
 } = Astro.props;
 ---
+
 <!doctype html>
 <html lang="id">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <SEO
       title={title}
       description={description}
@@ -40,12 +48,67 @@ const {
     >
       <slot name="schema" />
     </SEO>
+    <meta name="theme-color" content="#f9f9f6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#161817" media="(prefers-color-scheme: dark)" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..700&family=Hanken+Grotesk:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
   </head>
-  <body class="min-h-screen bg-sb-surface font-body text-sb-ink antialiased">
-    <Header />
-    <main>
+  <body>
+    <CategorySprite />
+    <a class="skip" href="#isi">Langsung ke isi</a>
+    {progress && <div class="progress" aria-hidden="true"></div>}
+    <Header big={bigMast} active={active} />
+    <main id="isi" class="wrap">
       <slot />
+      <section class="note" aria-label="Transparansi AI">
+        <div class="lead2">Dikerjakan bersama AI, diawasi manusia.<sup>1</sup></div>
+        <p>
+          <sup>1</sup> SEMBURAT menggunakan kecerdasan buatan sebagai alat bantu di dalam alur editorial yang
+          diawasi manusia. Setiap klaim penting harus dapat ditelusuri ke sumbernya, dan konten berisiko tinggi
+          wajib melalui peninjauan manusia sebelum terbit.
+          <a class="readmore" href="/ai-policy/">Kebijakan AI</a>
+        </p>
+      </section>
     </main>
     <Footer />
+    <script>
+      const toggle = document.querySelector('.nav-toggle');
+      const nav = document.getElementById('nav');
+      if (toggle && nav) {
+        toggle.addEventListener('click', () => {
+          const open = nav.classList.toggle('open');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+
+      const bar = document.querySelector('.progress');
+      const prose = document.querySelector('.prose');
+      if (bar && prose) {
+        let ticking = false;
+        const update = () => {
+          const rect = prose.getBoundingClientRect();
+          const vh = window.innerHeight;
+          const total = rect.height - vh * 0.5;
+          const done = Math.min(Math.max((vh * 0.3 - rect.top) / total, 0), 1);
+          (bar as HTMLElement).style.transform = 'scaleX(' + done + ')';
+          ticking = false;
+        };
+        window.addEventListener(
+          'scroll',
+          () => {
+            if (!ticking) {
+              ticking = true;
+              requestAnimationFrame(update);
+            }
+          },
+          { passive: true },
+        );
+        update();
+      }
+    </script>
   </body>
 </html>

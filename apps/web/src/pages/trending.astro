@@ -1,34 +1,59 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getCategoryCounts } from '../lib/content';
+import { getArticles, getCategoryCounts } from '../lib/content';
+import { categoryHref, categoryKey } from '../lib/visuals';
+import { categories } from '../data/categories';
 
-const trendingTopicsArray = (await getCategoryCounts()).map((topic, index) => ({
-  ...topic,
-  rank: index + 1,
-  href: '/categories/' + topic.label.toLowerCase(),
-}));
+const articles = await getArticles();
+
+const ranked = (await getCategoryCounts()).map((topic, index) => {
+  const slug = categoryKey(topic.label);
+  return {
+    rank: index + 1,
+    slug,
+    name: categories[slug]?.name ?? topic.label,
+    count: topic.count,
+    articles: articles.filter((article) => categoryKey(article.category) === slug),
+  };
+});
 ---
 
-<BaseLayout title="Trending" description="Topik yang sedang tren di SEMBURAT — dihitung dari artikel terbit.">
-  <section class="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-    <h1 class="mb-2 font-heading text-3xl font-normal text-sb-ink sm:text-4xl">Trending</h1>
-    <p class="mb-8 text-sm text-sb-muted">
-      Peringkat dihitung dari jumlah artikel terbit per kategori. Setiap artikel dapat dilacak ke sumbernya.
-    </p>
-    <ol class="space-y-4">
-      {trendingTopicsArray.map((topic) => (
-        <li class="flex items-center gap-4 rounded-lg border border-sb-hairline bg-sb-card p-4">
-          <span class="w-10 shrink-0 text-center font-heading text-2xl font-normal text-sb-primary" aria-label={`Peringkat ${topic.rank}`}>
-            {topic.rank}
-          </span>
-          <div class="flex-1">
-            <a href={topic.href} class="font-body font-semibold text-sb-ink hover:text-sb-primary">
-              {topic.label}
+<BaseLayout
+  title="Trending"
+  description="Topik yang sedang tren di SEMBURAT, dihitung dari artikel terbit."
+  active="trending"
+>
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="/">Beranda</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">Trending</span>
+  </nav>
+  <div class="phead">
+    <p class="kicker">Peringkat topik</p>
+    <h1>Trending</h1>
+    <p>Peringkat dihitung dari jumlah artikel terbit per kategori. Setiap artikel dapat dilacak ke sumbernya.</p>
+  </div>
+  <section class="toc">
+    <ol>
+      {
+        ranked.map((topic) => (
+          <li>
+            <a class="row" href={categoryHref(topic.name)}>
+              <span class="n">{topic.rank}</span>
+              <span class="t">{topic.name}</span>
+              <span class="d" />
+              <span class="c">{topic.count} artikel</span>
             </a>
-            <p class="mt-0.5 text-sm text-sb-muted">{topic.count} artikel</p>
-          </div>
-        </li>
-      ))}
+            <ul class="sub">
+              {topic.articles.map((article) => (
+                <li>
+                  <a href={`/articles/${article.slug}/`}>{article.title}</a>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
     </ol>
   </section>
 </BaseLayout>

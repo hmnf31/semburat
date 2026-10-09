@@ -1,33 +1,34 @@
 ﻿---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import PolicyLayout from '../layouts/PolicyLayout.astro';
 ---
 
-<BaseLayout
-  title="Kebijikan Sumber & Kredit"
+<PolicyLayout
+  title="Kebijakan Sumber & Kredit"
   description="Bagaimana SEMBURAT memilih sumber dan mengkreditkan visual."
+  activeSlug="source-policy"
 >
-  <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-    <nav class="mb-6 text-sm text-sb-muted" aria-label="Breadcrumb">
-      <a href="/" class="hover:text-sb-primary">Beranda</a>
-      <span aria-hidden="true"> / </span>
-      <span aria-current="page">Kebijikan Sumber &amp; Kredit</span>
-    </nav>
-    <h1 class="mb-6 font-heading text-3xl font-normal leading-tight text-sb-ink sm:text-4xl">Kebijikan Sumber &amp; Kredit</h1>
-    <div class="space-y-6 font-body text-base leading-relaxed text-sb-ink">
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Pemilihan sumber</h2>
-      <p>Kami mengelompokkan sumber menjadi: resmi, primer, media mapan, ahli, basis data publik, komunitas, unggahan media sosial, dan konten buatan pengguna. Sumber resmi dan primer memiliki bobot lebih tinggi untuk klaim faktual. Unggahan media sosial dan konten komunitas tidak kami perlakukan sebagai fakta terkonfirmasi tanpa dukungan lain.</p>
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Penandaan klaim</h2>
-      <ul class="font-body list-disc space-y-2 pl-6">
-        <li><strong class="font-body font-semibold text-sb-ink">Terkonfirmasi</strong> — didukung sumber andal.</li>
-        <li><strong class="font-body font-semibold text-sb-ink">Dilaporkan</strong> — dilaporkan sumber kredibel, belum dikonfirmasi independen.</li>
-        <li><strong class="font-body font-semibold text-sb-ink">Belum terverifikasi</strong> — klaim ada, bukti belum cukup.</li>
-        <li><strong class="font-body font-semibold text-sb-ink">Diperdebatkan</strong> — sumber tidak sepakat.</li>
-        <li><strong class="font-body font-semibold text-sb-ink">Opini</strong> — tidak disajikan sebagai fakta.</li>
-      </ul>
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Visual dan kredit</h2>
-      <p>Kami hanya memakai gambar yang boleh kami gunakan: milik sendiri, berlisensi, media kit dengan izin, domain publik, atau buatan sendiri. Gambar di situs resmi tidak otomatis bebas pakai. Setiap gambar pihak lain diberi kredit. Ilustrasi yang dibuat dengan AI diberi label <strong class="font-body font-semibold text-sb-ink">Ilustrasi AI</strong> dan tidak dipakai untuk menampilkan produk atau peristiwa nyata.</p>
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Hak cipta</h2>
-      <p>Kami tidak mereproduksi artikel pihak lain secara utuh dan menghormati ketentuan situs sumber.</p>
-    </div>
-  </section>
-</BaseLayout>
+  <h2>Pemilihan sumber</h2>
+  <p>
+    Kami mengelompokkan sumber menjadi: resmi, primer, media mapan, ahli, basis data publik, komunitas, unggahan
+    media sosial, dan konten buatan pengguna. Sumber resmi dan primer memiliki bobot lebih tinggi untuk klaim
+    faktual. Unggahan media sosial dan konten komunitas tidak kami perlakukan sebagai fakta terkonfirmasi tanpa
+    dukungan lain.
+  </p>
+  <h2>Penandaan klaim</h2>
+  <dl class="legend">
+    <div><dt>Terkonfirmasi</dt><dd>Didukung sumber andal.</dd></div>
+    <div><dt>Dilaporkan</dt><dd>Dilaporkan sumber kredibel, belum dikonfirmasi independen.</dd></div>
+    <div><dt>Belum terverifikasi</dt><dd>Klaim ada, bukti belum cukup.</dd></div>
+    <div><dt>Diperdebatkan</dt><dd>Sumber tidak sepakat.</dd></div>
+    <div><dt>Opini</dt><dd>Tidak disajikan sebagai fakta.</dd></div>
+  </dl>
+  <h2>Visual dan kredit</h2>
+  <p>
+    Kami hanya memakai gambar yang boleh kami gunakan: milik sendiri, berlisensi, media kit dengan izin, domain
+    publik, atau buatan sendiri. Gambar di situs resmi tidak otomatis bebas pakai. Setiap gambar pihak lain
+    diberi kredit. Ilustrasi yang dibuat dengan AI diberi label <strong>Ilustrasi AI</strong> dan tidak dipakai
+    untuk menampilkan produk atau peristiwa nyata.
+  </p>
+  <h2>Hak cipta</h2>
+  <p>Kami tidak mereproduksi artikel pihak lain secara utuh dan menghormati ketentuan situs sumber.</p>
+</PolicyLayout>

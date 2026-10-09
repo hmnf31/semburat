@@ -1,0 +1,57 @@
+---
+import ArticleArt from './ArticleArt.astro';
+import { categoryKey } from '../lib/visuals';
+import { formatDate } from '../lib/content';
+
+interface Props {
+  title: string;
+  dek: string;
+  category: string;
+  date: string;
+  readTime: string;
+  slug: string;
+  variant?: 's-a' | 's-b' | 's-c' | 's-d';
+  href?: string;
+}
+
+const { title, dek, category, date, readTime, slug, variant = 's-c', href } = Astro.props;
+
+const link = href ?? `/articles/${slug}/`;
+const chip = categoryKey(category);
+const meta = `${formatDate(date)}, ${readTime} menit`;
+---
+
+{
+  variant === 's-d' ? (
+    <article class="story s-d">
+      <a href={link}>
+        <ArticleArt slug={slug} category={category} title={title} />
+        <div class="txt">
+          <span class={`chip ${chip}`}>{category}</span>
+          <h3>{title}</h3>
+          <p>{dek}</p>
+          <div class="meta">{meta}</div>
+        </div>
+      </a>
+    </article>
+  ) : variant === 's-b' ? (
+    <article class="story s-b">
+      <a href={link}>
+        <span class={`chip ${chip}`}>{category}</span>
+        <h3>{title}</h3>
+        <p>{dek}</p>
+        <div class="meta">{meta}</div>
+      </a>
+    </article>
+  ) : (
+    <article class={`story ${variant}`}>
+      <a href={link}>
+        <ArticleArt slug={slug} category={category} title={title} />
+        <span class={`chip ${chip}`}>{category}</span>
+        <h3>{title}</h3>
+        <p>{dek}</p>
+        <div class="meta">{meta}</div>
+      </a>
+    </article>
+  )
+}

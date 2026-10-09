@@ -1,40 +1,59 @@
 ﻿---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { emailHtml, siteConfig } from '../data/site-config';
+import PolicyLayout from '../layouts/PolicyLayout.astro';
+import { siteConfig } from '../data/site-config';
+
+const email = siteConfig.emails.privacy;
 ---
 
-<BaseLayout
-  title="Kebijikan Privasi"
+<PolicyLayout
+  title="Kebijakan Privasi"
   description="Data apa yang dikumpulkan SEMBURAT dan bagaimana digunakan."
+  activeSlug="privacy"
 >
-  <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-    <nav class="mb-6 text-sm text-sb-muted" aria-label="Breadcrumb">
-      <a href="/" class="hover:text-sb-primary">Beranda</a>
-      <span aria-hidden="true"> / </span>
-      <span aria-current="page">Kebijikan Privasi</span>
-    </nav>
-    <h1 class="mb-6 font-heading text-3xl font-normal leading-tight text-sb-ink sm:text-4xl">Kebijikan Privasi</h1>
-    <div class="space-y-6 font-body text-base leading-relaxed text-sb-ink">
-      <p>Terakhir diperbarui: {siteConfig.policyLastUpdated}<br />Pengelola: {siteConfig.operator.legalName}, {siteConfig.operator.address}</p>
-      <blockquote class="border-l-2 border-sb-primary pl-4 italic font-body text-sb-muted">Kebijakan ini menjelaskan data apa yang kami kumpulkan, mengapa dikumpulkan, dan bagaimana dilindungi. Di Indonesia berlaku UU Pelindungan Data Pribadi (UU No. 27 Tahun 2022). Pertanyaan soal data dapat dikirim ke alamat email privasi yang tercantum di bawah.</blockquote>
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Data yang kami kumpulkan</h2>
-      <ul class="font-body list-disc space-y-2 pl-6">
-        <li><strong class="font-body font-semibold text-sb-ink">Data penggunaan situs</strong> (halaman dilihat, perangkat, perkiraan lokasi) lewat {siteConfig.analyticsProvider}.</li>
-        <li><strong class="font-body font-semibold text-sb-ink">Alamat email</strong> bila Anda berlangganan newsletter, melalui {siteConfig.newsletterProvider}.</li>
-        <li><strong class="font-body font-semibold text-sb-ink">Pesan</strong> yang Anda kirim lewat formulir kontak.</li>
-      </ul>
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Cookie dan iklan</h2>
-      <p>{siteConfig.cookieNote}</p>
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Tujuan penggunaan</h2>
-      <p>Mengoperasikan dan meningkatkan situs, mengirim newsletter yang Anda minta, menanggapi pesan, dan mengukur kinerja konten.</p>
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Berbagi data</h2>
-      <p>Kami tidak menjual data pribadi. Data dapat diproses penyedia layanan (hosting, analitik, newsletter) untuk menjalankan layanan tersebut: {siteConfig.serviceProviders}.</p>
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Hak Anda</h2>
-      <p>Anda dapat meminta akses, koreksi, atau penghapusan data, dan berhenti berlangganan kapan saja melalui <span set:html={emailHtml(siteConfig.emails.privacy)} /> atau tautan di newsletter.</p>
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Keamanan dan penyimpanan</h2>
-      <p>{siteConfig.dataRetentionNote}</p>
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Anak-anak</h2>
-      <p>Situs ini tidak ditujukan bagi anak di bawah {siteConfig.minimumAge} tahun dan kami tidak sengaja mengumpulkan data mereka.</p>
-    </div>
-  </section>
-</BaseLayout>
+  <p class="updated">
+    Terakhir diperbarui: {siteConfig.policyLastUpdated}<br />
+    Pengelola: {siteConfig.operator.legalName}, {siteConfig.operator.address}
+  </p>
+  <blockquote>
+    Kebijakan ini menjelaskan data apa yang kami kumpulkan, mengapa dikumpulkan, dan bagaimana dilindungi.
+  </blockquote>
+  <p>
+    Di Indonesia berlaku UU Pelindungan Data Pribadi (UU No. 27 Tahun 2022). Pertanyaan soal data dapat dikirim ke
+    alamat email privasi yang tercantum di bawah.
+  </p>
+  <h2>Data yang kami kumpulkan</h2>
+  <ul>
+    <li>
+      <strong>Data penggunaan situs</strong> (halaman dilihat, perangkat, perkiraan lokasi) lewat
+      {siteConfig.analyticsProvider}.
+    </li>
+    <li>
+      <strong>Alamat email</strong> bila Anda berlangganan newsletter, melalui {siteConfig.newsletterProvider}.
+    </li>
+    <li><strong>Pesan</strong> yang Anda kirim lewat formulir kontak.</li>
+  </ul>
+  <h2>Cookie dan iklan</h2>
+  <p>{siteConfig.cookieNote}</p>
+  <h2>Tujuan penggunaan</h2>
+  <p>
+    Mengoperasikan dan meningkatkan situs, mengirim newsletter yang Anda minta, menanggapi pesan, dan mengukur
+    kinerja konten.
+  </p>
+  <h2>Berbagi data</h2>
+  <p>
+    Kami tidak menjual data pribadi. Data dapat diproses penyedia layanan (hosting, analitik, newsletter) untuk
+    menjalankan layanan tersebut: {siteConfig.serviceProviders}.
+  </p>
+  <h2>Hak Anda</h2>
+  <p>
+    Anda dapat meminta akses, koreksi, atau penghapusan data, dan berhenti berlangganan kapan saja melalui
+    <a href={`mailto:${email}`}>{email}</a> atau tautan di newsletter.
+  </p>
+  <h2>Keamanan dan penyimpanan</h2>
+  <p>{siteConfig.dataRetentionNote}</p>
+  <h2>Anak-anak</h2>
+  <p>
+    Situs ini tidak ditujukan bagi anak di bawah {siteConfig.minimumAge} tahun dan kami tidak sengaja
+    mengumpulkan data mereka.
+  </p>
+</PolicyLayout>

@@ -1,31 +1,31 @@
 ﻿---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import PolicyLayout from '../layouts/PolicyLayout.astro';
 ---
 
-<BaseLayout
-  title="Kebijikan AI"
+<PolicyLayout
+  title="Kebijakan AI"
   description="Bagaimana SEMBURAT menggunakan kecerdasan buatan."
+  activeSlug="ai-policy"
 >
-  <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-    <nav class="mb-6 text-sm text-sb-muted" aria-label="Breadcrumb">
-      <a href="/" class="hover:text-sb-primary">Beranda</a>
-      <span aria-hidden="true"> / </span>
-      <span aria-current="page">Kebijikan AI</span>
-    </nav>
-    <h1 class="mb-6 font-heading text-3xl font-normal leading-tight text-sb-ink sm:text-4xl">Kebijikan AI</h1>
-    <div class="space-y-6 font-body text-base leading-relaxed text-sb-ink">
-      <p>SEMBURAT menggunakan teknologi AI untuk membantu riset, pengolahan informasi, produksi visual, dan distribusi konten. Setiap konten tetap mengikuti proses verifikasi dan kebijikan editorial sesuai tingkat risikonya.</p>
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Yang AI kerjakan</h2>
-      <p>Membantu mengumpulkan dan merangkum informasi dari sumber, mengusulkan sudut dan draf, membuat ringkasan, metadata, dan teks media sosial.</p>
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Yang manusia kerjakan</h2>
-      <p>Menentukan standar editorial, meninjau konten berisiko, menyetujui terbit, dan menangani koreksi.</p>
-      <h2 class="font-heading text-xl font-normal text-sb-ink">Batasan</h2>
-      <ul class="font-body list-disc space-y-2 pl-6">
-        <li>AI tidak dipakai untuk membuat kutipan atau narasumber fiktif.</li>
-        <li>Gambar AI hanya untuk ilustrasi konsep dan diberi label.</li>
-        <li>Topik berisiko tinggi tidak diterbitkan otomatis.</li>
-        <li>AI dapat salah; karena itu kami mencantumkan sumber dan menyediakan <a href="/correction-policy" class="text-sb-primary hover:text-sb-primary-surface hover:underline">jalur koreksi</a>.</li>
-      </ul>
-    </div>
-  </section>
-</BaseLayout>
+  <p class="lead">
+    SEMBURAT menggunakan teknologi AI untuk membantu riset, pengolahan informasi, produksi visual, dan distribusi
+    konten. Setiap konten tetap mengikuti proses verifikasi dan kebijakan editorial sesuai tingkat risikonya.
+  </p>
+  <h2>Yang AI kerjakan</h2>
+  <p>
+    Membantu mengumpulkan dan merangkum informasi dari sumber, mengusulkan sudut dan draf, membuat ringkasan,
+    metadata, dan teks media sosial.
+  </p>
+  <h2>Yang manusia kerjakan</h2>
+  <p>Menentukan standar editorial, meninjau konten berisiko, menyetujui terbit, dan menangani koreksi.</p>
+  <h2>Batasan</h2>
+  <ul>
+    <li>AI tidak dipakai untuk membuat kutipan atau narasumber fiktif.</li>
+    <li>Gambar AI hanya untuk ilustrasi konsep dan diberi label.</li>
+    <li>Topik berisiko tinggi tidak diterbitkan otomatis.</li>
+    <li>
+      AI dapat salah; karena itu kami mencantumkan sumber dan menyediakan
+      <a href="/correction-policy/">jalur koreksi</a>.
+    </li>
+  </ul>
+</PolicyLayout>

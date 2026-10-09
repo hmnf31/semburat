@@ -62,6 +62,17 @@ export function formatDate(iso: string): string {
   return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
+export function riskLabel(level: ContentRiskLevel): string {
+  switch (level) {
+    case 'LOW':
+      return 'rendah';
+    case 'MEDIUM':
+      return 'sedang';
+    case 'HIGH':
+      return 'tinggi';
+  }
+}
+
 function fromFixture(article: (typeof softLaunchArticles)[number]): ContentArticle {
   return {
     slug: article.slug,

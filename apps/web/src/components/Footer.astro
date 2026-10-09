@@ -1,36 +1,32 @@
 ---
 const year = new Date().getFullYear();
+
 const footerLinks = [
-  { label: 'Tentang', href: '/about' },
-  { label: 'Kebijakan Editorial', href: '/editorial-policy' },
-  { label: 'Kebijakan Sumber', href: '/source-policy' },
-  { label: 'Kebijakan AI', href: '/ai-policy' },
-  { label: 'Koreksi', href: '/correction-policy' },
-  { label: 'Kontak', href: '/contact' },
-  { label: 'Privasi', href: '/privacy' },
-  { label: 'Ketentuan', href: '/terms' },
+  { roman: 'I', label: 'Tentang', href: '/about/' },
+  { roman: 'II', label: 'Kebijakan Editorial', href: '/editorial-policy/' },
+  { roman: 'III', label: 'Kebijakan Sumber', href: '/source-policy/' },
+  { roman: 'IV', label: 'Kebijakan AI', href: '/ai-policy/' },
+  { roman: 'V', label: 'Koreksi', href: '/correction-policy/' },
+  { roman: 'VI', label: 'Kontak', href: '/contact/' },
 ];
 ---
-<footer class="border-t border-sb-hairline bg-sb-surface">
-  <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-    <p class="mb-6 max-w-2xl text-xs leading-relaxed text-sb-muted">
-      Transparansi AI: SEMBURAT menggunakan kecerdasan buatan sebagai alat bantu di dalam alur editorial yang
-      diawasi manusia. Setiap klaim penting harus dapat ditelusuri ke sumbernya, dan konten berisiko tinggi
-      wajib melalui peninjauan manusia sebelum terbit.
-    </p>
-    <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-      <p class="text-sm text-sb-muted">© {year} SEMBURAT. Hak cipta dilindungi.</p>
-      <nav aria-label="Navigasi footer">
-        <ul class="flex flex-wrap items-center gap-x-6 gap-y-2">
-          {footerLinks.map((link) => (
-            <li>
-              <a href={link.href} class="text-sm text-sb-muted transition-colors hover:text-sb-primary">
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+
+<footer>
+  <div class="wrap">
+    <div class="flinks">
+      {
+        footerLinks.map((link, index) => (
+          <a href={link.href}>
+            {link.roman}. {link.label}
+            {index < footerLinks.length - 1 ? ',' : ''}
+          </a>
+        ))
+      }
+    </div>
+    <div class="big" aria-hidden="true">SEMBURAT</div>
+    <div class="fbottom small">
+      <span>© {year} SEMBURAT. Hak cipta dilindungi.</span>
+      <span><a href="/privacy/">Privasi</a>, <a href="/terms/">Ketentuan</a></span>
     </div>
   </div>
 </footer>

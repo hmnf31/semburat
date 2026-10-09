@@ -1,35 +1,57 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getArticles } from '../../lib/content';
+import { CATEGORY_KEYS, categoryKey } from '../../lib/visuals';
 import { categories } from '../../data/categories';
-import { getCategoryCounts } from '../../lib/content';
 
-const counts = new Map((await getCategoryCounts()).map((entry) => [entry.label, entry.count]));
-const entries = Object.entries(categories).map(([slug, category]) => ({
+const articles = await getArticles();
+
+const blocks = CATEGORY_KEYS.map((slug) => ({
   slug,
-  name: category.name,
-  description: category.description,
-  count: counts.get(category.name) ?? 0,
+  name: categories[slug]?.name ?? slug,
+  description: categories[slug]?.description ?? '',
+  articles: articles.filter((article) => categoryKey(article.category) === slug),
 }));
 ---
 
 <BaseLayout
   title="Kategori"
   description="Semua kategori artikel SEMBURAT: viral, teknologi, gaming, dan explainer."
+  active="categories"
 >
-  <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-    <p class="mb-3 font-label text-xs font-semibold uppercase tracking-widest text-sb-primary">Kategori</p>
-    <h1 class="mb-2 font-heading text-3xl font-normal text-sb-ink">Kategori</h1>
-    <p class="mb-8 font-body text-sm text-sb-muted">Pilih topik untuk membaca artikel yang sudah terbit.</p>
-    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {entries.map((entry) => (
-        <li class="flex flex-col rounded-lg border border-sb-hairline bg-sb-card p-5">
-          <a href={`/categories/${entry.slug}`} class="font-heading text-lg font-normal text-sb-ink hover:text-sb-primary">
-            {entry.name}
-          </a>
-          <p class="mt-2 flex-1 font-body text-sm text-sb-muted">{entry.description}</p>
-          <p class="mt-4 font-body text-xs text-sb-muted">{entry.count} artikel terbit</p>
-        </li>
-      ))}
-    </ul>
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="/">Beranda</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">Kategori</span>
+  </nav>
+  <div class="phead">
+    <p class="kicker">Semua topik</p>
+    <h1>Kategori</h1>
+    <p>Pilih topik untuk membaca artikel yang sudah terbit.</p>
+  </div>
+  <section class="catlist">
+    {
+      blocks.map((block) => (
+        <article class="catblock">
+          <h2>
+            <a href={`/categories/${block.slug}/`}>{block.name}</a>
+          </h2>
+          <div>
+            <p>{block.description}</p>
+            <p class="small">{block.articles.length} artikel terbit</p>
+            <a class="readmore" href={`/categories/${block.slug}/`}>
+              Buka kategori
+            </a>
+          </div>
+          <ul>
+            {block.articles.map((article) => (
+              <li>
+                <a href={`/articles/${article.slug}/`}>{article.title}</a>
+              </li>
+            ))}
+          </ul>
+        </article>
+      ))
+    }
   </section>
 </BaseLayout>

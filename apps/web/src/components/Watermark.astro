@@ -5,9 +5,23 @@ interface Props {
 
 const { label = 'Semburat' } = Astro.props;
 ---
-<span
-  class='pointer-events-none absolute bottom-2 right-2 rounded bg-sb-ink/70 px-2 py-1 font-body text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-[2px]'
-  aria-hidden='true'
->
-  {label}
-</span>
+<span class="wm" aria-hidden="true">{label}</span>
+
+<style>
+  .wm {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    padding: 2px 8px;
+    background: rgba(28, 25, 23, 0.68);
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    pointer-events: none;
+    backdrop-filter: blur(2px);
+  }
+</style>

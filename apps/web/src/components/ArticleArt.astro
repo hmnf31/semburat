@@ -1,0 +1,57 @@
+---
+import Watermark from './Watermark.astro';
+import { artFlip, categoryKey, resolveVisual } from '../lib/visuals';
+import { categories } from '../data/categories';
+
+interface Props {
+  slug: string;
+  category: string;
+  title?: string;
+  variant?: 'card' | 'hero';
+  alt?: string;
+}
+
+const { slug, category, title = '', variant = 'card', alt } = Astro.props;
+
+const key = categoryKey(category);
+const label = categories[key]?.name ?? category;
+const visual = resolveVisual(slug, category);
+const isSource = visual.kind === 'source';
+const flip = variant === 'hero' || artFlip(slug);
+const cls = `art${flip ? ' flip' : ''}${variant === 'hero' ? ' hero' : ''}`;
+---
+
+{
+  isSource ? (
+    <div class={cls}>
+      <img
+        src={visual.src}
+        alt={alt ?? title}
+        width={visual.width}
+        height={visual.height}
+        loading={variant === 'hero' ? undefined : 'lazy'}
+        decoding="async"
+      />
+      <Watermark />
+    </div>
+  ) : variant === 'hero' ? (
+    <div class={cls}>
+      <svg
+        role="img"
+        viewBox="0 0 1200 500"
+        preserveAspectRatio="xMidYMid slice"
+        aria-label={`Ilustrasi kategori ${label}`}
+      >
+        <use href={`#a-${key}`} x="0" y="0" width="400" height="500" />
+        <use href={`#a-${key}`} width="400" height="500" transform="translate(800 0) scale(-1 1)" />
+        <use href={`#a-${key}`} x="800" y="0" width="400" height="500" />
+      </svg>
+    </div>
+  ) : (
+    <div class={cls}>
+      <svg role="img" aria-label={`Ilustrasi kategori ${label}`}>
+        <use href={`#a-${key}`} />
+      </svg>
+    </div>
+  )
+}

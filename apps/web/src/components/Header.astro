@@ -1,51 +1,37 @@
 ---
+interface Props {
+  big?: boolean;
+  active?: string;
+}
+
+const { big = false, active = '' } = Astro.props;
+
 const navItems = [
-  { label: 'Beranda', href: '/' },
-  { label: 'Trending', href: '/trending' },
-  { label: 'Kategori', href: '/categories' },
-  { label: 'About', href: '/about' },
+  { key: 'beranda', roman: 'I', label: 'Beranda', href: '/' },
+  { key: 'trending', roman: 'II', label: 'Trending', href: '/trending/' },
+  { key: 'categories', roman: 'III', label: 'Kategori', href: '/categories/' },
+  { key: 'about', roman: 'IV', label: 'About', href: '/about/' },
 ];
+
+const today = new Date().toLocaleDateString('id-ID', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
 ---
-<header class="sticky top-0 z-50 border-b border-sb-hairline bg-sb-surface/95 backdrop-blur supports-[backdrop-filter]:bg-sb-surface/80">
-  <nav class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6" aria-label="Navigasi utama">
-    <a href="/" class="font-heading text-xl font-medium tracking-tight text-sb-ink">
-      SEMBURAT
-    </a>
-    <ul class="hidden items-center gap-6 md:flex">
-      {navItems.map((item) => (
-        <li>
-          <a href={item.href} class="font-body text-sm font-medium text-sb-ink transition-colors hover:text-sb-primary">
-            {item.label}
-          </a>
-        </li>
-      ))}
-    </ul>
-    <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center rounded-md p-2 text-sb-ink hover:bg-sb-hairline md:hidden" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="mobile-menu">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-    </button>
+
+<header class="wrap">
+  <div class="strip"><span>{today}</span><span>Media intelligence Indonesia</span></div>
+  <div class="sweep" aria-hidden="true"></div>
+  <a class={big ? 'mast' : 'mast sm'} href="/" aria-label="SEMBURAT, ke beranda">SEMBURAT</a>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="nav">Menu</button>
+  <nav class="idx" id="nav" aria-label="Utama">
+    {
+      navItems.map((item) => (
+        <a href={item.href} aria-current={active === item.key ? 'page' : undefined}>
+          {item.roman}. {item.label}
+        </a>
+      ))
+    }
   </nav>
-  <div id="mobile-menu" class="hidden border-t border-sb-hairline bg-sb-surface md:hidden">
-    <ul class="space-y-1 px-4 py-3">
-      {navItems.map((item) => (
-        <li>
-          <a href={item.href} class="font-body block rounded-md px-3 py-2 text-sm font-medium text-sb-ink hover:bg-sb-hairline hover:text-sb-primary">
-            {item.label}
-          </a>
-        </li>
-      ))}
-    </ul>
-  </div>
 </header>
-<script>
-  const button = document.getElementById('mobile-menu-button');
-  const menu = document.getElementById('mobile-menu');
-  if (button && menu) {
-    button.addEventListener('click', () => {
-      const expanded = button.getAttribute('aria-expanded') === 'true';
-      button.setAttribute('aria-expanded', String(!expanded));
-      menu.classList.toggle('hidden');
-    });
-  }
-</script>

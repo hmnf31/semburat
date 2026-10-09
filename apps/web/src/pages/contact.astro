@@ -1,55 +1,46 @@
 ﻿---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { emailHtml, siteConfig } from '../data/site-config';
+import PolicyLayout from '../layouts/PolicyLayout.astro';
+import { siteConfig } from '../data/site-config';
+
+const email = siteConfig.emails.editorial;
+const rows = [
+  'Redaksi umum',
+  'Koreksi fakta',
+  'Hak cipta / permintaan penurunan konten',
+  'Kerja sama & sponsor',
+  'Privasi data',
+];
 ---
 
-<BaseLayout
+<PolicyLayout
   title="Kontak"
+  kicker="Halaman"
   description="Hubungi redaksi SEMBURAT."
+  activeSlug="contact"
 >
-  <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-    <nav class="mb-6 text-sm text-sb-muted" aria-label="Breadcrumb">
-      <a href="/" class="hover:text-sb-primary">Beranda</a>
-      <span aria-hidden="true"> / </span>
-      <span aria-current="page">Kontak</span>
-    </nav>
-    <h1 class="mb-6 font-heading text-3xl font-normal leading-tight text-sb-ink sm:text-4xl">Kontak</h1>
-    <div class="space-y-6 font-body text-base leading-relaxed text-sb-ink">
-      <table class="w-full table-auto border-collapse border-sb-hairline">
-        <thead>
+  <div class="contact-card">
+    <p class="small" style="margin:0">
+      Untuk keperluan editorial, koreksi, atau kerja sama, kirim email ke
+    </p>
+    <a class="em" href={`mailto:${email}`}>{email}</a>
+    <a class="btn" href={`mailto:${email}`}>Kirim email</a>
+  </div>
+  <table class="tbl">
+    <thead>
+      <tr><th>Keperluan</th><th>Email</th></tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((label) => (
           <tr>
-            <th class="text-left border-b border-sb-hairline py-2 pr-4">Keperluan</th>
-            <th class="text-left border-b border-sb-hairline py-2 pr-4">Email</th>
+            <td>{label}</td>
+            <td>
+              <a href={`mailto:${email}`}>{email}</a>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-<tr>
-            <td class="border-b border-sb-hairline py-2 pr-4">Redaksi umum</td>
-            <td class="border-b border-sb-hairline py-2 pr-4"><span set:html={emailHtml(siteConfig.emails.editorial)} /></td>
-          </tr>
-          <tr>
-            <td class="border-b border-sb-hairline py-2 pr-4">Koreksi fakta</td>
-            <td class="border-b border-sb-hairline py-2 pr-4"><span set:html={emailHtml(siteConfig.emails.correction)} /></td>
-          </tr>
-          <tr>
-            <td class="border-b border-sb-hairline py-2 pr-4">Hak cipta / permintaan penurunan konten</td>
-            <td class="border-b border-sb-hairline py-2 pr-4"><span set:html={emailHtml(siteConfig.emails.copyright)} /></td>
-          </tr>
-          <tr>
-            <td class="border-b border-sb-hairline py-2 pr-4">Kerja sama &amp; sponsor</td>
-            <td class="border-b border-sb-hairline py-2 pr-4"><span set:html={emailHtml(siteConfig.emails.partnership)} /></td>
-          </tr>
-          <tr>
-            <td class="border-b border-sb-hairline py-2 pr-4">Privasi data</td>
-            <td class="border-b border-sb-hairline py-2 pr-4"><span set:html={emailHtml(siteConfig.emails.privacy)} /></td>
-          </tr>
-        </tbody>
-      </table>
-      <p>Kami berupaya membalas dalam {siteConfig.responseBusinessDays} hari kerja.</p>
-      <p class="text-sm text-sb-muted">
-        Untuk keperluan editorial, koreksi, atau kerja sama, kirim email ke
-        <span set:html={emailHtml(siteConfig.emails.editorial)} />.
-      </p>
-    </div>
-  </section>
-</BaseLayout>
+        ))
+      }
+    </tbody>
+  </table>
+  <p>Kami berupaya membalas dalam {siteConfig.responseBusinessDays} hari kerja.</p>
+</PolicyLayout>

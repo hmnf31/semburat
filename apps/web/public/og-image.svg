@@ -1,16 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="SEMBURAT — Yang sedang muncul, kami rangkai menjadi cerita.">
-  <rect width="1200" height="630" fill="#FAFAF7" />
-  <rect x="0" y="0" width="1200" height="14" fill="#C25E43" />
-  <g transform="translate(80,96)">
-    <rect width="88" height="88" rx="20" fill="#C25E43" />
-    <g fill="#F5F4EE">
-      <rect x="22" y="46" width="10" height="20" rx="3" />
-      <rect x="39" y="32" width="10" height="34" rx="3" />
-      <rect x="56" y="18" width="10" height="48" rx="3" />
-    </g>
-    <text x="112" y="60" font-family="Georgia, 'Times New Roman', serif" font-size="52" font-weight="700" fill="#1C1917">SEMBURAT</text>
-  </g>
-  <text x="80" y="330" font-family="Georgia, 'Times New Roman', serif" font-size="64" font-weight="700" fill="#1C1917">Yang sedang muncul,</text>
-  <text x="80" y="408" font-family="Georgia, 'Times New Roman', serif" font-size="64" font-weight="700" fill="#1C1917">kami rangkai menjadi cerita.</text>
-  <text x="80" y="512" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="30" fill="#78716C">Media intelligence Indonesia — tren, sumber, dan konteks terverifikasi.</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="SEMBURAT — Yang sedang muncul, kami rangkai menjadi cerita."><rect width="1200" height="630" fill="#f9f9f6"/><rect x="60" y="60" width="1080" height="6" fill="#9a4027"/><text x="600" y="360" text-anchor="middle" font-family="Bodoni Moda,Didot,Georgia,serif" font-weight="800" font-size="190" letter-spacing="-8" fill="#1C1917">SEMBURAT</text><text x="600" y="450" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="38" fill="#56423d">Yang sedang muncul, kami rangkai menjadi cerita.</text><rect x="60" y="564" width="1080" height="1" fill="#D6D3CB"/><text x="60" y="598" font-family="Arial,sans-serif" font-size="22" fill="#78716C">Media intelligence Indonesia</text></svg>

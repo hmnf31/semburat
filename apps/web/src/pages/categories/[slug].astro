@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ArticleCard from '../../components/ArticleCard.astro';
+import StoryCard from '../../components/StoryCard.astro';
 import { categories } from '../../data/categories';
 import { getArticles, toCard } from '../../lib/content';
 
@@ -12,31 +12,42 @@ export function getStaticPaths() {
 }
 
 const { categoryName } = Astro.props;
-const articles = (await getArticles())
-  .filter((article) => article.category.toLowerCase() === categoryName.toLowerCase())
+const categoryKeyLower = categoryName.toLowerCase();
+const description = categories[categoryKeyLower]?.description ?? '';
+
+const cards = (await getArticles())
+  .filter((article) => article.category.toLowerCase() === categoryKeyLower)
   .map(toCard);
+
+const variants = cards.length === 2 ? (['s-a', 's-b'] as const) : null;
 ---
 
 <BaseLayout
   title={`Kategori ${categoryName}`}
-  description={`Artikel kategori ${categoryName} di SEMBURAT.`}
+  description={`Artikel kategori ${categoryName} di SEMBURAT. ${description}`}
+  active="categories"
 >
-  <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-    <p class="mb-3 font-label text-xs font-semibold uppercase tracking-widest text-sb-primary">Kategori</p>
-    <h1 class="mb-2 font-heading text-3xl font-normal text-sb-ink">{categoryName}</h1>
-    <p class="mb-8 font-body text-sm text-sb-muted">
-      {articles.length} artikel terbit dalam kategori ini.
-    </p>
-    {articles.length > 0 ? (
-      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {articles.map((article) => (
-          <ArticleCard {...article} />
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="/">Beranda</a>
+    <span aria-hidden="true">/</span>
+    <a href="/categories/">Kategori</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">{categoryName}</span>
+  </nav>
+  <div class="phead">
+    <p class="kicker">Kategori</p>
+    <h1>{categoryName}</h1>
+    <p>{description} {cards.length} artikel terbit dalam kategori ini.</p>
+  </div>
+  {
+    cards.length > 0 ? (
+      <div class="stories">
+        {cards.map((card, index) => (
+          <StoryCard {...card} variant={variants ? variants[index] ?? 's-c' : 's-c'} />
         ))}
       </div>
     ) : (
-      <p class="rounded-lg border border-sb-hairline bg-sb-card p-6 font-body text-sm text-sb-muted">
-        Belum ada artikel terbit di kategori ini.
-      </p>
-    )}
-  </section>
+      <p class="small">Belum ada artikel terbit di kategori ini.</p>
+    )
+  }
 </BaseLayout>

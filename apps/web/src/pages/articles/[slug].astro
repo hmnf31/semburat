@@ -1,12 +1,10 @@
 ---
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
-import ArticleCard from '../../components/ArticleCard.astro';
-import SourceAttribution from '../../components/SourceAttribution.astro';
-import CreditVisual from '../../components/CreditVisual.astro';
-import Watermark from '../../components/Watermark.astro';
-import { resolveVisual } from '../../lib/visuals';
+import ArticleArt from '../../components/ArticleArt.astro';
+import StoryCard from '../../components/StoryCard.astro';
+import { resolveVisual, categoryHref, categoryKey } from '../../lib/visuals';
 import type { ContentArticle } from '../../lib/content';
-import { getArticles, getRelated } from '../../lib/content';
+import { getArticles, getRelated, riskLabel } from '../../lib/content';
 import { SITE_URL } from '../../lib/site';
 
 function wordsPerMinute(text: string): number {
@@ -25,20 +23,8 @@ function formatWib(iso: string): string {
     hour: '2-digit',
     minute: '2-digit',
   }).formatToParts(date);
-  const day = parts.find((p) => p.type === 'day')?.value;
-  const month = parts.find((p) => p.type === 'month')?.value;
-  const year = parts.find((p) => p.type === 'year')?.value;
-  const hour = parts.find((p) => p.type === 'hour')?.value;
-  const minute = parts.find((p) => p.type === 'minute')?.value;
-  return `${day} ${month} ${year}, ${hour}:${minute} WIB`;
-}
-
-function riskLevelClass(level: ContentArticle['riskLevel']): string {
-  switch (level) {
-    case 'LOW': return 'bg-sb-success/10 text-sb-success border-sb-success/30';
-    case 'MEDIUM': return 'bg-sb-warning/10 text-sb-warning border-sb-warning/30';
-    case 'HIGH': return 'bg-sb-error/10 text-sb-error border-sb-error/30';
-  }
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
+  return `${get('day')} ${get('month')} ${get('year')}, ${get('hour')}:${get('minute')} WIB`;
 }
 
 export async function getStaticPaths() {
@@ -51,154 +37,182 @@ export async function getStaticPaths() {
 
 const { article } = Astro.props as { article: ContentArticle };
 const readTime = wordsPerMinute(article.body);
-const categoryHref = `/categories/${article.category.toLowerCase()}`;
+const chip = categoryKey(article.category);
 const canonicalUrl = `${SITE_URL}/articles/${article.slug}`;
 const ogImage = `/og/${article.slug}-og-hero.png`;
 const publishedWib = formatWib(article.publishedAt);
 
-const isUpdated =
-  article.updatedAt !== undefined &&
-  new Date(article.updatedAt).getTime() - new Date(article.publishedAt).getTime() > 60 * 60 * 1000;
-const updatedWib = isUpdated && article.updatedAt ? formatWib(article.updatedAt) : null;
-
-const related = await getRelated(article.slug);
+const paragraphs = article.body
+  .split(/\n{2,}/)
+  .map((p) => p.trim())
+  .filter(Boolean);
 
 const visual = resolveVisual(article.slug, article.category);
 const imageAsset = article.assets.find((asset) => asset.type === 'image');
 const usesSourceImage = visual.kind === 'source' && Boolean(imageAsset?.sourceUrl);
-const imageAlt = usesSourceImage
-  ? (imageAsset?.title ?? article.title)
-  : `Ilustrasi untuk ${article.title}`;
+const caption = usesSourceImage
+  ? `Sumber gambar: ${imageAsset?.title ?? 'Wikimedia Commons'}`
+  : 'Ilustrasi oleh SEMBURAT.';
+
+const related = await getRelated(article.slug);
+
+const all = await getArticles();
+const index = all.findIndex((entry) => entry.slug === article.slug);
+const newer = index > 0 ? all[index - 1] : undefined;
+const older = index >= 0 && index + 1 < all.length ? all[index + 1] : undefined;
 
 const breadcrumbItems = [
   { name: 'Beranda', href: '/' },
-  { name: article.category, href: categoryHref },
+  { name: article.category, href: categoryHref(article.category) },
   { name: article.title },
 ];
 ---
+
 <ArticleLayout
   title={article.title}
   description={article.dek}
-image={ogImage}
+  image={ogImage}
   publishedTime={article.publishedAt}
   modifiedTime={article.updatedAt ?? article.publishedAt}
   canonicalUrl={canonicalUrl}
   breadcrumbItems={breadcrumbItems}
   section={article.category}
 >
-  <header class="mb-8">
-    <nav class="mb-4 text-sm text-sb-muted" aria-label="Breadcrumb">
-      <a href="/" class="hover:text-sb-primary">Beranda</a>
-      <span aria-hidden="true"> / </span>
-      <a href={categoryHref} class="hover:text-sb-primary">{article.category}</a>
-      <span aria-hidden="true"> / </span>
-      <span aria-current="page">Artikel</span>
-    </nav>
-    <a href={categoryHref} class="mb-3 inline-block rounded-full bg-sb-primary/10 px-2.5 py-0.5 font-label text-xs font-semibold text-sb-primary uppercase tracking-wider">
-      {article.category}
-    </a>
-    <h1 class="font-heading text-3xl font-normal leading-tight text-sb-ink sm:text-4xl">
-      {article.title}
-    </h1>
-    <p class="mt-4 font-body text-lg leading-relaxed text-sb-muted">
-      {article.dek}
-    </p>
-<div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-sb-muted">
-      <time datetime={article.publishedAt}>{publishedWib}</time>
-      <span aria-hidden="true">·</span>
-      <span>{readTime} menit baca</span>
-      {updatedWib && (
-        <>
-          <span aria-hidden="true">·</span>
-          <span>Diperbarui {updatedWib}</span>
-        </>
-      )}
-    </div>
-    <div class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-2">
-      <span class={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-label text-xs font-semibold ${riskLevelClass(article.riskLevel)}`}>
-        Risiko: {article.riskLevel}
-      </span>
-      <span class="inline-flex items-center rounded-full border bg-sb-primary/10 px-2.5 py-0.5 font-label text-xs font-semibold text-sb-primary border-sb-primary/30">
-        Kualitas: {article.qualityScore}/100
-      </span>
-    </div>
-  </header>
-  <figure class="relative mb-8 overflow-hidden rounded-lg border border-sb-hairline bg-sb-card">
-    <img
-      src={visual.src}
-      alt={imageAlt}
-      width={visual.width}
-      height={visual.height}
-      class="h-auto max-h-[520px] w-full object-cover object-center"
-    />
-    <Watermark />
-  </figure>
-  <div class="space-y-4 mb-8">
-    {article.body.split('\n\n').filter(Boolean).map((paragraph) => (
-      <p class="font-body leading-relaxed text-sb-ink" set:html={paragraph} />
-    ))}
-  </div>
-  {article.keyPoints.length > 0 && (
-    <section class="mb-8 p-6 rounded-lg bg-sb-primary/5 border border-sb-primary/20" aria-labelledby="key-points-heading">
-      <h2 id="key-points-heading" class="mb-4 font-heading text-lg font-semibold text-sb-ink">
-        Poin Penting
-      </h2>
-      <ul class="space-y-2 font-body text-sb-ink">
-        {article.keyPoints.map((point, i) => (
-          <li class="flex gap-2" key={i}>
-            <span class="flex-shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-sb-primary" aria-hidden="true" />
-            <span set:html={point} />
-          </li>
-        ))}
-      </ul>
-    </section>
-  )}
-  {article.faq.length > 0 && (
-    <section class="mb-8" aria-labelledby="faq-heading">
-      <h2 id="faq-heading" class="mb-4 font-heading text-xl font-normal text-sb-ink">
-        Pertanyaan Umum
-      </h2>
-      <dl class="space-y-6">
-        {article.faq.map((item, i) => (
-          <div class="border-t border-sb-hairline pt-4" key={i}>
-            <dt class="font-heading font-semibold text-sb-ink" set:html={item.question} />
-            <dd class="mt-2 font-body text-sb-ink" set:html={item.answer} />
-          </div>
-        ))}
-      </dl>
-    </section>
-  )}
-  {article.sources.length === 0 && (
-    <p class="mt-10 rounded-lg border border-sb-hairline bg-sb-card p-5 font-body text-sm text-sb-muted">
-      Tautan sumber terperinci belum tersedia untuk artikel ini. Proses verifikasi dan atribusi sumber tetap
-      tercatat di pipeline editorial.
-    </p>
-  )}
-  <SourceAttribution sources={article.sources} />
-  <CreditVisual
-    creator={usesSourceImage ? (imageAsset?.credit ?? 'Sumber tidak diketahui') : 'SEMBURAT'}
-    license={
-      usesSourceImage
-        ? (imageAsset?.license ?? 'Lisensi tidak diketahui')
-        : 'Karya visual asli SEMBURAT, bukan foto pihak ketiga'
-    }
-    credit={
-      usesSourceImage
-        ? `Sumber gambar: ${imageAsset?.title ?? ''}`
-        : 'Ilustrasi oleh SEMBURAT'
-    }
-    sourceUrl={usesSourceImage ? imageAsset?.sourceUrl : undefined}
-  />
-  {related.length > 0 && (
-    <section class="mt-12" aria-labelledby="terkait-heading">
-      <h2 id="terkait-heading" class="mb-6 font-heading text-xl font-normal text-sb-ink">
-        Artikel Terkait
-      </h2>
-      <div class="grid gap-6 sm:grid-cols-2">
-        {related.map((relatedArticle) => (
-          <ArticleCard {...relatedArticle} />
-        ))}
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="/">Beranda</a>
+    <span aria-hidden="true">/</span>
+    <a href={categoryHref(article.category)}>{article.category}</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">Artikel</span>
+  </nav>
+
+  <article>
+    <header class="ahead">
+      <span class={`chip ${chip}`}>{article.category}</span>
+      <h1>{article.title}</h1>
+      <p class="deck">{article.dek}</p>
+      <div class="badges">
+        <time datetime={article.publishedAt}>{publishedWib}</time>
+        <span>{readTime} menit baca</span>
+        <span class="badge">Risiko: {riskLabel(article.riskLevel)}</span>
+        <span class="badge q">Kualitas {article.qualityScore}/100</span>
       </div>
-    </section>
-  )}
+    </header>
+
+    <ArticleArt slug={article.slug} category={article.category} title={article.title} variant="hero" />
+    <div class="fig">
+      <b>Gambar 1.</b>
+      <span>{caption}</span>
+    </div>
+
+    <div class="alayout">
+      <aside class="pts" aria-label="Poin penting">
+        <h2>Poin penting</h2>
+        <ul>
+          {article.keyPoints.map((point) => (
+            <li>{point}</li>
+          ))}
+        </ul>
+      </aside>
+
+      <div class="prose">
+        {paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+
+        {
+          article.faq.length > 0 && (
+            <div class="faq-wrap">
+              <h2>Pertanyaan umum</h2>
+              {article.faq.map((item) => (
+                <details class="faq">
+                  <summary>{item.question}</summary>
+                  <p>{item.answer}</p>
+                </details>
+              ))}
+            </div>
+          )
+        }
+
+        {
+          article.sources.length > 0 && (
+            <>
+              <h2>Sumber</h2>
+              <ol class="refs">
+                {article.sources.map((source) => (
+                  <li>
+                    <a href={source.url} target="_blank" rel="noopener noreferrer">
+                      {source.title}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </>
+          )
+        }
+
+        <h2>Kredit visual</h2>
+        <div class="credit">
+          <dl>
+            <dt>Kreator</dt>
+            <dd>{usesSourceImage ? (imageAsset?.credit ?? 'Sumber tidak diketahui') : 'SEMBURAT'}</dd>
+            <dt>Lisensi</dt>
+            <dd>
+              {usesSourceImage
+                ? (imageAsset?.license ?? 'Lisensi tidak diketahui')
+                : 'Karya visual asli SEMBURAT, bukan foto pihak ketiga'}
+            </dd>
+            <dt>Kredit</dt>
+            <dd>
+              {usesSourceImage && imageAsset?.sourceUrl ? (
+                <a href={imageAsset.sourceUrl} target="_blank" rel="noopener noreferrer">
+                  {caption}
+                </a>
+              ) : (
+                'Ilustrasi oleh SEMBURAT'
+              )}
+            </dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="spacer" />
+    </div>
+  </article>
+
+  {
+    related.length > 0 && (
+      <section class="related" aria-labelledby="terkait">
+        <div class="sec">
+          <h2 id="terkait">Artikel terkait</h2>
+        </div>
+        <div class="stories" style="padding-bottom:0">
+          {related.map((card) => (
+            <StoryCard {...card} variant="s-d" />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <nav class="pager" aria-label="Artikel lain">
+    {
+      newer ? (
+        <a href={`/articles/${newer.slug}/`}>
+          <div class="lab">Lebih baru</div>
+          <div class="tt">{newer.title}</div>
+        </a>
+      ) : (
+        <span />
+      )
+    }
+    {
+      older ? (
+        <a href={`/articles/${older.slug}/`}>
+          <div class="lab">Lebih lama</div>
+          <div class="tt">{older.title}</div>
+        </a>
+      ) : (
+        <span />
+      )
+    }
+  </nav>
 </ArticleLayout>

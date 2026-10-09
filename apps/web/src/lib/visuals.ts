@@ -45,6 +45,27 @@ const categoryIllustrations: Record<string, VisualAsset> = {
   Explainer: artExplainer,
 };
 
+export const CATEGORY_KEYS = ['viral', 'teknologi', 'gaming', 'explainer'] as const;
+
+export type CategoryKey = (typeof CATEGORY_KEYS)[number];
+
+export function categoryKey(category: string): CategoryKey {
+  const key = category.toLowerCase();
+  return (CATEGORY_KEYS as readonly string[]).includes(key) ? (key as CategoryKey) : 'explainer';
+}
+
+export function categoryHref(category: string): string {
+  return `/categories/${categoryKey(category)}`;
+}
+
+export function hasSourceImage(slug: string): boolean {
+  return Boolean(sourceImages[slug]);
+}
+
+export function artFlip(slug: string): boolean {
+  return [...slug].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % 2 === 1;
+}
+
 export function resolveVisual(slug: string, category: string): ResolvedVisual {
   const source = sourceImages[slug];
   if (source) {

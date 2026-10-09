@@ -1,0 +1,152 @@
+/* ==========================================================
+   Warm Editorial Minimalism: design tokens SEMBURAT
+   ========================================================== */
+:root {
+  --surface: #f9f9f6;
+  --surface-dim: #dadad7;
+  --surface-bright: #f9f9f6;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f4f4f1;
+  --surface-container: #eeeeeb;
+  --surface-container-high: #e8e8e5;
+  --surface-container-highest: #e2e3e0;
+  --on-surface: #1a1c1b;
+  --on-surface-variant: #56423d;
+  --inverse-surface: #2f312f;
+  --inverse-on-surface: #f1f1ee;
+  --outline: #89726c;
+  --outline-variant: #dcc0ba;
+  --surface-tint: #9d422a;
+  --primary: #9a4027;
+  --on-primary: #ffffff;
+  --primary-container: #b9573d;
+  --on-primary-container: #fffbff;
+  --inverse-primary: #ffb5a1;
+  --secondary: #476558;
+  --on-secondary: #ffffff;
+  --secondary-container: #c9ead9;
+  --on-secondary-container: #4d6b5d;
+  --tertiary: #4f5d71;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #67758b;
+  --on-tertiary-container: #fdfcff;
+  --error: #ba1a1a;
+  --on-error: #ffffff;
+  --error-container: #ffdad6;
+  --on-error-container: #93000a;
+  --primary-fixed: #ffdbd1;
+  --primary-fixed-dim: #ffb5a1;
+  --on-primary-fixed: #3c0800;
+  --on-primary-fixed-variant: #7e2b15;
+  --secondary-fixed: #c9ead9;
+  --secondary-fixed-dim: #adcebe;
+  --on-secondary-fixed: #022016;
+  --on-secondary-fixed-variant: #304d40;
+  --tertiary-fixed: #d5e3fc;
+  --tertiary-fixed-dim: #b9c7df;
+  --on-tertiary-fixed: #0d1c2e;
+  --on-tertiary-fixed-variant: #3a485b;
+  --background: #f9f9f6;
+  --on-background: #1a1c1b;
+  --surface-variant: #e2e3e0;
+  --surface-cream: #f5f4ee;
+  --surface-card: #ffffff;
+  --text-ink: #1c1917;
+  --text-muted: #78716c;
+  --border-hairline: #e7e5df;
+  --border-subtle: #d6d3cb;
+
+  /* alias semantik yang dipakai komponen */
+  --c-bg: var(--surface);
+  --c-cream: var(--surface-cream);
+  --c-card: var(--surface-card);
+  --c-ink: var(--text-ink);
+  --c-muted: var(--text-muted);
+  --c-line: var(--border-hairline);
+  --c-line-strong: var(--border-subtle);
+  --c-accent: var(--primary);
+  --c-accent-soft: var(--primary-fixed);
+  --c-on-accent: var(--on-primary);
+  --c-focus: var(--primary);
+
+  /* warna kategori: [teks, latar chip, warna ilustrasi A, B] */
+  --viral-ink: var(--on-primary-fixed-variant);
+  --viral-bg: var(--primary-fixed);
+  --viral-a: var(--primary);
+  --viral-b: var(--primary-container);
+  --teknologi-ink: var(--on-tertiary-fixed-variant);
+  --teknologi-bg: var(--tertiary-fixed);
+  --teknologi-a: var(--tertiary);
+  --teknologi-b: var(--tertiary-container);
+  --gaming-ink: var(--on-secondary-fixed-variant);
+  --gaming-bg: var(--secondary-fixed);
+  --gaming-a: var(--secondary);
+  --gaming-b: var(--secondary-fixed-dim);
+  --explainer-ink: var(--on-surface-variant);
+  --explainer-bg: var(--surface-container-high);
+  --explainer-a: var(--outline);
+  --explainer-b: var(--outline-variant);
+
+  --serif: 'Bodoni Moda', 'Didot', 'Bodoni 72', Georgia, serif;
+  --sans: 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Mode gelap: dipetakan dari token inverse milik palet */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --c-bg: #161817;
+    --c-cream: #1c1e1d;
+    --c-card: #212322;
+    --c-ink: var(--inverse-on-surface);
+    --c-muted: #a6a29b;
+    --c-line: #34373a;
+    --c-line-strong: #4a4d4b;
+    --c-accent: var(--inverse-primary);
+    --c-accent-soft: #4a2a20;
+    --c-on-accent: var(--on-primary-fixed);
+    --viral-ink: var(--primary-fixed);
+    --viral-bg: #4a2a20;
+    --teknologi-ink: var(--tertiary-fixed);
+    --teknologi-bg: #2c3748;
+    --gaming-ink: var(--secondary-fixed);
+    --gaming-bg: #243a30;
+    --explainer-ink: var(--inverse-on-surface);
+    --explainer-bg: #2f312f;
+    --viral-a: var(--inverse-primary);
+    --viral-b: var(--primary-container);
+    --teknologi-a: var(--tertiary-fixed-dim);
+    --teknologi-b: var(--tertiary-container);
+    --gaming-a: var(--secondary-fixed-dim);
+    --gaming-b: var(--secondary);
+    --explainer-a: var(--outline-variant);
+    --explainer-b: var(--outline);
+  }
+}
+:root[data-theme='dark'] {
+  --c-bg: #161817;
+  --c-cream: #1c1e1d;
+  --c-card: #212322;
+  --c-ink: var(--inverse-on-surface);
+  --c-muted: #a6a29b;
+  --c-line: #34373a;
+  --c-line-strong: #4a4d4b;
+  --c-accent: var(--inverse-primary);
+  --c-accent-soft: #4a2a20;
+  --c-on-accent: var(--on-primary-fixed);
+  --viral-ink: var(--primary-fixed);
+  --viral-bg: #4a2a20;
+  --teknologi-ink: var(--tertiary-fixed);
+  --teknologi-bg: #2c3748;
+  --gaming-ink: var(--secondary-fixed);
+  --gaming-bg: #243a30;
+  --explainer-ink: var(--inverse-on-surface);
+  --explainer-bg: #2f312f;
+  --viral-a: var(--inverse-primary);
+  --viral-b: var(--primary-container);
+  --teknologi-a: var(--tertiary-fixed-dim);
+  --teknologi-b: var(--tertiary-container);
+  --gaming-a: var(--secondary-fixed-dim);
+  --gaming-b: var(--secondary);
+  --explainer-a: var(--outline-variant);
+  --explainer-b: var(--outline);
+}

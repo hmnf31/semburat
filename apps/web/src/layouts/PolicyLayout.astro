@@ -1,0 +1,59 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  kicker?: string;
+  description?: string;
+  activeSlug: string;
+}
+
+const { title, kicker = 'Kebijakan', description, activeSlug } = Astro.props;
+
+const pages = [
+  { slug: 'about', roman: 'I', short: 'Tentang' },
+  { slug: 'editorial-policy', roman: 'II', short: 'Kebijakan Editorial' },
+  { slug: 'source-policy', roman: 'III', short: 'Kebijakan Sumber' },
+  { slug: 'ai-policy', roman: 'IV', short: 'Kebijakan AI' },
+  { slug: 'correction-policy', roman: 'V', short: 'Koreksi' },
+  { slug: 'contact', roman: 'VI', short: 'Kontak' },
+  { slug: 'privacy', roman: 'VII', short: 'Privasi' },
+  { slug: 'terms', roman: 'VIII', short: 'Ketentuan' },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  active={activeSlug === 'about' ? 'about' : ''}
+>
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="/">Beranda</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">{title}</span>
+  </nav>
+  <div class="phead">
+    <p class="kicker">{kicker}</p>
+    <h1>{title}</h1>
+  </div>
+  <div class="pagegrid">
+    <aside class="pagenav" aria-label="Halaman SEMBURAT">
+      <h2>Tentang SEMBURAT</h2>
+      <ol>
+        {
+          pages.map((page) => (
+            <li>
+              <a href={`/${page.slug}/`} aria-current={activeSlug === page.slug ? 'page' : undefined}>
+                {page.roman}. {page.short}
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </aside>
+    <div class="prose">
+      <slot />
+    </div>
+    <div class="spacer"></div>
+  </div>
+</BaseLayout>

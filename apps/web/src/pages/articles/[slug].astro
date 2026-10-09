@@ -7,7 +7,7 @@ import Watermark from '../../components/Watermark.astro';
 import { resolveVisual } from '../../lib/visuals';
 import type { ContentArticle } from '../../lib/content';
 import { getArticles, getRelated } from '../../lib/content';
-import { DEFAULT_OG_IMAGE, SITE_URL } from '../../lib/site';
+import { SITE_URL } from '../../lib/site';
 
 function wordsPerMinute(text: string): number {
   const words = text.trim().split(/\s+/).filter(Boolean).length;
@@ -53,7 +53,7 @@ const { article } = Astro.props as { article: ContentArticle };
 const readTime = wordsPerMinute(article.body);
 const categoryHref = `/categories/${article.category.toLowerCase()}`;
 const canonicalUrl = `${SITE_URL}/articles/${article.slug}`;
-const ogImage = DEFAULT_OG_IMAGE;
+const ogImage = `/og/${article.slug}-og-hero.png`;
 const publishedWib = formatWib(article.publishedAt);
 
 const isUpdated =

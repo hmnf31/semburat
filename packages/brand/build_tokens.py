@@ -11,7 +11,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
-SKILL_ASSETS = ROOT / "skills" / "semburat-design" / "assets"
+SKILL_ASSETS = ROOT / ".kilo" / "skills" / "semburat-design" / "assets"
 
 
 def build_css(tokens: dict) -> str:
@@ -32,9 +32,7 @@ def main() -> None:
     (HERE / "tokens.css").write_text(css, encoding="utf-8")
     SKILL_ASSETS.mkdir(parents=True, exist_ok=True)
     (SKILL_ASSETS / "tokens.css").write_text(css, encoding="utf-8")
-    (SKILL_ASSETS / "tokens.json").write_text(
-        json.dumps(tokens, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
-    )
+    (SKILL_ASSETS / "tokens.json").write_bytes((HERE / "tokens.json").read_bytes())
     print("tokens.css dan salinan skill ditulis.")
 
 

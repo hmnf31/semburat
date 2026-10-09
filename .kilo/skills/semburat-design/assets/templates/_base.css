@@ -5,17 +5,18 @@
 }
 html,
 body {
-  background: var(--sb-ink-900);
+  background: var(--sb-surface-cream);
 }
 body {
   font-family: var(--sb-font-body);
-  color: var(--sb-cream);
+  color: var(--sb-ink);
   -webkit-font-smoothing: antialiased;
 }
 .cv {
   position: relative;
   overflow: hidden;
-  background: var(--sb-grad-night);
+  background: var(--sb-surface);
+  border-top: 12px solid var(--sb-primary);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -30,10 +31,19 @@ body {
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(14, 16, 32, 0.25) 0%,
-    rgba(14, 16, 32, 0.88) 70%,
-    rgba(14, 16, 32, 0.97) 100%
+    rgba(28, 25, 23, 0.2) 0%,
+    rgba(28, 25, 23, 0.82) 65%,
+    rgba(28, 25, 23, 0.95) 100%
   );
+}
+.cv.has-image .title,
+.cv.has-image .body,
+.cv.has-image .wm {
+  color: var(--sb-surface);
+}
+.cv.has-image .muted,
+.cv.has-image .credit {
+  color: var(--sb-border-hairline);
 }
 .cv > * {
   position: relative;
@@ -43,30 +53,30 @@ body {
   position: absolute !important;
   z-index: 0 !important;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.55;
-  background: var(--sb-grad-dawn);
+  filter: blur(90px);
+  opacity: 0.16;
+  background: var(--sb-grad-accent);
 }
 .kicker {
   display: inline-block;
   align-self: flex-start;
   font-family: var(--sb-font-heading);
-  font-weight: 800;
-  letter-spacing: 0.12em;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--sb-ink-900);
-  background: var(--sb-grad-dawn);
+  color: #ffffff;
+  background: var(--sb-primary);
   border-radius: 999px;
 }
 .title {
   font-family: var(--sb-font-heading);
-  font-weight: 800;
-  line-height: 1.12;
+  font-weight: 500;
+  line-height: 1.1;
   letter-spacing: -0.01em;
-  color: var(--sb-cream);
+  color: var(--sb-ink);
 }
 .body {
-  color: var(--sb-cream);
+  color: var(--sb-ink-800);
   line-height: 1.35;
   font-weight: 500;
 }
@@ -78,9 +88,9 @@ body {
   align-items: center;
   gap: 0.5em;
   font-family: var(--sb-font-heading);
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.22em;
-  color: var(--sb-cream);
+  color: var(--sb-ink);
   opacity: 0.9;
 }
 .wm::before {
@@ -88,7 +98,7 @@ body {
   width: 0.7em;
   height: 0.7em;
   border-radius: 50%;
-  background: var(--sb-grad-dawn);
+  background: var(--sb-grad-accent);
   display: inline-block;
 }
 .credit {
@@ -98,7 +108,7 @@ body {
 }
 .ai-badge {
   display: inline-block;
-  border: 1.5px solid var(--sb-muted);
+  border: 1.5px solid var(--sb-border-subtle);
   color: var(--sb-muted);
   border-radius: 6px;
   font-weight: 600;
@@ -113,7 +123,7 @@ body {
   list-style: none;
 }
 .list li {
-  color: var(--sb-cream);
+  color: var(--sb-ink-800);
   display: flex;
   gap: 0.6em;
 }
@@ -124,5 +134,5 @@ body {
   height: 0.5em;
   margin-top: 0.55em;
   border-radius: 50%;
-  background: var(--sb-sun-400);
+  background: var(--sb-primary);
 }

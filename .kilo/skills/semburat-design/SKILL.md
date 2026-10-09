@@ -7,7 +7,8 @@ description: Membuat paket aset visual SEMBURAT (gambar OG/hero, carousel Instag
 
 Skill ini mengubah **satu artikel yang sudah disetujui** menjadi paket visual siap unggah.
 Identitas brand: _"Yang sedang muncul, kami rangkai menjadi cerita."_ Nada visual: modern, jelas,
-tidak sensasional. Latar biru malam, aksen gradien "fajar" (amber → ember → rose).
+tidak sensasional. Latar kertas hangat (krem), tinta cokelat gelap, aksen terakota, judul serif
+Newsreader. Watermark `SEMBURAT` di sudut kanan bawah.
 
 ## Kapan dipakai
 

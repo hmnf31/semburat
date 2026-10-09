@@ -18,16 +18,16 @@ Hindari: clickbait, slang berlebihan, kutipan palsu, urgensi palsu, klaim tanpa 
 
 ## Warna
 
-Biru malam sebagai latar (`ink-900/800/700`), krem untuk teks, gradien fajar (amber–ember–rose) untuk aksen, label, dan angka penting.
+Latar kertas hangat (`surface`/`surface-cream`), tinta cokelat gelap (`ink`) untuk judul dan isi, aksen terakota (`primary`/`primary-surface`) untuk label dan angka penting.
 Nilai pasti ada di `assets/tokens.json`.
 
 ## Tipografi
 
-Judul: Plus Jakarta Sans ExtraBold. Isi: Inter. Judul tidak lebih dari 3 baris di format utama.
+Judul: Newsreader (serif). Isi: Plus Jakarta Sans. Judul tidak lebih dari 3 baris di format utama.
 
 ## Watermark
 
-Teks "SEMBURAT" dengan titik gradien, sudut kiri bawah, opacity ±0.9. Jangan menutup kredit visual.
+Teks "SEMBURAT" dengan titik terakota, sudut kanan bawah, opacity ±0.9. Jangan menutup kredit visual.
 
 ## Gambar
 

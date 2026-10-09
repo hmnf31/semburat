@@ -42,5 +42,5 @@ Ukuran piksel ditentukan di CSS `.cv { width; height }` **dan** di `templates.js
 - [ ] Teks terbaca di layar HP (bukan hanya monitor).
 - [ ] Teks tidak keluar dari safe area platform.
 - [ ] Watermark dan kredit tidak bertumpuk.
-- [ ] Kontras memadai (teks krem di atas biru malam; teks gelap di atas gradien).
+- [ ] Kontras memadai (teks gelap di atas latar krem; teks terang di atas foto/gradien gelap).
 - [ ] Ukuran file ringan (PNG atau konversi ke JPG kualitas 85–90 untuk foto).

@@ -2,6 +2,7 @@ import type { ResearchProvider, ResearchResult } from '@semburat/domain';
 import { SourceType } from '@semburat/domain';
 import { ProviderError } from '@semburat/shared';
 import {
+  decodeHttpText,
   extractHtmlPage,
   fetchWithTimeout,
   mapWithConcurrency,
@@ -67,7 +68,7 @@ export class RSSAdapter implements ResearchProvider {
       try {
         const response = await fetchWithTimeout(this.fetchFn, feed, this.timeoutMs);
         if (!response.ok) return [];
-        return parseFeed(await response.text(), feed);
+        return parseFeed(await decodeHttpText(response), feed);
       } catch {
         return [];
       }
@@ -108,7 +109,7 @@ export class RSSAdapter implements ResearchProvider {
     if (!response.ok) {
       throw new ProviderError('rss', `unexpected status ${response.status}`, undefined, { url });
     }
-    return extractHtmlPage(await response.text(), url);
+    return extractHtmlPage(await decodeHttpText(response), url);
   }
 
   private matches(item: FeedItem, terms: string[]): boolean {

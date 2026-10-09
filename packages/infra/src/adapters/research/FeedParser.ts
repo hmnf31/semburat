@@ -61,6 +61,150 @@ export function truncate(text: string, maxLength: number): string {
   return `${text.slice(0, maxLength - 1).trimEnd()}…`;
 }
 
+/** Removes residual decoding artifacts (U+FFFD) left over from mislabeled encodings. */
+export function cleanText(input: string): string {
+  return input
+    .replace(/(\uFFFD+\??)/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+const WINDOWS1252_HIGH: Record<number, number> = {
+  0x80: 0x20ac,
+  0x82: 0x201a,
+  0x83: 0x0192,
+  0x84: 0x201e,
+  0x85: 0x2026,
+  0x86: 0x2020,
+  0x87: 0x2021,
+  0x88: 0x02c6,
+  0x89: 0x2030,
+  0x8a: 0x0160,
+  0x8b: 0x2039,
+  0x8c: 0x0152,
+  0x8e: 0x017d,
+  0x91: 0x2018,
+  0x92: 0x2019,
+  0x93: 0x201c,
+  0x94: 0x201d,
+  0x95: 0x2022,
+  0x96: 0x2013,
+  0x97: 0x2014,
+  0x98: 0x02dc,
+  0x99: 0x2122,
+  0x9a: 0x0161,
+  0x9b: 0x203a,
+  0x9c: 0x0153,
+  0x9e: 0x017e,
+  0x9f: 0x0178,
+};
+
+function decodeWindows1252(bytes: Uint8Array): string {
+  let out = '';
+  for (let i = 0; i < bytes.length; i += 1) {
+    const byte = bytes[i];
+    out += String.fromCharCode(WINDOWS1252_HIGH[byte] ?? byte);
+  }
+  return out;
+}
+
+function decodeUtf16(bytes: Uint8Array, littleEndian: boolean): string {
+  try {
+    return new TextDecoder(littleEndian ? 'utf-16le' : 'utf-16be').decode(bytes);
+  } catch {
+    let out = '';
+    for (let i = 0; i + 1 < bytes.length; i += 2) {
+      out += String.fromCharCode(
+        littleEndian ? bytes[i] | (bytes[i + 1] << 8) : (bytes[i] << 8) | bytes[i + 1]
+      );
+    }
+    return out;
+  }
+}
+
+function asciiHead(bytes: Uint8Array, length = 1024): string {
+  let out = '';
+  for (let i = 0; i < Math.min(length, bytes.length); i += 1) {
+    out += bytes[i] < 0x80 ? String.fromCharCode(bytes[i]) : '?';
+  }
+  return out;
+}
+
+function declaredCharset(bytes: Uint8Array): string | undefined {
+  const head = asciiHead(bytes);
+  const xml = head.match(/<\?xml[^>]*encoding\s*=\s*["']([^"']+)["']/i)?.[1];
+  if (xml) return xml;
+  const meta = head.match(/<meta[^>]+charset\s*=\s*["']([^"']+)["']/i)?.[1];
+  if (meta) return meta;
+  return head.match(/content\s*=\s*["'][^"']*charset=([^"'>\s]+)/i)?.[1];
+}
+
+function charsetFromHeader(contentType: string | null): string | undefined {
+  if (!contentType) return undefined;
+  const match = contentType.match(/charset\s*=\s*["']?([A-Za-z0-9._-]+)/i);
+  return match ? match[1] : undefined;
+}
+
+function normalizeCharset(charset: string): string {
+  const clean = charset.toLowerCase();
+  if (
+    clean === 'latin1' ||
+    clean === 'latin-1' ||
+    clean === 'iso8859-1' ||
+    clean === 'iso-8859-1'
+  ) {
+    return 'windows-1252';
+  }
+  if (clean === 'utf8') return 'utf-8';
+  return clean;
+}
+
+/** Decodes a byte buffer, preferring a strict UTF-8 pass then the declared charset. */
+export function decodeCharsetBytes(bytes: Uint8Array, contentTypeHeader?: string): string {
+  if (bytes.length >= 3 && bytes[0] === 0xef && bytes[1] === 0xbb && bytes[2] === 0xbf) {
+    return new TextDecoder('utf-8').decode(bytes.subarray(3));
+  }
+  if (bytes.length >= 2 && bytes[0] === 0xff && bytes[1] === 0xfe) {
+    return decodeUtf16(bytes.subarray(2), true);
+  }
+  if (bytes.length >= 2 && bytes[0] === 0xfe && bytes[1] === 0xff) {
+    return decodeUtf16(bytes.subarray(2), false);
+  }
+
+  const declared = normalizeCharset(
+    declaredCharset(bytes) ?? charsetFromHeader(contentTypeHeader ?? null) ?? 'utf-8'
+  );
+
+  try {
+    return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+  } catch {
+    // not valid UTF-8; use the declared encoding below
+  }
+
+  if (declared === 'windows-1252') return decodeWindows1252(bytes);
+  if (declared === 'utf-8') return decodeWindows1252(bytes);
+  if (declared.startsWith('utf-16')) {
+    const littleEndian = declared === 'utf-16le';
+    return decodeUtf16(bytes, littleEndian);
+  }
+  try {
+    return new TextDecoder(declared, { fatal: true }).decode(bytes);
+  } catch {
+    // fall back to a permissive decode
+  }
+  try {
+    return new TextDecoder('utf-8').decode(bytes);
+  } catch {
+    return decodeWindows1252(bytes);
+  }
+}
+
+/** Reads a Response body honoring BOM, the HTTP charset, and the declared document charset. */
+export async function decodeHttpText(response: Response): Promise<string> {
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  return decodeCharsetBytes(bytes, response.headers.get('content-type') ?? undefined);
+}
+
 function tagText(block: string, tag: string): string | undefined {
   const match = block.match(new RegExp(`<${tag}(?:\\s[^>]*)?>([\\s\\S]*?)</${tag}>`, 'i'));
   if (!match) return undefined;
@@ -141,8 +285,8 @@ export function parseFeed(xml: string, sourceUrl: string): FeedItem[] {
     const source = blockSource(block);
     items.push({
       url: resolveUrl(decodeEntities(url), sourceUrl),
-      title: truncate(stripHtml(title), 300),
-      snippet: description ? truncate(stripHtml(description), 400) : '',
+      title: truncate(cleanText(stripHtml(title)), 300),
+      snippet: description ? truncate(cleanText(stripHtml(description)), 400) : '',
       publishedAt:
         parseDate(tagText(block, 'pubDate')) ??
         parseDate(tagText(block, 'published')) ??
@@ -182,9 +326,9 @@ export function extractHtmlPage(html: string, url: string, maxLength = 6000): Ht
     metaContent(html, 'article:published_time') ?? metaContent(html, 'datePublished');
   const published = publishedRaw ? parseDate(publishedRaw) : undefined;
   return {
-    content: truncate(stripHtml(cleaned), maxLength),
+    content: truncate(cleanText(stripHtml(cleaned)), maxLength),
     metadata: {
-      title: title ? stripHtml(title) : url,
+      title: title ? cleanText(stripHtml(title)) : url,
       publishedAt: published,
       author: metaContent(html, 'author') ?? metaContent(html, 'article:author'),
     },

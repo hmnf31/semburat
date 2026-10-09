@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 import { ProviderError } from '@semburat/shared';
 import {
+  cleanText,
+  decodeCharsetBytes,
+  decodeHttpText,
   extractHtmlPage,
   mapWithConcurrency,
   parseFeed,
@@ -139,6 +142,77 @@ describe('stripHtml', () => {
   it('removes tags and decodes entities', () => {
     expect(stripHtml('<p>A &amp; B</p>')).toBe('A & B');
     expect(stripHtml('angka &#65; ok')).toBe('angka A ok');
+  });
+});
+
+describe('cleanText', () => {
+  it('replaces replacement-character artifacts with an apostrophe', () => {
+    expect(cleanText('GTA\uFFFD?6')).toBe("GTA'6");
+    expect(cleanText('It\uFFFDs')).toBe("It's");
+    expect(cleanText('Wendy\uFFFD\uFFFDs')).toBe("Wendy's");
+  });
+
+  it('collapses surrounding whitespace', () => {
+    expect(cleanText('  halo \uFFFD dunia  ')).toBe("halo ' dunia");
+  });
+});
+
+describe('decodeCharsetBytes', () => {
+  const textToBytes = (value: string): Uint8Array => new TextEncoder().encode(value);
+
+  it('decodes UTF-8 without a declared charset', () => {
+    expect(decodeCharsetBytes(textToBytes('Gempa M5,6 Guncang Jayapura'))).toBe(
+      'Gempa M5,6 Guncang Jayapura'
+    );
+  });
+
+  it('honours a UTF-8 BOM', () => {
+    const bytes = new Uint8Array([0xef, 0xbb, 0xbf, ...textToBytes('berita')]);
+    expect(decodeCharsetBytes(bytes)).toBe('berita');
+  });
+
+  it('decodes windows-1252 smart quotes (0x92/0x93/0x94) shared by many RSS feeds', () => {
+    const bytes = new Uint8Array([
+      0x49,
+      0x74,
+      0x92,
+      0x73, // "It’s"
+      0x20,
+      0x93,
+      0x57,
+      0x6f,
+      0x72,
+      0x6c,
+      0x64,
+      0x94, // " “World”"
+    ]);
+    expect(decodeCharsetBytes(bytes)).toBe('It’s \u201CWorld\u201D');
+  });
+
+  it('prefers strict UTF-8 over a mislabeled ISO-8859-1 declaration', () => {
+    const bytes = textToBytes('Kabar Nusantara');
+    expect(decodeCharsetBytes(bytes, 'text/xml; charset=iso-8859-1')).toBe('Kabar Nusantara');
+  });
+
+  it('falls back for garbage bytes without throwing', () => {
+    const bytes = new Uint8Array([0x92, 0x41, 0xff]);
+    expect(decodeCharsetBytes(bytes)).toContain('\u2019');
+  });
+
+  it('decodes an HTTP response body via decodeHttpText', async () => {
+    const response = new Response(textToBytes('Uji markup dan baca-ulang'), {
+      headers: { 'content-type': 'application/xml; charset=utf-8' },
+    });
+    const text = await decodeHttpText(response);
+    expect(text).toBe('Uji markup dan baca-ulang');
+  });
+
+  it('sanitizes a parsed feed title that contained replacement characters', () => {
+    const items = parseFeed(
+      '<rss version="2.0"><channel><item><title>GTA\uFFFD?6 headphones leak</title><link>https://news.test/x</link></item></channel></rss>',
+      'https://feeds.test/rss'
+    );
+    expect(items[0].title).toBe("GTA'6 headphones leak");
   });
 });
 

@@ -2,6 +2,7 @@ import type { ResearchProvider, ResearchResult } from '@semburat/domain';
 import { SourceType } from '@semburat/domain';
 import { ProviderError } from '@semburat/shared';
 import {
+  decodeHttpText,
   extractHtmlPage,
   fetchWithTimeout,
   parseFeed,
@@ -45,7 +46,7 @@ export class NewsAdapter implements ResearchProvider {
     }
     if (!response.ok) return [];
     try {
-      return parseFeed(await response.text(), url)
+      return parseFeed(await decodeHttpText(response), url)
         .slice(0, maxResults)
         .map((item) => ({
           url: item.url,
@@ -75,6 +76,6 @@ export class NewsAdapter implements ResearchProvider {
     if (!response.ok) {
       throw new ProviderError('news', `unexpected status ${response.status}`, undefined, { url });
     }
-    return extractHtmlPage(await response.text(), url);
+    return extractHtmlPage(await decodeHttpText(response), url);
   }
 }

@@ -104,7 +104,7 @@ export class TrendResearchPipeline {
 
     const articleId = this.buildArticleId(trend.id);
     const existingArticle = await this.articleRepo.findById(articleId);
-    if (existingArticle) {
+    if (existingArticle && this.isSettled(existingArticle.status)) {
       this.log('info', 'Trend already processed, returning existing article', {
         trendId: trend.id,
         articleId: existingArticle.id,
@@ -113,11 +113,23 @@ export class TrendResearchPipeline {
       return existingArticle;
     }
 
+    if (existingArticle) {
+      this.log('warn', 'Reprocessing stale article left by a previous failed run', {
+        trendId: trend.id,
+        articleId: existingArticle.id,
+        status: existingArticle.status,
+      });
+    }
+
     try {
       const research = await this.runResearch(trend);
       const draft = await this.createDraftArticle(trend, research);
       const article = draft.withStatus(ArticleStatus.RESEARCHING);
       await this.articleRepo.update(article);
+
+      if (existingArticle) {
+        await this.clearArticleFacts(article.id);
+      }
 
       const facts = await this.extractFacts(research, article);
       const verifiedFacts = await this.verifyFacts(article);
@@ -362,6 +374,18 @@ export class TrendResearchPipeline {
       return article.withStatus(ArticleStatus.NEEDS_RESEARCH).withQualityScore(quality.score);
     }
     return article.withStatus(ArticleStatus.VERIFIED).withQualityScore(quality.score);
+  }
+
+  private isSettled(status: ArticleStatus): boolean {
+    return status !== ArticleStatus.DRAFT && status !== ArticleStatus.RESEARCHING;
+  }
+
+  private async clearArticleFacts(articleId: string): Promise<void> {
+    const staleFacts = await this.factRepo.findByArticleId(articleId);
+    for (const fact of staleFacts) {
+      await this.factEvidenceRepo.deleteByFactId(fact.id);
+    }
+    await this.factRepo.deleteByArticleId(articleId);
   }
 
   private async createDraftArticle(trend: Trend, research: Research): Promise<Article> {

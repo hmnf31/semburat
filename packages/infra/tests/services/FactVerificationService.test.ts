@@ -21,11 +21,13 @@ describe('FactVerificationService', () => {
       findById: vi.fn(),
       findByArticleId: vi.fn(),
       bulkInsert: vi.fn(),
+      deleteByArticleId: vi.fn(),
     } as FactRepository;
 
     mockFactEvidenceRepo = {
       insert: vi.fn(),
       findByFactId: vi.fn(),
+      deleteByFactId: vi.fn(),
     } as FactEvidenceRepository;
 
     service = new FactVerificationService(mockAIProvider, mockFactRepo, mockFactEvidenceRepo);

@@ -97,7 +97,8 @@ export function createContainer(env: Env): Container {
     aiProvider,
     factRepo,
     factEvidenceRepo,
-    researchRepo
+    researchRepo,
+    sourceRepo
   );
   const factVerificationService = new FactVerificationService(
     aiProvider,

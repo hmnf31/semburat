@@ -46,7 +46,7 @@ export class MockAIProvider implements AIProvider {
     this.streamChunks = chunks;
   }
 
-  async generateStructured(prompt: string): Promise<object> {
+  async generateStructured(prompt: string, schema?: object): Promise<object> {
     const p = prompt.toLowerCase();
     if (this.custom) {
       const data = this.custom.structured(prompt);
@@ -55,7 +55,7 @@ export class MockAIProvider implements AIProvider {
     for (const { match, data } of this.configured) {
       if (match.test(p)) return data;
     }
-    return this.defaultStructured(prompt);
+    return this.defaultStructured(prompt, schema);
   }
 
   async generateText(prompt: string): Promise<string> {
@@ -73,7 +73,10 @@ export class MockAIProvider implements AIProvider {
     }
   }
 
-  private defaultStructured(prompt: string): object {
+  private defaultStructured(prompt: string, schema?: object): object {
+    const bySchema = this.structuredForSchema(schema);
+    if (bySchema) return bySchema;
+
     const p = prompt.toLowerCase();
     const slice = (prompt || '').slice(0, 80);
     if (p.includes('claim') || p.includes('fakta') || p.includes('extract')) {
@@ -112,7 +115,7 @@ export class MockAIProvider implements AIProvider {
         body,
         summary: 'Ringkasan singkat dari berita ini mencakup poin-poin utama yang relevan.',
         key_points: ['Poin utama pertama', 'Poin utama kedua', 'Poin utama ketiga'],
-        faq: [{ q: 'Apa ini?', a: 'Ini adalah ringkasan otomatis.' }],
+        faq: [{ question: 'Apa ini?', answer: 'Ini adalah ringkasan otomatis.' }],
         source_notes: [{ source: 'MockSource', note: 'Catatan sumber mock.' }],
         uncertainty_notes: ['Catatan ketidakpastian yang dilaporkan.'],
         seo_title: 'Judul SEO untuk Berita Terbaru yang Informatif',
@@ -121,5 +124,79 @@ export class MockAIProvider implements AIProvider {
       };
     }
     return this.fallbackStructured;
+  }
+
+  private structuredForSchema(schema?: object): object | undefined {
+    if (!schema || typeof schema !== 'object') return undefined;
+    const required = (schema as { required?: unknown }).required;
+    const req = Array.isArray(required)
+      ? required.filter((item): item is string => typeof item === 'string')
+      : [];
+    const has = (key: string): boolean => req.includes(key);
+
+    if (has('summary') && has('claims')) {
+      return {
+        summary:
+          'Ringkasan riset mock: tren ini dibahas oleh beberapa sumber dan menunjukkan perkembangan yang konsisten untuk menguji alur editorial.',
+        claims: [
+          {
+            statement: 'Klaim uji utama dari sumber riset mock.',
+            confidence: 0.9,
+            supportType: 'supports',
+            sources: ['https://example.com/mock-source'],
+          },
+        ],
+        conflicts: [],
+        confidenceScore: 0.85,
+      };
+    }
+
+    if (has('facts')) {
+      return {
+        facts: [
+          {
+            statement: 'Fakta uji yang terkait dengan klaim riset mock.',
+            confidence: 0.88,
+            evidence: [],
+          },
+        ],
+      };
+    }
+
+    if (has('verificationStatus')) {
+      return { verificationStatus: 'verified', confidence: 0.9 };
+    }
+
+    if (has('seo_title') || (has('title') && has('dek') && has('body'))) {
+      return {
+        title: 'Uji Alur Konten Generator SEMBURAT',
+        dek: 'Alur konten generator SEMBURAT dijalankan dengan penyedia AI mode mock untuk memverifikasi setiap tahap berjalan sesuai rancangan.',
+        body: 'Paragraf uji untuk alur konten generator SEMBURAT. Konten ini dihasilkan penyedia AI mode mock dan tidak memanggil model bahasa sungguhan, sehingga aman dipakai untuk uji lokal dan integrasi tanpa kredensial. Setiap tahap, mulai dari riset, ekstraksi fakta, verifikasi, hingga penyusunan editorial, diuji agar menghasilkan artikel yang valid secara struktur.',
+        summary: 'Ringkasan uji alur konten generator SEMBURAT menggunakan penyedia AI mode mock.',
+        key_points: ['Uji tahap riset', 'Uji ekstraksi fakta', 'Uji penyusunan editorial'],
+        faq: [
+          {
+            question: 'Apa yang diuji oleh alur ini?',
+            answer:
+              'Seluruh tahap pipeline konten diuji menggunakan penyedia AI mode mock tanpa memanggil model sungguhan.',
+          },
+          {
+            question: 'Mengapa memakai mode mock?',
+            answer:
+              'Agar pengujian alur dapat berjalan tanpa kredensial API dan tanpa biaya panggilan model.',
+          },
+          {
+            question: 'Apa hasil yang diharapkan?',
+            answer:
+              'Artikel valid terbentuk dengan status dan skor mutu sesuai keluaran quality gate.',
+          },
+        ],
+        seo_title: 'Uji Alur Konten Generator SEMBURAT',
+        meta_description:
+          'Uji alur konten generator SEMBURAT dengan penyedia AI mode mock untuk memastikan riset, ekstraksi fakta, verifikasi, dan editorial berjalan sesuai rancangan.',
+      };
+    }
+
+    return undefined;
   }
 }

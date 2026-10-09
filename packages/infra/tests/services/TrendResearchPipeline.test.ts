@@ -141,11 +141,13 @@ describe('TrendResearchPipeline', () => {
       findById: vi.fn(),
       findByArticleId: vi.fn(),
       bulkInsert: vi.fn(),
+      deleteByArticleId: vi.fn(),
     } as unknown as FactRepository;
 
     mockFactEvidenceRepo = {
       insert: vi.fn(),
       findByFactId: vi.fn(),
+      deleteByFactId: vi.fn(),
     } as unknown as FactEvidenceRepository;
 
     mockAssetRepo = {
@@ -339,6 +341,28 @@ describe('TrendResearchPipeline', () => {
     expect(mockAIProvider.generateStructured).not.toHaveBeenCalled();
     expect(mockArticleRepo.insert).not.toHaveBeenCalled();
     expect(mockFactRepo.bulkInsert).not.toHaveBeenCalled();
+  });
+
+  it('processTrend reprocesses a stale article left by a previous failed run', async () => {
+    setupHappyPath();
+    vi.mocked(mockArticleRepo.findById).mockResolvedValue(buildArticle(ArticleStatus.RESEARCHING));
+    vi.mocked(mockFactRepo.findByArticleId).mockResolvedValue([
+      new Fact({
+        id: 'old-fact',
+        articleId: ARTICLE_ID,
+        statement: 'Fakta lama dari run sebelumnya',
+        confidence: 0.5,
+        verificationStatus: VerificationStatus.UNVERIFIED,
+      }),
+    ]);
+
+    const article = await pipeline.processTrend(TREND_ID);
+
+    expect(article.status).toBe(ArticleStatus.VERIFIED);
+    expect(mockFactEvidenceRepo.deleteByFactId).toHaveBeenCalledWith('old-fact');
+    expect(mockFactRepo.deleteByArticleId).toHaveBeenCalledWith(ARTICLE_ID);
+    expect(mockResearchProvider.search).toHaveBeenCalledTimes(1);
+    expect(mockFactRepo.bulkInsert).toHaveBeenCalledTimes(1);
   });
 
   it('processTrend throws when the research provider returns no sources', async () => {

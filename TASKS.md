@@ -140,6 +140,12 @@ Status:
 - [x] TASK-220 Configure Telegram bot secrets, webhook and sender allow-list (production + staging)
 - [x] TASK-221 Publish the first 10 real soft-launch articles (researched sources, one module per article)
 - [x] TASK-222 Use freely licensed source images for 9 of the 10 articles (Wikimedia Commons, credits recorded) with SEMBURAT watermark, plus thumbnails on article cards
+- [x] TASK-223 Align `packages/brand` tokens + `semburat-design` skill with the shipped "Warm Editorial Minimalism" identity (light surface, terracotta accent, Newsreader/Plus Jakarta Sans); regenerate tokens, recolor templates, add logo set
+- [x] TASK-224 Render per-article OG hero images (1200x630) from source photos and wire `og:image`/JSON-LD image per article
+- [x] TASK-225 Fix D1 date binding: `toISO` returns `null` (not `undefined`) so pipeline/trend/source writes persist
+- [x] TASK-226 Make `MockAIProvider` schema-aware so the content pipeline runs end-to-end in offline/mock mode (with unit tests)
+- [x] TASK-227 Resolve AI-provided fact-evidence source identifiers to real `sources.id` before insert (by id, URL, or domain); unresolved evidence is dropped instead of violating the FK
+- [x] TASK-228 Retry stale articles: `processTrend` only short-circuits on settled statuses and reprocesses leftover `draft`/`researching` articles, clearing their stale facts and evidence first
 
 ## Kilo execution rule
 

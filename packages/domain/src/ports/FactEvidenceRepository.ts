@@ -3,4 +3,5 @@
 export interface FactEvidenceRepository {
   insert(evidence: FactEvidence): Promise<void>;
   findByFactId(factId: string): Promise<FactEvidence[]>;
+  deleteByFactId(factId: string): Promise<void>;
 }

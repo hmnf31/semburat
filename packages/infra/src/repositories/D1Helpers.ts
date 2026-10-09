@@ -1,5 +1,5 @@
-﻿export function toISO(date: Date | undefined | null): string | undefined {
-  return date ? new Date(date).toISOString() : undefined;
+﻿export function toISO(date: Date | undefined | null): string | null {
+  return date ? new Date(date).toISOString() : null;
 }
 
 export function fromISO(date: unknown): Date | undefined {

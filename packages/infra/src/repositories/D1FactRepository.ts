@@ -66,6 +66,10 @@ export class D1FactRepository implements FactRepositoryPort {
     await this.db.batch(statements);
   }
 
+  async deleteByArticleId(articleId: string): Promise<void> {
+    await this.db.prepare('DELETE FROM facts WHERE article_id = ?').bind(articleId).run();
+  }
+
   private fromRow(row: Record<string, unknown>): Fact {
     return new Fact({
       id: row.id as string,

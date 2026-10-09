@@ -107,6 +107,23 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 - Gambar artikel: 9 dari 10 artikel memakai foto/diagram asli berlisensi bebas dari Wikimedia Commons (PD, CC BY, CC BY-SA) dengan kredit + tautan sumber di "Kredit Visual" dan watermark SEMBURAT di pojok kanan bawah; artikel PSE tetap memakai ilustrasi SEMBURAT karena tidak ada gambar bebas yang relevan
 - Kartu artikel (beranda, kategori, terkait) kini menampilkan thumbnail dari gambar sumber atau ilustrasi kategori, juga diberi watermark
 
+### Tahap E — template desain & OG
+
+- Identitas brand diselaraskan dengan situs tayang ("Warm Editorial Minimalism"): latar kertas hangat, aksen terakota, judul serif Newsreader, isi Plus Jakarta Sans
+- `packages/brand/tokens.json` diperbarui; `build_tokens.py` kini menulis ke `.kilo/skills/semburat-design/assets/` dan menyalin `tokens.json` apa adanya; ditambah set logo (`packages/brand/logo/{icon,icon-inverse,wordmark,wordmark-inverse}.svg`)
+- Skill `semburat-design` di-recolor ke tema terang editorial (`_base.css` + 7 template); `SKILL.md` dan `references/` diperbarui; validator lolos untuk og-hero, fact-card, carousel
+- Render PNG terverifikasi dengan Playwright/Chromium; dibuat 10 OG hero 1200x630 (foto sumber + identitas editorial) di `apps/web/public/og/` dan dipasang sebagai `og:image`/`twitter:image` + gambar JSON-LD per artikel
+
+### Uji alur konten generator (dry-run lokal)
+
+- Dijalankan lokal via `wrangler dev` + D1 lokal (migrasi diterapkan), autentikasi `/api/pipeline/*` dengan `TELEGRAM_WEBHOOK_SECRET` dari `apps/worker/.dev.vars` (kini masuk `.gitignore`); `aiMode=mock`
+- `POST /api/pipeline/discover` menghasilkan 12 tren dari Google News RSS + Trends nyata (tanpa kredensial AI)
+- `POST /api/pipeline/process-batch` menjalankan alur penuh: riset → ekstraksi fakta → verifikasi → editorial → quality gate; kedua artikel berakhir `needs_research`, skor 70 (gate benar menolak: sumber < 3 dan body < 500 karakter)
+- Bug nyata ditemukan & diperbaiki saat dry-run ini: (1) bind `undefined` ke D1 pada tanggal (`toISO`), (2) `MockAIProvider` tidak menghasilkan keluaran sesuai skema pipeline, (3) `fact_evidence.source_id` melanggar FK karena id sumber dari AI tidak diresolusi (TASK-227), (4) artikel draft gagal tidak pernah di-retry (TASK-228)
+- Perbaikan provenance (TASK-227): `FactExtractionService` meresolusi referensi sumber dari AI ke `sources.id` nyata (berdasarkan id, URL persis, atau domain); bukti yang tak dapat diresolusi dibuang, bukan dipaksakan ke FK
+- Perbaikan retry (TASK-228): `processTrend` hanya mengembalikan artikel berstatus settled dan memproses ulang artikel `draft`/`researching` sisa run gagal, membersihkan fakta & bukti lama terlebih dahulu
+- Dry-run ulang end-to-end lolos tanpa error FK; kedua artikel kembali berakhir `needs_research` (skor 70) sesuai ekspektasi mode mock
+
 ## 8. Next Steps
 
 1. Follow the roadmap starting at `docs/00-SEMBURAT_ROADMAP_TEST_REVENUE.md`
@@ -114,7 +131,7 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 3. Phase B: deploy staging on Cloudflare per `docs/02`; copy `docs/templates/trend-discovery.workflow.yml` as the pattern for other scheduled workflows
 4. Phase C: complete the release checklist (`docs/03`) and publish the 8 policy pages from `docs/pages/`
 5. Phase D: run the soft launch playbook (`docs/04`) with the daily templates
-6. Phase E: customize brand tokens, then render design templates with the `semburat-design` skill
+6. Phase E: brand tokens & templates selaras (TASK-223/224); sisa: paket sosial otomatis (x-post, carousel, fact-card, story) per artikel
 7. Pass the go/no-go gates in `docs/05-go-no-go.md` before scaling; keep auto-publish off until Gate 3
 8. Add web component tests, worker tests, real API keys, Remotion templates, production monitoring, and end-to-end tests
 

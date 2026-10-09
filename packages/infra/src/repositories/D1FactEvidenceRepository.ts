@@ -34,6 +34,10 @@ export class D1FactEvidenceRepository implements FactEvidenceRepositoryPort {
     return (result.results ?? []).map((row) => this.fromRow(row));
   }
 
+  async deleteByFactId(factId: string): Promise<void> {
+    await this.db.prepare('DELETE FROM fact_evidence WHERE fact_id = ?').bind(factId).run();
+  }
+
   private fromRow(row: Record<string, unknown>): FactEvidence {
     return new FactEvidence({
       factId: row.fact_id as string,

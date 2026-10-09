@@ -1,5 +1,10 @@
 import { Fact, FactEvidence, VerificationStatus, SupportType } from '@semburat/domain';
-import type { AIProvider, FactRepository, FactEvidenceRepository } from '@semburat/domain';
+import type {
+  AIProvider,
+  FactRepository,
+  FactEvidenceRepository,
+  SourceRepository,
+} from '@semburat/domain';
 import type { Research } from '@semburat/domain';
 import { ResearchRepository } from '@semburat/domain';
 import { randomUUID } from 'node:crypto';
@@ -25,7 +30,8 @@ export class FactExtractionService {
     private readonly aiProvider: AIProvider,
     private readonly factRepo: FactRepository,
     private readonly factEvidenceRepo: FactEvidenceRepository,
-    private readonly researchRepo: ResearchRepository
+    private readonly researchRepo: ResearchRepository,
+    private readonly sourceRepo: SourceRepository
   ) {}
 
   async extractFactsFromResearch(researchId: string, articleId: string): Promise<Fact[]> {
@@ -92,16 +98,22 @@ export class FactExtractionService {
         verificationStatus: VerificationStatus.UNVERIFIED,
       });
 
-      const evidenceEntities = (extracted.evidence ?? []).map(
-        (e) =>
+      const evidenceEntities: FactEvidence[] = [];
+      for (const e of extracted.evidence ?? []) {
+        const sourceId = await this.resolveSourceId(e.sourceId);
+        if (!sourceId) {
+          continue;
+        }
+        evidenceEntities.push(
           new FactEvidence({
             factId: fact.id,
-            sourceId: e.sourceId,
+            sourceId,
             evidenceText: e.text,
             supportType: e.supportType ?? SupportType.SUPPORTS,
             confidence: extracted.confidence ?? 0.5,
           })
-      );
+        );
+      }
 
       await this.factRepo.insert(fact);
       for (const ev of evidenceEntities) {
@@ -111,6 +123,43 @@ export class FactExtractionService {
     }
 
     return facts;
+  }
+
+  private async resolveSourceId(reference: string | undefined): Promise<string | null> {
+    const value = reference?.trim();
+    if (!value) {
+      return null;
+    }
+
+    const byId = await this.sourceRepo.findById(value);
+    if (byId) {
+      return byId.id;
+    }
+
+    const domain = this.extractDomain(value);
+    if (!domain) {
+      return null;
+    }
+
+    const sources = await this.sourceRepo.findByDomain(domain);
+    if (sources.length === 0) {
+      return null;
+    }
+
+    const exact = sources.find((source) => source.url.toString() === value);
+    return (exact ?? sources[0]).id;
+  }
+
+  private extractDomain(reference: string): string | null {
+    try {
+      return new URL(reference).hostname.replace(/^www\./, '').toLowerCase();
+    } catch {
+      const candidate = reference
+        .replace(/^www\./, '')
+        .trim()
+        .toLowerCase();
+      return /^[a-z0-9.-]+\.[a-z]{2,}$/.test(candidate) ? candidate : null;
+    }
   }
 
   private parseClaims(research: Research): ClaimInput[] {

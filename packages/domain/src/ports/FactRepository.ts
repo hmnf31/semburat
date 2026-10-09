@@ -5,4 +5,5 @@ export interface FactRepository {
   findById(id: string): Promise<Fact | null>;
   findByArticleId(articleId: string): Promise<Fact[]>;
   bulkInsert(facts: Fact[]): Promise<void>;
+  deleteByArticleId(articleId: string): Promise<void>;
 }

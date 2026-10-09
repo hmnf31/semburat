@@ -146,6 +146,7 @@ Status:
 - [x] TASK-226 Make `MockAIProvider` schema-aware so the content pipeline runs end-to-end in offline/mock mode (with unit tests)
 - [x] TASK-227 Resolve AI-provided fact-evidence source identifiers to real `sources.id` before insert (by id, URL, or domain); unresolved evidence is dropped instead of violating the FK
 - [x] TASK-228 Retry stale articles: `processTrend` only short-circuits on settled statuses and reprocesses leftover `draft`/`researching` articles, clearing their stale facts and evidence first
+- [x] TASK-229 Add a generic OpenAI-compatible AI adapter so free LLM providers (Groq, Gemini, Mistral, Cerebras, ...) can be configured via `AI_PROVIDER`/`AI_BASE_URL`/`AI_API_KEY`/`AI_MODEL`, taking precedence over OpenRouter with mock fallback
 
 ## Kilo execution rule
 

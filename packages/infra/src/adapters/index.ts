@@ -1,5 +1,6 @@
 export * from './mock/MockAIProvider.js';
 export * from './mock/MockResearchProvider.js';
+export * from './openai-compatible/OpenAICompatibleAdapter.js';
 export * from './openrouter/OpenRouterAdapter.js';
 export * from './research/FeedParser.js';
 export * from './research/NewsAdapter.js';

@@ -6,6 +6,10 @@ export interface Env {
   ENVIRONMENT: string;
   OPENROUTER_API_KEY?: string;
   OPENROUTER_MODEL?: string;
+  AI_PROVIDER?: string;
+  AI_BASE_URL?: string;
+  AI_API_KEY?: string;
+  AI_MODEL?: string;
   TELEGRAM_BOT_TOKEN?: string;
   TELEGRAM_WEBHOOK_SECRET?: string;
   TELEGRAM_ALLOWED_USER_IDS?: string;

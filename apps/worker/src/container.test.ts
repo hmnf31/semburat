@@ -10,12 +10,35 @@ function makeEnv(overrides: Partial<Env> = {}): Env {
   } as Env;
 }
 describe('createAiProvider', () => {
-  it('uses OpenRouter when an API key is configured', () => {
+  it('uses a free OpenAI-compatible provider when AI_* is configured', () => {
+    const result = createAiProvider(
+      makeEnv({
+        AI_PROVIDER: 'groq',
+        AI_API_KEY: 'gsk-test',
+        AI_BASE_URL: 'https://api.groq.com/openai/v1',
+        AI_MODEL: 'llama-3.3-70b-versatile',
+      })
+    );
+    expect(result.mode).toBe('openai-compatible');
+    expect(result.provider.constructor.name).toBe('OpenAICompatibleAdapter');
+  });
+  it('prefers the free provider over OpenRouter when both are configured', () => {
+    const result = createAiProvider(
+      makeEnv({
+        AI_API_KEY: 'gsk-test',
+        AI_BASE_URL: 'https://api.groq.com/openai/v1',
+        AI_MODEL: 'llama-3.3-70b-versatile',
+        OPENROUTER_API_KEY: 'sk-or-test',
+      })
+    );
+    expect(result.mode).toBe('openai-compatible');
+  });
+  it('uses OpenRouter when only an OpenRouter key is configured', () => {
     const result = createAiProvider(makeEnv({ OPENROUTER_API_KEY: 'sk-test' }));
     expect(result.mode).toBe('openrouter');
     expect(result.provider.constructor.name).toBe('OpenRouterAdapter');
   });
-  it('falls back to the mock provider without an API key', () => {
+  it('falls back to the mock provider without any API key', () => {
     const result = createAiProvider(makeEnv());
     expect(result.mode).toBe('mock');
     expect(result.provider.constructor.name).toBe('MockAIProvider');

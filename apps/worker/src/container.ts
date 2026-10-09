@@ -24,6 +24,7 @@ import {
   HumanReviewQueueService,
   MockAIProvider,
   NewsAdapter,
+  OpenAICompatibleAdapter,
   OpenRouterAdapter,
   parseFeedList,
   RSSAdapter,
@@ -36,7 +37,7 @@ import type { R2BucketLike } from '@semburat/infra';
 
 import type { Env } from './env.js';
 
-export type AiMode = 'openrouter' | 'mock';
+export type AiMode = 'openrouter' | 'openai-compatible' | 'mock';
 
 export interface Container {
   aiMode: AiMode;
@@ -52,6 +53,17 @@ export interface Container {
 }
 
 export function createAiProvider(env: Env): { provider: AIProvider; mode: AiMode } {
+  if (env.AI_API_KEY && env.AI_BASE_URL && env.AI_MODEL) {
+    return {
+      provider: new OpenAICompatibleAdapter({
+        provider: env.AI_PROVIDER ?? 'openai-compatible',
+        apiKey: env.AI_API_KEY,
+        baseUrl: env.AI_BASE_URL,
+        model: env.AI_MODEL,
+      }),
+      mode: 'openai-compatible',
+    };
+  }
   if (env.OPENROUTER_API_KEY) {
     return {
       provider: new OpenRouterAdapter({

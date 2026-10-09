@@ -15,6 +15,7 @@ export interface RegisterAssetParams {
   altText?: string;
   data: Buffer;
   contentType: string;
+  metadata?: Record<string, unknown>;
 }
 
 function extensionFor(contentType: string): string {
@@ -59,6 +60,7 @@ export class AssetRegistryService {
       creditText: params.creditText,
       altText: params.altText,
       metadataJson: JSON.stringify({
+        ...params.metadata,
         contentType: params.contentType,
         byteLength: params.data.length,
         registeredAt: new Date().toISOString(),
@@ -75,6 +77,10 @@ export class AssetRegistryService {
 
   async getAssetsForArticle(articleId: string): Promise<Asset[]> {
     return this.assetRepo.findByArticleId(articleId);
+  }
+
+  async getPublicUrl(storageKey: string, ttlSeconds = 31_536_000): Promise<string> {
+    return this.storageProvider.getSignedUrl(storageKey, ttlSeconds);
   }
 
   async deleteAsset(id: string): Promise<void> {

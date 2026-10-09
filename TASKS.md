@@ -154,6 +154,7 @@ Status:
 - [x] TASK-234 Add image sourcing adapters (Openverse CC/PD, Wikimedia Commons) plus a restricted fan-art adapter (DeviantArt RSS), an `ImageSourcingService` with license/credit annotation, and `POST /api/pipeline/images`
 - [x] TASK-235 Extend the design validation rules with `fan_art`/`needs_permission` image types that always require credit
 - [x] TASK-236 Add a `KvStorageProvider` (Cloudflare KV, free without a card, 25 MiB/value) behind the `StorageProvider` interface, wire the `ASSETS` KV binding for staging/production, and serve stored assets publicly at `GET /media/*` via `ASSETS_PUBLIC_BASE_URL`
+- [x] TASK-237 Persist sourced images into the asset registry: `ImageIngestionService` downloads publishable candidates, stores the bytes in KV and records them in `assets` with license/credit/source provenance; endpoints `POST /api/pipeline/assets` and `GET /api/assets?articleId=`
 
 ## Kilo execution rule
 

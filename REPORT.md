@@ -150,6 +150,13 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 - Terverifikasi end-to-end di production & staging: objek ditaruh via `wrangler kv key put`, diambil `GET /media/health/ok.txt` → `200 text/plain`; key tidak ada → `404`
 - `R2StorageProvider` tetap disimpan untuk kemungkinan pindah ke R2/S3 nanti
 
+### Tahap F — ingest gambar ke registry (TASK-237)
+
+- `ImageIngestionService` mengunduh kandidat gambar yang publishable, menyimpan byte-nya ke KV, dan mencatatnya di tabel `assets` lengkap dengan lisensi, kredit, `sourceUrl`, hash, dan metadata provenance (provider, query, judul, tag, `thumbnailUrl`)
+- Ukuran dibatasi 25 MiB (batas KV) dan `content-type` diambil dari header atau disimpulkan dari ekstensi URL; kegagalan unduh/oversize dicatat sebagai `skipped`, bukan menggagalkan seluruh permintaan
+- `AssetRegistryService` diperluas: metadata tambahan + `getPublicUrl()` (dari `ASSETS_PUBLIC_BASE_URL`); endpoint baru `POST /api/pipeline/assets` (ingest per artikel) dan `GET /api/assets?articleId=`
+- Terverifikasi live di staging: ingest Wikimedia (`public_domain`) → `GET /media/<key>` mengembalikan `200 image/png` (58 KB) → `GET /api/assets?articleId=` menunjukkan 1 aset; data uji dibersihkan
+
 ## 8. Next Steps
 
 1. Follow the roadmap starting at `docs/00-SEMBURAT_ROADMAP_TEST_REVENUE.md`

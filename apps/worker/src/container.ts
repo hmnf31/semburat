@@ -3,6 +3,7 @@ import type {
   AIProvider,
   AnalyticsEventRepository,
   ArticleRepository,
+  AssetRepository,
   ImageSourceProvider,
   ResearchProvider,
   StorageProvider,
@@ -17,6 +18,7 @@ import {
   D1ResearchRepository,
   D1SourceRepository,
   D1TrendRepository,
+  AssetRegistryService,
   CURATED_FEEDS,
   DeviantArtImageAdapter,
   EditorialGenerationService,
@@ -25,6 +27,7 @@ import {
   FactVerificationService,
   GoogleTrendsAdapter,
   HumanReviewQueueService,
+  ImageIngestionService,
   ImageSourcingService,
   MockAIProvider,
   NewsAdapter,
@@ -51,8 +54,11 @@ export interface Container {
   aiProvider: AIProvider;
   researchProvider: ResearchProvider;
   imageSourcing: ImageSourcingService;
+  imageIngestion: ImageIngestionService;
+  assetRegistry: AssetRegistryService;
   storage: StorageProvider;
   articleRepo: ArticleRepository;
+  assetRepo: AssetRepository;
   trendRepo: TrendRepository;
   analyticsRepo: AnalyticsEventRepository;
   trendDiscovery: TrendDiscoveryService;
@@ -133,6 +139,8 @@ export function createContainer(env: Env): Container {
   const storage = new KvStorageProvider(env.ASSETS, {
     baseUrl: env.ASSETS_PUBLIC_BASE_URL ?? env.R2_PUBLIC_BASE_URL,
   });
+  const assetRegistry = new AssetRegistryService(assetRepo, storage);
+  const imageIngestion = new ImageIngestionService(imageSourcing, assetRegistry);
 
   const factExtractionService = new FactExtractionService(
     aiProvider,
@@ -170,8 +178,11 @@ export function createContainer(env: Env): Container {
     aiProvider,
     researchProvider,
     imageSourcing,
+    imageIngestion,
+    assetRegistry,
     storage,
     articleRepo,
+    assetRepo,
     trendRepo,
     analyticsRepo,
     trendDiscovery: new TrendDiscoveryService(trendRepo, researchProvider, aiProvider),

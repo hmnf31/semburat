@@ -86,9 +86,10 @@ Response `data.images[]` items include `provider`, `url`, `sourceUrl`,
 ## Limitations
 
 - Asset bytes are stored in Cloudflare **KV** (R2 needs a payment method), served
-  via `GET /media/*`. Sourced images are still returned as candidates; a
-  download/watermark step that writes them into the asset registry is not wired
-  yet (KV also caps a single value at 25 MiB).
+  via `GET /media/*`. `POST /api/pipeline/assets` downloads publishable candidates,
+  stores them and records them in the asset registry; re-encoding/watermarking
+  sourced images is still not part of the ingestion step, and a single KV value
+  is capped at 25 MiB.
 - Reddit and DeviantArt may block datacenter egress (Cloudflare). Failures are
   swallowed and the other providers continue.
 - Wikimedia/Openverse results are not yet re-encoded or watermarked; that

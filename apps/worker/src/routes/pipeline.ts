@@ -22,6 +22,16 @@ const imageSearchBody = z.object({
   providers: z.array(z.string().trim().min(1)).optional(),
 });
 
+const assetIngestBody = z.object({
+  articleId: z.string().uuid(),
+  query: z.string().trim().min(2).max(120),
+  limit: z.number().int().min(1).max(12).optional(),
+  includeUnpublishable: z.boolean().optional(),
+  providers: z.array(z.string().trim().min(1)).optional(),
+  type: z.enum(['image', 'thumbnail', 'hero', 'og']).optional(),
+  altText: z.string().trim().max(200).optional(),
+});
+
 function parseQueries(raw: string | undefined): string[] {
   if (!raw) return DEFAULT_QUERIES;
   const queries = raw
@@ -102,6 +112,42 @@ app.post('/images', async (c) => {
 
   return c.json({
     data: { images, count: images.length, query: parsed.data.query },
+    meta: { environment: c.env.ENVIRONMENT },
+  });
+});
+
+app.post('/assets', async (c) => {
+  const parsed = assetIngestBody.safeParse(await c.req.json().catch(() => ({})));
+  if (!parsed.success) {
+    return c.json(
+      {
+        error: { code: 'VALIDATION_ERROR', message: 'Invalid body', details: parsed.error.issues },
+      },
+      400
+    );
+  }
+
+  const container = createContainer(c.env);
+  const result = await container.imageIngestion.ingest(parsed.data.articleId, parsed.data.query, {
+    limit: parsed.data.limit,
+    includeUnpublishable: parsed.data.includeUnpublishable,
+    providers: parsed.data.providers,
+    type: parsed.data.type,
+    altText: parsed.data.altText,
+  });
+
+  return c.json({
+    data: {
+      articleId: parsed.data.articleId,
+      query: parsed.data.query,
+      count: result.ingested.length,
+      ingested: result.ingested.map((item) => ({
+        asset: item.asset.toParams(),
+        publicUrl: item.publicUrl,
+        provider: item.provider,
+      })),
+      skipped: result.skipped,
+    },
     meta: { environment: c.env.ENVIRONMENT },
   });
 });

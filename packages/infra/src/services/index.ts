@@ -7,6 +7,7 @@ export * from './SourceIntelligenceService.js';
 export * from './AssetRegistryService.js';
 export * from './LicenseValidationService.js';
 export * from './ImageSourcingService.js';
+export * from './ImageIngestionService.js';
 export * from './AssetDeduplicationService.js';
 export * from './AssetTransformationService.js';
 export * from './ContentRepurposingService.js';

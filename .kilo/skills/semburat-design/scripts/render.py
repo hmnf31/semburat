@@ -105,6 +105,47 @@ def screenshot(html_text: str, width: int, height: int, out_path: Path, scale: f
         browser.close()
 
 
+def render_template(
+    template: str,
+    data: dict,
+    out_dir: Path,
+    base_dir: Path,
+    registry: dict,
+    scale: float = 1.0,
+) -> list[Path]:
+    """Render satu template (termasuk carousel multi-slide) menjadi PNG.
+
+    Mengembalikan daftar path PNG yang dihasilkan. Asumsikan data sudah lolos
+    `validate_content.validate`; fungsi ini tidak memvalidasi ulang.
+    """
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    spec = registry[template]
+    slug = data.get("slug", "konten")
+    outputs: list[Path] = []
+
+    if template == "carousel":
+        slides = data["slides"]
+        total = len(slides)
+        for i, slide in enumerate(slides, start=1):
+            merged = {**{k: data.get(k) for k in ("credit", "image_type", "domain")}, **slide}
+            tpl_file = spec["slide_types"][slide["type"]]["file"]
+            extra = {"slide_no": str(i), "slide_total": str(total)}
+            values = build_values(merged, base_dir, extra)
+            text = fill((TEMPLATES / tpl_file).read_text(encoding="utf-8"), values)
+            out_path = out_dir / f"{slug}-carousel-{i:02d}.png"
+            screenshot(text, spec["width"], spec["height"], out_path, scale)
+            outputs.append(out_path)
+    else:
+        values = build_values(data, base_dir)
+        text = fill((TEMPLATES / spec["file"]).read_text(encoding="utf-8"), values)
+        out_path = out_dir / f"{slug}-{template}.png"
+        screenshot(text, spec["width"], spec["height"], out_path, scale)
+        outputs.append(out_path)
+
+    return outputs
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--template", required=True)
@@ -135,28 +176,7 @@ def main() -> int:
         print("Validasi lolos.")
         return 0
 
-    out_dir = Path(args.out)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    spec = registry[args.template]
-    slug = data.get("slug", "konten")
-
-    if args.template == "carousel":
-        slides = data["slides"]
-        total = len(slides)
-        for i, slide in enumerate(slides, start=1):
-            merged = {**{k: data.get(k) for k in ("credit", "image_type", "domain")}, **slide}
-            tpl_file = spec["slide_types"][slide["type"]]["file"]
-            extra = {"slide_no": str(i), "slide_total": str(total)}
-            values = build_values(merged, base_dir, extra)
-            text = fill((TEMPLATES / tpl_file).read_text(encoding="utf-8"), values)
-            out_path = out_dir / f"{slug}-carousel-{i:02d}.png"
-            screenshot(text, spec["width"], spec["height"], out_path, args.scale)
-            print(f"OK {out_path}")
-    else:
-        values = build_values(data, base_dir)
-        text = fill((TEMPLATES / spec["file"]).read_text(encoding="utf-8"), values)
-        out_path = out_dir / f"{slug}-{args.template}.png"
-        screenshot(text, spec["width"], spec["height"], out_path, args.scale)
+    for out_path in render_template(args.template, data, Path(args.out), base_dir, registry, args.scale):
         print(f"OK {out_path}")
     return 0
 

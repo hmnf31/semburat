@@ -13,7 +13,12 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "turbo run test",
+    "test:py": "python -m unittest discover -s tests",
     "typecheck": "turbo run typecheck",
+    "articles:export": "tsx tools/export_articles.ts --out social-out/articles.json",
+    "social:pack": "tsx tools/export_articles.ts --out social-out/articles.json && python tools/social_pack.py --articles social-out/articles.json --out social-out/packs --assets-dir apps/web/src/assets/articles",
+    "social:send": "python tools/telegram_send.py --packs social-out/packs",
+    "social:review": "pnpm social:pack && pnpm social:send",
     "clean": "turbo run clean && rm -rf node_modules .turbo"
   },
   "devDependencies": {

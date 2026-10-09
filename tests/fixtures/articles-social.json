@@ -1,0 +1,104 @@
+{
+  "articles": [
+    {
+      "slug": "uji-qris",
+      "title": "Apa Itu QRIS dan Mengapa Standarnya Diatur Bank Indonesia",
+      "dek": "QRIS menyatukan beragam kode QR pembayaran menjadi satu standar nasional.",
+      "summary": "QRIS adalah standar kode QR pembayaran nasional yang diatur melalui PBI 71/2019 dan berlaku untuk seluruh penyedia jasa pembayaran di Indonesia.",
+      "body": "Isi artikel uji.",
+      "category": "Keuangan",
+      "subcategory": "Pembayaran",
+      "riskLevel": "low",
+      "qualityScore": 88,
+      "publishedAt": "2026-10-01T00:00:00.000Z",
+      "sources": [
+        {
+          "title": "Bank Indonesia - QRIS",
+          "url": "https://www.bi.go.id/qris",
+          "accessedAt": "2026-10-01"
+        },
+        { "title": "PBI 71/2019", "url": "https://www.bi.go.id/pbi", "accessedAt": "2026-10-01" }
+      ],
+      "assets": [
+        {
+          "type": "image",
+          "title": "Ilustrasi kode QR",
+          "license": "CC BY 4.0",
+          "credit": "Foto: Contoh / CC BY 4.0"
+        }
+      ],
+      "keyPoints": [
+        "QRIS memakai satu kode QR untuk semua penyedia pembayaran.",
+        "Standar ini ditetapkan Bank Indonesia melalui PBI 71/2019.",
+        "Biaya transaksi merchant diatur dan diawasi bersama.",
+        "Pengguna tidak perlu lagi menyimpan banyak aplikasi."
+      ],
+      "faq": [
+        { "question": "Apakah QRIS gratis?", "answer": "Untuk pengguna umumnya tanpa biaya." }
+      ]
+    },
+    {
+      "slug": "uji-budaya",
+      "title": "Mengapa Tradisi Lisan Penting bagi Kota Kecil",
+      "dek": "Cerita yang diwariskan lewat tutur menjaga ingatan kolektif sebuah kota.",
+      "summary": "Tradisi lisan menjaga ingatan kolektif sebuah kota tetap hidup dari generasi ke generasi meski jarang tercatat dalam arsip resmi.",
+      "body": "Isi artikel uji.",
+      "category": "Budaya",
+      "subcategory": "Warisan",
+      "riskLevel": "low",
+      "qualityScore": 82,
+      "publishedAt": "2026-10-02T00:00:00.000Z",
+      "sources": [
+        {
+          "title": "Catatan komunitas lokal",
+          "url": "https://example.org/budaya",
+          "accessedAt": "2026-10-02"
+        }
+      ],
+      "assets": [],
+      "keyPoints": [
+        "Cerita rakyat menyimpan sejarah yang jarang masuk arsip resmi.",
+        "Praktik bertutur mengikat warga lintas usia.",
+        "Dokumentasi digital membantu tradisi ini bertahan."
+      ],
+      "faq": [
+        {
+          "question": "Apa itu tradisi lisan?",
+          "answer": "Warisan cerita yang disampaikan lewat tutur."
+        }
+      ]
+    },
+    {
+      "slug": "uji-peta",
+      "title": "Peta Kuno Nusantara dan Cerita di Baliknya",
+      "dek": "Peta kuno menyimpan jejak pelayaran dan perdagangan masa lalu.",
+      "summary": "Peta kuno menyimpan jejak pelayaran dan perdagangan yang membentuk kota pelabuhan di Nusantara.",
+      "body": "Isi artikel uji.",
+      "category": "Sejarah",
+      "subcategory": "Arsip",
+      "riskLevel": "low",
+      "qualityScore": 80,
+      "publishedAt": "2026-10-03T00:00:00.000Z",
+      "sources": [
+        {
+          "title": "Arsip peta digital",
+          "url": "https://example.org/peta",
+          "accessedAt": "2026-10-03"
+        }
+      ],
+      "assets": [
+        {
+          "type": "image",
+          "title": "Peta kuno",
+          "license": "Public domain (PD)",
+          "credit": "Sumber: Arsip publik"
+        }
+      ],
+      "keyPoints": [
+        "Peta lama menandai jalur dagang yang ramai.",
+        "Banyak naskah peta kini tersedia secara terbuka."
+      ],
+      "faq": [{ "question": "Dari mana peta ini?", "answer": "Dari arsip publik bebas lisensi." }]
+    }
+  ]
+}

@@ -10,7 +10,7 @@ SEMBURAT is an Indonesian automated media/content intelligence platform. The rep
 - Infrastructure: 13 D1 repositories, 16 adapters, 18 application services
 - Web: 12 static Astro pages with SEO, structured data, sitemap, RSS
 - Tests: 280 tests across 41 files
-- CI/CD: 4 GitHub Actions workflows
+- CI/CD: 5 GitHub Actions workflows
 - Docs: 15 documentation files
 
 ## 2.5 Companion Kit (deduplicated)
@@ -21,7 +21,7 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 - `docs/pages/` — 8 policy page drafts: about, editorial policy, correction policy, source policy, AI policy, privacy, terms, contact
 - `packages/brand/` — brand tokens (`tokens.json` → `tokens.css`) plus `brand.config.json` and `build_tokens.py`
 - `.kilo/skills/semburat-design/` — design skill with HTML templates (`og-hero`, `x-post`, `fact-card`, `story-cover`, `carousel`), render script, validator, evals, and `semburat-design.skill`
-- `tests/` — 40 unit tests (PRD rules, design validation, render smoke), run by the `python-tests` job in `.github/workflows/ci.yml`
+- `tests/` — 49 unit tests (PRD rules, design validation, render smoke, social pack), run by the `python-tests` job in `.github/workflows/ci.yml`
 - `tools/revenue_simulator.py` — 24-month revenue simulation across 3 scenarios with editable assumptions
 - `remotion/` — video props example (`props.example.json`) and notes
 - `config/` — model routing example (`model-routing.example.json`)
@@ -54,7 +54,7 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 - Domain: 166 tests (18 files)
 - Infra: 222 tests (34 files)
 - Worker: 23 tests (3 files)
-- Companion kit: 40 unit tests in `tests/` (PRD rules, design validation, render smoke)
+- Companion kit: 49 unit tests in `tests/` (PRD rules, design validation, render smoke, social pack)
 
 ## 5. Validation
 
@@ -114,6 +114,14 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 - Skill `semburat-design` di-recolor ke tema terang editorial (`_base.css` + 7 template); `SKILL.md` dan `references/` diperbarui; validator lolos untuk og-hero, fact-card, carousel
 - Render PNG terverifikasi dengan Playwright/Chromium; dibuat 10 OG hero 1200x630 (foto sumber + identitas editorial) di `apps/web/public/og/` dan dipasang sebagai `og:image`/`twitter:image` + gambar JSON-LD per artikel
 
+### Tahap E — paket sosial per artikel (TASK-230/231)
+
+- `render.py` kini mengekspor `render_template()` sehingga satu paket penuh bisa dirender tanpa memanggil shell per template
+- `tools/export_articles.ts` mengekspor artikel `published` dari data web ke JSON; `tools/social_pack.py` menyusun konten (kicker, judul, isi, stat, sumber, kredit), memvalidasi lewat aturan `semburat-design`, lalu merender PNG + caption siap unggah
+- 10 artikel soft launch menghasilkan paket di `social-out/packs/<slug>/`: `og-hero`, `x-post`, `story-cover`, `carousel` (5-10 slide) untuk semua; `fact-card` hanya saat ditemukan angka bermakna (5 dari 10), plus `x-post.txt`/`instagram.txt`/`telegram.txt` dan `pack.json`
+- Skrip pnpm: `pnpm social:pack` (ekspor + render penuh), `pnpm articles:export`, `pnpm test:py`; alur didokumentasikan di `docs/SOCIAL_PACK.md`
+- CI: `.github/workflows/social-pack.yml` (manual) merender paket + mengunggah artefak; test unit `tests/test_social_pack.py` menjaga aturan tanpa perlu Chromium
+
 ### Uji alur konten generator (dry-run lokal)
 
 - Dijalankan lokal via `wrangler dev` + D1 lokal (migrasi diterapkan), autentikasi `/api/pipeline/*` dengan `TELEGRAM_WEBHOOK_SECRET` dari `apps/worker/.dev.vars` (kini masuk `.gitignore`); `aiMode=mock`
@@ -131,7 +139,7 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 3. Phase B: deploy staging on Cloudflare per `docs/02`; copy `docs/templates/trend-discovery.workflow.yml` as the pattern for other scheduled workflows
 4. Phase C: complete the release checklist (`docs/03`) and publish the 8 policy pages from `docs/pages/`
 5. Phase D: run the soft launch playbook (`docs/04`) with the daily templates
-6. Phase E: brand tokens & templates selaras (TASK-223/224); sisa: paket sosial otomatis (x-post, carousel, fact-card, story) per artikel
+6. Phase E: brand tokens & templates selaras (TASK-223/224); paket sosial otomatis per artikel selesai (TASK-230/231, `pnpm social:pack`); sisa: integrasi unggah ke kanal sosial + label afiliasi/sponsor
 7. Pass the go/no-go gates in `docs/05-go-no-go.md` before scaling; keep auto-publish off until Gate 3
 8. Add web component tests, worker tests, real API keys, Remotion templates, production monitoring, and end-to-end tests
 

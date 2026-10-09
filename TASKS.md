@@ -147,6 +147,9 @@ Status:
 - [x] TASK-227 Resolve AI-provided fact-evidence source identifiers to real `sources.id` before insert (by id, URL, or domain); unresolved evidence is dropped instead of violating the FK
 - [x] TASK-228 Retry stale articles: `processTrend` only short-circuits on settled statuses and reprocesses leftover `draft`/`researching` articles, clearing their stale facts and evidence first
 - [x] TASK-229 Add a generic OpenAI-compatible AI adapter so free LLM providers (Groq, Gemini, Mistral, Cerebras, ...) can be configured via `AI_PROVIDER`/`AI_BASE_URL`/`AI_API_KEY`/`AI_MODEL`, taking precedence over OpenRouter with mock fallback
+- [x] TASK-230 Build the per-article social pack pipeline (`tools/export_articles.ts` + `tools/social_pack.py`): derive og-hero, x-post, fact-card, story-cover and carousel content from article data, validate against the design skill rules, render PNGs and write ready-to-post captions
+- [x] TASK-231 Add `social:pack`/`articles:export` scripts, `tests/test_social_pack.py`, fix the `test_render_smoke.py` skill path bug, and document the workflow in `docs/SOCIAL_PACK.md`
+- [x] TASK-232 Add `tools/telegram_send.py` and `social:send`/`social:review` scripts so each generated social pack can be reviewed in Telegram before distribution
 
 ## Kilo execution rule
 

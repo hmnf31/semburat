@@ -4,6 +4,7 @@ import {
   extractHtmlPage,
   mapWithConcurrency,
   parseFeed,
+  publisherDomainFor,
   stripHtml,
 } from '../../src/adapters/research/FeedParser.js';
 import { NewsAdapter } from '../../src/adapters/research/NewsAdapter.js';
@@ -12,6 +13,10 @@ import {
   RSSAdapter,
   parseFeedList,
 } from '../../src/adapters/research/RSSAdapter.js';
+import {
+  RedditTrendAdapter,
+  parseSubredditList,
+} from '../../src/adapters/research/RedditTrendAdapter.js';
 import { EnhancedResearchAdapter } from '../../src/adapters/research/EnhancedResearchAdapter.js';
 import { GoogleTrendsAdapter } from '../../src/adapters/trends/GoogleTrendsAdapter.js';
 
@@ -55,6 +60,50 @@ const feedResponse =
   (_url: string): Promise<Response> =>
     Promise.resolve(new Response(body, { status }));
 
+const GOOGLE_NEWS_SAMPLE = `<?xml version="1.0"?><rss version="2.0"><channel>
+<item>
+  <title>Timnas Indonesia Menang</title>
+  <link>https://news.google.com/rss/articles/CBMiabc123</link>
+  <source url="https://www.kompas.com">Kompas.com</source>
+  <pubDate>Tue, 06 Oct 2026 08:00:00 GMT</pubDate>
+</item>
+</channel></rss>`;
+
+const REDDIT_LISTING = JSON.stringify({
+  data: {
+    children: [
+      {
+        data: {
+          title: 'Jadwal MPL MLBB season 15',
+          permalink: '/r/MobileLegendsGame/comments/abc/jadwal_mpl/',
+          subreddit: 'MobileLegendsGame',
+          author: 'gamer_id',
+          selftext: 'Berikut jadwal lengkap MPL.',
+          created_utc: 1_700_000_000,
+          score: 120,
+          num_comments: 30,
+          over_18: false,
+          stickied: false,
+        },
+      },
+      {
+        data: {
+          title: 'Topik politik nasional',
+          permalink: '/r/indonesia/comments/xyz/politik/',
+          subreddit: 'indonesia',
+          author: 'warga',
+          selftext: '',
+          created_utc: 1_700_100_000,
+          score: 10,
+          num_comments: 2,
+          over_18: false,
+          stickied: false,
+        },
+      },
+    ],
+  },
+});
+
 describe('parseFeed', () => {
   it('parses RSS items with CDATA, entities and dates', () => {
     const items = parseFeed(RSS_SAMPLE, 'https://feeds.test/rss');
@@ -71,6 +120,14 @@ describe('parseFeed', () => {
     expect(items).toHaveLength(1);
     expect(items[0].url).toBe('https://news.test/ai-pertanian');
     expect(items[0].publishedAt?.toISOString()).toBe('2026-10-07T10:00:00.000Z');
+  });
+
+  it('extracts the publisher from Google News <source> blocks', () => {
+    const items = parseFeed(GOOGLE_NEWS_SAMPLE, 'https://news.google.com/rss');
+    expect(items).toHaveLength(1);
+    expect(items[0].publisher).toBe('Kompas.com');
+    expect(items[0].publisherUrl).toBe('https://www.kompas.com/');
+    expect(publisherDomainFor(items[0])).toBe('kompas.com');
   });
 
   it('returns an empty list for non-feed payloads', () => {
@@ -127,6 +184,14 @@ describe('NewsAdapter', () => {
     expect(requested).toContain('q=gempa');
     expect(requested).toContain('hl=id');
     expect(results[0].publishedAt).toBeInstanceOf(Date);
+  });
+
+  it('propagates publisher provenance from aggregated feed items', async () => {
+    const adapter = new NewsAdapter({ fetchFn: feedResponse(GOOGLE_NEWS_SAMPLE) });
+    const results = await adapter.search('timnas', 5);
+    expect(results[0].publisher).toBe('Kompas.com');
+    expect(results[0].publisherDomain).toBe('kompas.com');
+    expect(results[0].sourceType).toBe('established_media');
   });
 
   it('returns no results when disabled', async () => {
@@ -272,5 +337,89 @@ describe('EnhancedResearchAdapter', () => {
     expect(pageFetch).not.toHaveBeenCalled();
     await adapter.fetchPage('https://news.test/artikel');
     expect(pageFetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('merges reddit results and routes reddit urls to the reddit adapter', async () => {
+    const fetchFn = vi.fn((url: string) =>
+      url.includes('reddit')
+        ? Promise.resolve(new Response(REDDIT_LISTING, { status: 200 }))
+        : Promise.resolve(new Response(RSS_SAMPLE, { status: 200 }))
+    );
+    const redditAdapter = new RedditTrendAdapter({
+      subreddits: ['MobileLegendsGame'],
+      fetchFn,
+    });
+    const adapter = new EnhancedResearchAdapter(
+      new NewsAdapter({ fetchFn }),
+      new RSSAdapter({ feeds: ['https://feeds.test/satu'], fetchFn }),
+      new GoogleTrendsAdapter({ fetchFn }),
+      redditAdapter
+    );
+    const results = await adapter.search('MPL', 20);
+    expect(results.some((result) => result.publisherDomain === 'reddit.com')).toBe(true);
+    await adapter.fetchPage('https://www.reddit.com/r/MobileLegendsGame/comments/abc/x/');
+    const redditCalls = vi
+      .mocked(fetchFn)
+      .mock.calls.map((call) => call[0] as string)
+      .filter((url) => url.includes('old.reddit.com'));
+    expect(redditCalls.length).toBeGreaterThan(0);
+  });
+});
+
+describe('RedditTrendAdapter', () => {
+  const ok = (body: string) => (): Promise<Response> => Promise.resolve(new Response(body));
+
+  it('parses subreddit lists tolerantly', () => {
+    expect(parseSubredditList(' r/gaming, GTA6 ,/r/indonesia ')).toEqual([
+      'gaming',
+      'GTA6',
+      'indonesia',
+    ]);
+    expect(parseSubredditList(undefined)).toEqual([]);
+  });
+
+  it('maps hot posts to community research results filtered by query', async () => {
+    const adapter = new RedditTrendAdapter({
+      subreddits: ['MobileLegendsGame', 'indonesia'],
+      fetchFn: vi.fn(ok(REDDIT_LISTING)),
+    });
+    const results = await adapter.search('MPL', 10);
+    expect(results).toHaveLength(1);
+    expect(results[0].publisherDomain).toBe('reddit.com');
+    expect(results[0].sourceType).toBe('community');
+    expect(results[0].url).toContain('reddit.com/r/MobileLegendsGame');
+    expect(results[0].publishedAt).toBeInstanceOf(Date);
+  });
+
+  it('returns nothing when disabled', async () => {
+    const fetchFn = vi.fn(ok(REDDIT_LISTING));
+    const adapter = new RedditTrendAdapter({ enabled: false, fetchFn });
+    expect(await adapter.search('MPL', 5)).toEqual([]);
+    expect(fetchFn).not.toHaveBeenCalled();
+  });
+
+  it('fetches a reddit thread as json text', async () => {
+    const thread = JSON.stringify([
+      {
+        data: {
+          children: [
+            {
+              data: {
+                title: 'Jadwal MPL',
+                selftext: 'Isi lengkap jadwal MPL.',
+                author: 'gamer_id',
+                created_utc: 1_700_000_000,
+              },
+            },
+          ],
+        },
+      },
+      { data: { children: [{ data: { selftext: 'Komentar teratas.' } }] } },
+    ]);
+    const adapter = new RedditTrendAdapter({ fetchFn: vi.fn(ok(thread)) });
+    const page = await adapter.fetchPage('https://www.reddit.com/r/x/comments/1/x/');
+    expect(page.content).toContain('Isi lengkap jadwal MPL');
+    expect(page.content).toContain('Komentar teratas');
+    expect(page.metadata.author).toBe('gamer_id');
   });
 });

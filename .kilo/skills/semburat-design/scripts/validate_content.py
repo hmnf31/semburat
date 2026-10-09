@@ -12,9 +12,26 @@ from pathlib import Path
 ASSETS = Path(__file__).resolve().parent.parent / "assets"
 RULES = json.loads((ASSETS / "tokens.json").read_text(encoding="utf-8"))["rules"]
 
-IMAGE_TYPES = {"none", "official", "press_kit", "licensed", "public_domain", "original", "ai_generated"}
+IMAGE_TYPES = {
+    "none",
+    "official",
+    "press_kit",
+    "licensed",
+    "public_domain",
+    "original",
+    "ai_generated",
+    "fan_art",
+    "needs_permission",
+}
 # Jenis gambar yang butuh kredit tertulis di visual
-CREDIT_REQUIRED_TYPES = {"official", "press_kit", "licensed", "public_domain"}
+CREDIT_REQUIRED_TYPES = {
+    "official",
+    "press_kit",
+    "licensed",
+    "public_domain",
+    "fan_art",
+    "needs_permission",
+}
 
 
 def words(text: str) -> int:

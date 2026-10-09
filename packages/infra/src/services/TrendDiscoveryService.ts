@@ -9,6 +9,7 @@ interface DiscoveryItem {
   title: string;
   snippet: string;
   publishedAt?: Date;
+  publisherDomain?: string;
   query: string;
 }
 
@@ -102,7 +103,7 @@ function velocityFor(items: DiscoveryItem[], now: number): number {
   const recentDomains = new Set(
     items
       .filter((item) => !item.publishedAt || now - item.publishedAt.getTime() <= 48 * 3_600_000)
-      .map((item) => hostnameOf(item.url))
+      .map((item) => item.publisherDomain ?? hostnameOf(item.url))
   );
   return Math.min(100, recentDomains.size * 20);
 }
@@ -131,7 +132,11 @@ export class TrendDiscoveryService {
     if (items.length === 0) return [];
 
     const normalized = this.normalizer.normalize(
-      items.map((item) => ({ title: item.title, url: item.url, source: hostnameOf(item.url) }))
+      items.map((item) => ({
+        title: item.title,
+        url: item.url,
+        source: item.publisherDomain ?? hostnameOf(item.url),
+      }))
     );
     const deduped = this.deduplicator.deduplicate(normalized);
     const now = Date.now();
@@ -209,7 +214,7 @@ export class TrendDiscoveryService {
       velocity: velocityFor(group, now),
       relevance,
       freshness,
-      sourceCount: new Set(group.map((item) => item.url)).size,
+      sourceCount: new Set(group.map((item) => item.publisherDomain ?? hostnameOf(item.url))).size,
       riskScore: riskFor(texts),
     };
   }

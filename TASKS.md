@@ -134,7 +134,7 @@ Status:
 - [x] TASK-214 Footer policy links + AI transparency statement
 - [x] TASK-215 Fill `site-config.ts` with operator identity, emails and policy dates (owner task)
 - [ ] TASK-216 Affiliate and sponsored-content labels
-- [ ] TASK-217 Enable R2 and re-deploy production worker
+- [x] TASK-217 Enable asset storage and re-deploy production worker (Cloudflare R2 requires a payment method, so Cloudflare KV is used instead)
 - [x] TASK-218 Centralize operator data in `apps/web/src/data/site-config.ts` (values to be filled by owner)
 - [x] TASK-219 Add `/categories` index page and fix header nav link
 - [x] TASK-220 Configure Telegram bot secrets, webhook and sender allow-list (production + staging)
@@ -150,6 +150,10 @@ Status:
 - [x] TASK-230 Build the per-article social pack pipeline (`tools/export_articles.ts` + `tools/social_pack.py`): derive og-hero, x-post, fact-card, story-cover and carousel content from article data, validate against the design skill rules, render PNGs and write ready-to-post captions
 - [x] TASK-231 Add `social:pack`/`articles:export` scripts, `tests/test_social_pack.py`, fix the `test_render_smoke.py` skill path bug, and document the workflow in `docs/SOCIAL_PACK.md`
 - [x] TASK-232 Add `tools/telegram_send.py` and `social:send`/`social:review` scripts so each generated social pack can be reviewed in Telegram before distribution
+- [x] TASK-233 Expand trend discovery beyond Google Search: parse publisher provenance from Google News `<source>` blocks, add a Reddit public-JSON trend adapter (viral + gaming subreddits), curate gaming/esports RSS feeds and add MLBB/GTA 6 to the default queries
+- [x] TASK-234 Add image sourcing adapters (Openverse CC/PD, Wikimedia Commons) plus a restricted fan-art adapter (DeviantArt RSS), an `ImageSourcingService` with license/credit annotation, and `POST /api/pipeline/images`
+- [x] TASK-235 Extend the design validation rules with `fan_art`/`needs_permission` image types that always require credit
+- [x] TASK-236 Add a `KvStorageProvider` (Cloudflare KV, free without a card, 25 MiB/value) behind the `StorageProvider` interface, wire the `ASSETS` KV binding for staging/production, and serve stored assets publicly at `GET /media/*` via `ASSETS_PUBLIC_BASE_URL`
 
 ## Kilo execution rule
 

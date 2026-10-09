@@ -3,6 +3,10 @@ export interface FeedItem {
   title: string;
   snippet: string;
   publishedAt?: Date;
+  /** Publisher display name from `<source>`, when the feed exposes it (Google News). */
+  publisher?: string;
+  /** Publisher homepage from `<source url="...">`, when the feed exposes it. */
+  publisherUrl?: string;
 }
 
 export interface HtmlPage {
@@ -76,6 +80,18 @@ function blockLink(block: string): string | undefined {
   return decodeEntities(href ? href[1] : inner);
 }
 
+function blockSource(block: string): { publisher?: string; publisherUrl?: string } {
+  const sourceBlock = block.match(/<source\b[^>]*>[\s\S]*?<\/source>/i);
+  if (!sourceBlock) return {};
+  const raw = sourceBlock[0];
+  const urlMatch = raw.match(/\burl=["']([^"']+)["']/i);
+  const name = tagText(raw, 'source');
+  return {
+    publisher: name ? truncate(stripHtml(name), 120) : undefined,
+    publisherUrl: urlMatch ? decodeEntities(urlMatch[1]) : undefined,
+  };
+}
+
 function parseDate(raw: string | undefined): Date | undefined {
   if (!raw) return undefined;
   const value = decodeEntities(stripHtml(raw));
@@ -91,6 +107,25 @@ function resolveUrl(raw: string, base: string): string {
   }
 }
 
+const AGGREGATOR_HOSTS = new Set(['news.google.com', 'news.google.co.id']);
+
+export function hostnameOfUrl(url: string): string | undefined {
+  try {
+    const host = new URL(url).hostname.toLowerCase().replace(/^www\./, '');
+    return host.length > 0 ? host : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+export function publisherDomainFor(item: FeedItem): string | undefined {
+  const fromPublisher = item.publisherUrl ? hostnameOfUrl(item.publisherUrl) : undefined;
+  if (fromPublisher) return fromPublisher;
+  const host = hostnameOfUrl(item.url);
+  if (host && !AGGREGATOR_HOSTS.has(host)) return host;
+  return undefined;
+}
+
 export function parseFeed(xml: string, sourceUrl: string): FeedItem[] {
   const blocks = xml.match(/<(item|entry)\b[^>]*>[\s\S]*?<\/\1>/gi) ?? [];
   const items: FeedItem[] = [];
@@ -103,6 +138,7 @@ export function parseFeed(xml: string, sourceUrl: string): FeedItem[] {
       tagText(block, 'summary') ??
       tagText(block, 'content') ??
       tagText(block, 'content:encoded');
+    const source = blockSource(block);
     items.push({
       url: resolveUrl(decodeEntities(url), sourceUrl),
       title: truncate(stripHtml(title), 300),
@@ -113,6 +149,8 @@ export function parseFeed(xml: string, sourceUrl: string): FeedItem[] {
         parseDate(tagText(block, 'updated')) ??
         parseDate(tagText(block, 'date')) ??
         parseDate(tagText(block, 'dc:date')),
+      publisher: source.publisher,
+      publisherUrl: source.publisherUrl ? resolveUrl(source.publisherUrl, sourceUrl) : undefined,
     });
   }
   return items;

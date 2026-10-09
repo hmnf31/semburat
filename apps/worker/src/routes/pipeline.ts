@@ -5,7 +5,7 @@ import type { Env } from '../env.js';
 
 const app = new Hono<{ Bindings: Env }>();
 
-const DEFAULT_QUERIES = ['gaming indonesia', 'teknologi indonesia'];
+const DEFAULT_QUERIES = ['MLBB MPL', 'gta 6', 'viral indonesia', 'teknologi indonesia'];
 
 const discoverBody = z.object({
   queries: z.array(z.string().trim().min(2)).min(1).max(20).optional(),
@@ -13,6 +13,13 @@ const discoverBody = z.object({
 
 const batchBody = z.object({
   limit: z.number().int().min(1).max(20).optional(),
+});
+
+const imageSearchBody = z.object({
+  query: z.string().trim().min(2).max(120),
+  limit: z.number().int().min(1).max(24).optional(),
+  includeUnpublishable: z.boolean().optional(),
+  providers: z.array(z.string().trim().min(1)).optional(),
 });
 
 function parseQueries(raw: string | undefined): string[] {
@@ -73,6 +80,29 @@ app.post('/process-batch', async (c) => {
   return c.json({
     data: { articles, count: articles.length },
     meta: { aiMode: container.aiMode, environment: c.env.ENVIRONMENT },
+  });
+});
+
+app.post('/images', async (c) => {
+  const parsed = imageSearchBody.safeParse(await c.req.json().catch(() => ({})));
+  if (!parsed.success) {
+    return c.json(
+      {
+        error: { code: 'VALIDATION_ERROR', message: 'Invalid body', details: parsed.error.issues },
+      },
+      400
+    );
+  }
+
+  const container = createContainer(c.env);
+  const images = await container.imageSourcing.search(parsed.data.query, parsed.data.limit ?? 6, {
+    includeUnpublishable: parsed.data.includeUnpublishable,
+    providers: parsed.data.providers,
+  });
+
+  return c.json({
+    data: { images, count: images.length, query: parsed.data.query },
+    meta: { environment: c.env.ENVIRONMENT },
   });
 });
 

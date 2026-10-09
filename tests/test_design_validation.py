@@ -43,6 +43,16 @@ class TestRules(unittest.TestCase):
         errs, _ = validate("og-hero", {**self.base, "image": "a.png", "image_type": "licensed"}, REGISTRY)
         self.assertTrue(any("credit" in e for e in errs))
 
+    def test_fan_art_is_recognized_and_requires_credit(self):
+        errs, _ = validate("og-hero", {**self.base, "image": "a.png", "image_type": "fan_art"}, REGISTRY)
+        self.assertTrue(any("credit" in e for e in errs))
+        ok, _ = validate(
+            "og-hero",
+            {**self.base, "image": "a.png", "image_type": "fan_art", "credit": "Artis — izin"},
+            REGISTRY,
+        )
+        self.assertEqual(ok, [])
+
     def test_ai_image_of_real_product_blocked(self):
         data = {**self.base, "image": "a.png", "image_type": "ai_generated", "depicts_real_product": True}
         errs, _ = validate("og-hero", data, REGISTRY)

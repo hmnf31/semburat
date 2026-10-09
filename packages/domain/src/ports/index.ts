@@ -2,6 +2,7 @@
 export * from './ResearchProvider.js';
 export * from './StorageProvider.js';
 export * from './ImageProvider.js';
+export * from './ImageSourceProvider.js';
 export * from './VoiceProvider.js';
 export * from './SoundEffectProvider.js';
 export * from './Publisher.js';

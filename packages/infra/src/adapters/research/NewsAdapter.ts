@@ -1,6 +1,13 @@
 import type { ResearchProvider, ResearchResult } from '@semburat/domain';
+import { SourceType } from '@semburat/domain';
 import { ProviderError } from '@semburat/shared';
-import { extractHtmlPage, fetchWithTimeout, parseFeed, type FetchLike } from './FeedParser.js';
+import {
+  extractHtmlPage,
+  fetchWithTimeout,
+  parseFeed,
+  publisherDomainFor,
+  type FetchLike,
+} from './FeedParser.js';
 
 export const GOOGLE_NEWS_RSS_SEARCH = 'https://news.google.com/rss/search';
 
@@ -38,7 +45,17 @@ export class NewsAdapter implements ResearchProvider {
     }
     if (!response.ok) return [];
     try {
-      return parseFeed(await response.text(), url).slice(0, maxResults);
+      return parseFeed(await response.text(), url)
+        .slice(0, maxResults)
+        .map((item) => ({
+          url: item.url,
+          title: item.title,
+          snippet: item.snippet,
+          publishedAt: item.publishedAt,
+          publisher: item.publisher,
+          publisherDomain: publisherDomainFor(item),
+          sourceType: SourceType.ESTABLISHED_MEDIA,
+        }));
     } catch {
       return [];
     }

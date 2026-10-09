@@ -1,10 +1,12 @@
 import type { ResearchProvider, ResearchResult } from '@semburat/domain';
+import { SourceType } from '@semburat/domain';
 import { ProviderError } from '@semburat/shared';
 import {
   extractHtmlPage,
   fetchWithTimeout,
   mapWithConcurrency,
   parseFeed,
+  publisherDomainFor,
   type FeedItem,
   type FetchLike,
 } from './FeedParser.js';
@@ -12,6 +14,18 @@ import {
 export const GOOGLE_NEWS_RSS_HEADLINES = 'https://news.google.com/rss';
 
 export const DEFAULT_FEEDS: readonly string[] = [GOOGLE_NEWS_RSS_HEADLINES];
+
+/**
+ * Curated feeds that surface gaming, esports and viral topics beyond the
+ * Google News aggregator. Used as the runtime default when RSS_FEEDS is unset.
+ */
+export const CURATED_FEEDS: readonly string[] = [
+  GOOGLE_NEWS_RSS_HEADLINES,
+  'https://store.steampowered.com/feeds/news.xml',
+  'https://feeds.ign.com/ign/all',
+  'https://www.eurogamer.net/feed',
+  'https://www.dexerto.com/feed/',
+];
 
 export interface RSSAdapterOptions {
   feeds?: string[];
@@ -74,6 +88,9 @@ export class RSSAdapter implements ResearchProvider {
       title: item.title,
       snippet: item.snippet,
       publishedAt: item.publishedAt,
+      publisher: item.publisher,
+      publisherDomain: publisherDomainFor(item),
+      sourceType: SourceType.ESTABLISHED_MEDIA,
     }));
   }
 

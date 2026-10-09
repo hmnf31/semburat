@@ -3,6 +3,7 @@ import type {
   AIProvider,
   AnalyticsEventRepository,
   ArticleRepository,
+  ImageSourceProvider,
   ResearchProvider,
   StorageProvider,
   TrendRepository,
@@ -16,24 +17,30 @@ import {
   D1ResearchRepository,
   D1SourceRepository,
   D1TrendRepository,
+  CURATED_FEEDS,
+  DeviantArtImageAdapter,
   EditorialGenerationService,
   EnhancedResearchAdapter,
   FactExtractionService,
   FactVerificationService,
   GoogleTrendsAdapter,
   HumanReviewQueueService,
+  ImageSourcingService,
   MockAIProvider,
   NewsAdapter,
   OpenAICompatibleAdapter,
   OpenRouterAdapter,
+  OpenverseImageAdapter,
   parseFeedList,
+  parseSubredditList,
   RSSAdapter,
-  R2StorageProvider,
+  KvStorageProvider,
   QualityGateService,
+  RedditTrendAdapter,
   TrendDiscoveryService,
   TrendResearchPipeline,
+  WikimediaImageAdapter,
 } from '@semburat/infra';
-import type { R2BucketLike } from '@semburat/infra';
 
 import type { Env } from './env.js';
 
@@ -43,6 +50,7 @@ export interface Container {
   aiMode: AiMode;
   aiProvider: AIProvider;
   researchProvider: ResearchProvider;
+  imageSourcing: ImageSourcingService;
   storage: StorageProvider;
   articleRepo: ArticleRepository;
   trendRepo: TrendRepository;
@@ -77,15 +85,35 @@ export function createAiProvider(env: Env): { provider: AIProvider; mode: AiMode
 }
 
 export function createResearchProvider(
-  env?: Pick<Env, 'RESEARCH_MODE' | 'RSS_FEEDS'>
+  env?: Pick<Env, 'RESEARCH_MODE' | 'RSS_FEEDS' | 'REDDIT_SUBREDDITS'>
 ): ResearchProvider {
   const enabled = env?.RESEARCH_MODE !== 'offline';
-  const feeds = env?.RSS_FEEDS === undefined ? undefined : parseFeedList(env.RSS_FEEDS);
+  const feeds = env?.RSS_FEEDS === undefined ? [...CURATED_FEEDS] : parseFeedList(env.RSS_FEEDS);
+  const subreddits = parseSubredditList(env?.REDDIT_SUBREDDITS);
+  const reddit = new RedditTrendAdapter(
+    subreddits.length > 0 ? { enabled, subreddits } : { enabled }
+  );
   return new EnhancedResearchAdapter(
     new NewsAdapter({ enabled }),
-    new RSSAdapter(feeds ? { enabled, feeds } : { enabled }),
-    new GoogleTrendsAdapter({ enabled })
+    new RSSAdapter({ enabled, feeds }),
+    new GoogleTrendsAdapter({ enabled }),
+    reddit
   );
+}
+
+export function createImageSourcing(
+  env?: Pick<Env, 'RESEARCH_MODE' | 'ENABLE_FANART'>
+): ImageSourcingService {
+  const enabled = env?.RESEARCH_MODE !== 'offline';
+  const fanartEnabled = (env?.ENABLE_FANART ?? 'false').toLowerCase() === 'true';
+  const providers: ImageSourceProvider[] = [
+    new OpenverseImageAdapter({ enabled }),
+    new WikimediaImageAdapter({ enabled }),
+  ];
+  if (fanartEnabled) {
+    providers.push(new DeviantArtImageAdapter({ enabled }));
+  }
+  return new ImageSourcingService(providers);
 }
 
 export function createContainer(env: Env): Container {
@@ -101,8 +129,9 @@ export function createContainer(env: Env): Container {
   const analyticsRepo = new D1AnalyticsEventRepository(env.DB);
 
   const researchProvider = createResearchProvider(env);
-  const storage = new R2StorageProvider(env.ASSETS as unknown as R2BucketLike, {
-    baseUrl: env.R2_PUBLIC_BASE_URL,
+  const imageSourcing = createImageSourcing(env);
+  const storage = new KvStorageProvider(env.ASSETS, {
+    baseUrl: env.ASSETS_PUBLIC_BASE_URL ?? env.R2_PUBLIC_BASE_URL,
   });
 
   const factExtractionService = new FactExtractionService(
@@ -140,6 +169,7 @@ export function createContainer(env: Env): Container {
     aiMode,
     aiProvider,
     researchProvider,
+    imageSourcing,
     storage,
     articleRepo,
     trendRepo,

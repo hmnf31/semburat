@@ -5,10 +5,15 @@ export * from './openrouter/OpenRouterAdapter.js';
 export * from './research/FeedParser.js';
 export * from './research/NewsAdapter.js';
 export * from './research/RSSAdapter.js';
+export * from './research/RedditTrendAdapter.js';
 export * from './research/EnhancedResearchAdapter.js';
 export * from './trends/GoogleTrendsAdapter.js';
+export * from './images/OpenverseImageAdapter.js';
+export * from './images/WikimediaImageAdapter.js';
+export * from './images/DeviantArtImageAdapter.js';
 export * from './storage/MockStorageProvider.js';
 export * from './storage/R2StorageProvider.js';
+export * from './storage/KvStorageProvider.js';
 
 export * from './publishing/TelegramPublisher.js';
 export * from './publishing/InstagramPublisher.js';

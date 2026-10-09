@@ -85,7 +85,7 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 - Migrations `0001`/`0002` applied to both D1 databases
 - Public endpoints live: `/`, `/api/health`, `/api/articles`, `/api/trends`
 - Pipeline endpoints require `TELEGRAM_WEBHOOK_SECRET`; `OPENROUTER_API_KEY` unset so `aiMode=mock`
-- R2 not enabled on the account yet; the `ASSETS` binding is commented out until it is
+- Cloudflare R2 requires a payment method, so asset storage uses **Cloudflare KV** instead (free, no card): binding `ASSETS`, namespaces `semburat-worker-semburat-assets` (production) and `...-staging`, served publicly via the Worker route `GET /media/*` (`ASSETS_PUBLIC_BASE_URL`). `R2StorageProvider` is kept behind the `StorageProvider` interface for a future switch to R2/S3.
 - Web build takes `PUBLIC_SITE_URL` and `PUBLIC_API_BASE_URL` at build time
 - Source repo: https://github.com/hmnf31/semburat
 
@@ -132,6 +132,24 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 - Perbaikan retry (TASK-228): `processTrend` hanya mengembalikan artikel berstatus settled dan memproses ulang artikel `draft`/`researching` sisa run gagal, membersihkan fakta & bukti lama terlebih dahulu
 - Dry-run ulang end-to-end lolos tanpa error FK; kedua artikel kembali berakhir `needs_research` (skor 70) sesuai ekspektasi mode mock
 
+### Tahap F — perluasan riset konten (TASK-233/234/235)
+
+- Sumber tren tak lagi hanya Google Search: `parseFeed` kini membaca `<source url>` Google News sehingga domain penerbit asli tersimpan (bukan `news.google.com`); `trackSource` memakai domain penerbit → diversitas & provenance membaik
+- Adapter `RedditTrendAdapter` memakai JSON publik `old.reddit.com` (subreddit `indonesia`, `gaming`, `GTA6`, `MobileLegendsGame`, `technology`) sebagai sinyal `community`; `EnhancedResearchAdapter` menggabungkan news + RSS + Google Trends + Reddit
+- Feed default diperkaya (`CURATED_FEEDS`: Steam news, IGN, Eurogamer, Dexerto) dan `TREND_QUERIES` default kini menyertakan `MLBB MPL`/`gta 6`/`viral indonesia`; `REDDIT_SUBREDDITS` dapat dikonfigurasi
+- Sumber gambar legal: `OpenverseImageAdapter` (CC/PD) dan `WikimediaImageAdapter` (Commons) → `public_domain`/`licensed`; `DeviantArtImageAdapter` (RSS publik) mengambil fan art tetapi selalu ditandai `restricted` + kredit "perlu izin pembuat" sehingga tidak bisa tayang tanpa izin
+- `ImageSourcingService` menggabungkan provider, dedup per URL, dan menandai `publishable`/`attributionRequired` lewat `LicenseValidationService`; endpoint baru `POST /api/pipeline/images` (Bearer auth) mengembalikan kandidat gambar beserta lisensi/kredit
+- Aturan desain `validate_content.py` diperluas dengan tipe gambar `fan_art`/`needs_permission` yang wajib kredit; TikTok/Instagram sengaja tidak di-scrape (tidak ada API tren gratis yang sesuai ToS)
+- Dokumentasi: `docs/RESEARCH_SOURCES.md`
+
+### Tahap F — penyimpanan aset via Cloudflare KV
+
+- R2 mewajibkan metode pembayaran, jadi penyimpanan aset dialihkan ke **Cloudflare KV** (gratis, tanpa kartu): adapter baru `KvStorageProvider` (di belakang interface `StorageProvider`, batas nilai 25 MiB) dengan `getSignedUrl()` yang menurunkan URL publik dari `ASSETS_PUBLIC_BASE_URL`
+- Binding `ASSETS` (KV) di-wire di `container.ts`; namespace dibuat untuk production (`0af6ab72…`) dan staging (`da70ff64…`)
+- Route publik baru `GET /media/*` menyajikan objek dari KV (content-type dari metadata, `Cache-Control` immutable) tanpa autentikasi; endpoint registry `GET /api/assets/:id` tetap ada
+- Terverifikasi end-to-end di production & staging: objek ditaruh via `wrangler kv key put`, diambil `GET /media/health/ok.txt` → `200 text/plain`; key tidak ada → `404`
+- `R2StorageProvider` tetap disimpan untuk kemungkinan pindah ke R2/S3 nanti
+
 ## 8. Next Steps
 
 1. Follow the roadmap starting at `docs/00-SEMBURAT_ROADMAP_TEST_REVENUE.md`
@@ -139,7 +157,7 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 3. Phase B: deploy staging on Cloudflare per `docs/02`; copy `docs/templates/trend-discovery.workflow.yml` as the pattern for other scheduled workflows
 4. Phase C: complete the release checklist (`docs/03`) and publish the 8 policy pages from `docs/pages/`
 5. Phase D: run the soft launch playbook (`docs/04`) with the daily templates
-6. Phase E: brand tokens & templates selaras (TASK-223/224); paket sosial otomatis per artikel selesai (TASK-230/231, `pnpm social:pack`); sisa: integrasi unggah ke kanal sosial + label afiliasi/sponsor
+6. Phase E: brand tokens & templates selaras (TASK-223/224); paket sosial otomatis per artikel selesai (TASK-230/231, `pnpm social:pack`); sumber riset diperluas (TASK-233, Reddit + RSS gaming); sumber gambar legal + fan art terjaga lisensi (TASK-234/235, `POST /api/pipeline/images`); sisa: integrasi unggah ke kanal sosial + label afiliasi/sponsor
 7. Pass the go/no-go gates in `docs/05-go-no-go.md` before scaling; keep auto-publish off until Gate 3
 8. Add web component tests, worker tests, real API keys, Remotion templates, production monitoring, and end-to-end tests
 

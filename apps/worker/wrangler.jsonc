@@ -16,24 +16,23 @@
   ],
   "vars": {
     "ENVIRONMENT": "development",
+    "TREND_QUERIES": "MLBB MPL,gta 6,viral indonesia,teknologi indonesia",
+    "REDDIT_SUBREDDITS": "indonesia,gaming,GTA6,MobileLegendsGame,technology",
+    "ENABLE_FANART": "true",
   },
   "env": {
     "production": {
       "name": "semburat-worker-production",
       "vars": {
         "ENVIRONMENT": "production",
+        "TREND_QUERIES": "MLBB MPL,gta 6,viral indonesia,teknologi indonesia",
+        "REDDIT_SUBREDDITS": "indonesia,gaming,GTA6,MobileLegendsGame,technology",
+        "ENABLE_FANART": "true",
         "AI_PROVIDER": "groq",
         "AI_BASE_URL": "https://api.groq.com/openai/v1",
         "AI_MODEL": "openai/gpt-oss-120b",
+        "ASSETS_PUBLIC_BASE_URL": "https://semburat-worker-production.theahuda.workers.dev/media",
       },
-      // R2 is not enabled on the account yet; enable it and create the
-      // "semburat-assets" bucket before enabling this binding.
-      // "r2_buckets": [
-      //   {
-      //     "binding": "ASSETS",
-      //     "bucket_name": "semburat-assets",
-      //   },
-      // ],
       "d1_databases": [
         {
           "binding": "DB",
@@ -42,14 +41,24 @@
           "migrations_dir": "../../packages/db/src/migrations",
         },
       ],
+      "kv_namespaces": [
+        {
+          "binding": "ASSETS",
+          "id": "0af6ab72b8bd42fcbed906c0e48aecd3",
+        },
+      ],
     },
     "staging": {
       "name": "semburat-worker-staging",
       "vars": {
         "ENVIRONMENT": "staging",
+        "TREND_QUERIES": "MLBB MPL,gta 6,viral indonesia,teknologi indonesia",
+        "REDDIT_SUBREDDITS": "indonesia,gaming,GTA6,MobileLegendsGame,technology",
+        "ENABLE_FANART": "true",
         "AI_PROVIDER": "groq",
         "AI_BASE_URL": "https://api.groq.com/openai/v1",
         "AI_MODEL": "openai/gpt-oss-120b",
+        "ASSETS_PUBLIC_BASE_URL": "https://semburat-worker-staging.theahuda.workers.dev/media",
       },
       "d1_databases": [
         {
@@ -57,6 +66,12 @@
           "database_name": "semburat-db-staging",
           "database_id": "91bf4878-cd19-4eb4-9fe0-a46e9326de20",
           "migrations_dir": "../../packages/db/src/migrations",
+        },
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "ASSETS",
+          "id": "da70ff64739b4474b1ee49e62d4a7975",
         },
       ],
     },

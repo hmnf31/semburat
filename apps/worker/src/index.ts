@@ -12,6 +12,7 @@ import assets from './routes/assets.js';
 import analytics from './routes/analytics.js';
 import pipeline from './routes/pipeline.js';
 import telegram from './routes/telegram.js';
+import media from './routes/media.js';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -28,6 +29,7 @@ app.route('/api/assets', assets);
 app.route('/api/analytics', analytics);
 app.route('/api/pipeline', pipeline);
 app.route('/api/telegram/webhook', telegram);
+app.route('/media', media);
 
 app.get('/', (c) => {
   const container = createContainer(c.env);

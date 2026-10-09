@@ -25,6 +25,7 @@ import type {
   FactRepository,
   ResearchProvider,
   ResearchRepository,
+  ResearchResult,
   SourceRepository,
   TrendRepository,
 } from '@semburat/domain';
@@ -195,7 +196,7 @@ export class TrendResearchPipeline {
 
     const sourceBlocks: string[] = [];
     for (const result of searchResults) {
-      await this.trackSource(result.url, result.title);
+      await this.trackSource(result);
       try {
         const page = await this.researchProvider.fetchPage(result.url);
         sourceBlocks.push(`[Source: ${result.title} (${result.url})]\n${page.content}`);
@@ -404,9 +405,10 @@ export class TrendResearchPipeline {
     return article;
   }
 
-  private async trackSource(url: string, title: string): Promise<void> {
+  private async trackSource(result: ResearchResult): Promise<void> {
     try {
-      const domain = new URL(url).hostname.replace('www.', '');
+      const fallbackHost = new URL(result.url).hostname.replace(/^www\./, '');
+      const domain = (result.publisherDomain ?? fallbackHost).trim().toLowerCase();
       const existing = await this.sourceRepo.findByDomain(domain);
 
       const source =
@@ -417,11 +419,11 @@ export class TrendResearchPipeline {
             })
           : new Source({
               id: randomUUID(),
-              url,
+              url: result.url,
               domain,
-              title,
-              publisher: domain,
-              sourceType: SourceType.ESTABLISHED_MEDIA,
+              title: result.title,
+              publisher: result.publisher ?? domain,
+              sourceType: result.sourceType ?? SourceType.ESTABLISHED_MEDIA,
               reliabilityState: ReliabilityState.UNVERIFIED,
               licenseState: LicenseState.UNKNOWN,
               createdAt: new Date(),
@@ -430,7 +432,7 @@ export class TrendResearchPipeline {
       await this.sourceRepo.upsert(source);
     } catch (error) {
       this.log('warn', 'Failed to track research source', {
-        url,
+        url: result.url,
         error: (error as Error).message,
       });
     }

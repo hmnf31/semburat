@@ -30,6 +30,7 @@ const assetIngestBody = z.object({
   providers: z.array(z.string().trim().min(1)).optional(),
   type: z.enum(['image', 'thumbnail', 'hero', 'og']).optional(),
   altText: z.string().trim().max(200).optional(),
+  setAsHero: z.boolean().optional(),
 });
 
 function parseQueries(raw: string | undefined): string[] {
@@ -134,6 +135,7 @@ app.post('/assets', async (c) => {
     providers: parsed.data.providers,
     type: parsed.data.type,
     altText: parsed.data.altText,
+    setAsHero: parsed.data.setAsHero,
   });
 
   return c.json({
@@ -141,6 +143,7 @@ app.post('/assets', async (c) => {
       articleId: parsed.data.articleId,
       query: parsed.data.query,
       count: result.ingested.length,
+      heroAssetId: result.heroAssetId,
       ingested: result.ingested.map((item) => ({
         asset: item.asset.toParams(),
         publicUrl: item.publicUrl,

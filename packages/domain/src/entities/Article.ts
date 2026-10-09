@@ -199,6 +199,15 @@ export class Article {
     });
   }
 
+  withHeroAsset(assetId: AssetId): Article {
+    return new Article({
+      ...this.toParams(),
+      heroAssetId: assetId,
+      updatedAt: new Date(),
+      version: this.version + 1,
+    });
+  }
+
   markPublished(): Article {
     return new Article({
       ...this.toParams(),

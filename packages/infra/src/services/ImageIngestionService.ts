@@ -1,5 +1,5 @@
 import { AssetType } from '@semburat/domain';
-import type { Asset } from '@semburat/domain';
+import type { ArticleRepository, Asset } from '@semburat/domain';
 import type { FetchLike } from '../adapters/research/FeedParser.js';
 import { AssetRegistryService } from './AssetRegistryService.js';
 import type { ImageSourcingService, SourcedImage } from './ImageSourcingService.js';
@@ -25,6 +25,7 @@ export interface ImageIngestionOptions {
   providers?: string[];
   type?: string;
   altText?: string;
+  setAsHero?: boolean;
 }
 
 export interface IngestedImage {
@@ -42,6 +43,16 @@ export interface SkippedImage {
 export interface ImageIngestionResult {
   ingested: IngestedImage[];
   skipped: SkippedImage[];
+  heroAssetId?: string;
+}
+
+export interface ImageIngestionDeps {
+  imageSourcing: ImageSourcingService;
+  assetRegistry: AssetRegistryService;
+  articleRepo?: ArticleRepository;
+  fetchFn?: FetchLike;
+  timeoutMs?: number;
+  maxBytes?: number;
 }
 
 async function defaultFetch(input: string, init?: RequestInit): Promise<Response> {
@@ -55,13 +66,21 @@ export function contentTypeForUrl(url: string): string | undefined {
 }
 
 export class ImageIngestionService {
-  constructor(
-    private readonly imageSourcing: ImageSourcingService,
-    private readonly assetRegistry: AssetRegistryService,
-    private readonly fetchFn: FetchLike = defaultFetch,
-    private readonly timeoutMs = 12_000,
-    private readonly maxBytes = IMAGE_DOWNLOAD_MAX_BYTES
-  ) {}
+  private readonly imageSourcing: ImageSourcingService;
+  private readonly assetRegistry: AssetRegistryService;
+  private readonly articleRepo?: ArticleRepository;
+  private readonly fetchFn: FetchLike;
+  private readonly timeoutMs: number;
+  private readonly maxBytes: number;
+
+  constructor(deps: ImageIngestionDeps) {
+    this.imageSourcing = deps.imageSourcing;
+    this.assetRegistry = deps.assetRegistry;
+    this.articleRepo = deps.articleRepo;
+    this.fetchFn = deps.fetchFn ?? defaultFetch;
+    this.timeoutMs = deps.timeoutMs ?? 12_000;
+    this.maxBytes = deps.maxBytes ?? IMAGE_DOWNLOAD_MAX_BYTES;
+  }
 
   async ingest(
     articleId: string,
@@ -102,7 +121,20 @@ export class ImageIngestionService {
       }
     }
 
-    return { ingested, skipped };
+    const heroAssetId =
+      options.setAsHero && ingested.length > 0
+        ? await this.attachHero(articleId, ingested[0].asset.id)
+        : undefined;
+
+    return { ingested, skipped, heroAssetId };
+  }
+
+  private async attachHero(articleId: string, assetId: string): Promise<string | undefined> {
+    if (!this.articleRepo) return undefined;
+    const article = await this.articleRepo.findById(articleId);
+    if (!article) return undefined;
+    await this.articleRepo.update(article.withHeroAsset(assetId));
+    return assetId;
   }
 
   private async persist(

@@ -110,4 +110,12 @@ describe('Article', () => {
     expect(article.slug).toBe(slug);
     expect(article.riskLevel).toBe(riskLevel);
   });
+
+  it('withHeroAsset should set heroAssetId on a new Article instance', () => {
+    const article = new Article(validParams);
+    const withHero = article.withHeroAsset('550e8400-e29b-41d4-a716-446655440099');
+    expect(withHero.heroAssetId).toBe('550e8400-e29b-41d4-a716-446655440099');
+    expect(withHero.version).toBe(2);
+    expect(article.heroAssetId).toBeUndefined();
+  });
 });

@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
-import { Asset, LicenseState } from '@semburat/domain';
+import { Article, Asset, LicenseState, Slug } from '@semburat/domain';
 import type {
+  ArticleRepository,
   AssetRepository,
   ImageCandidate,
   ImageSourceProvider,
@@ -61,6 +62,45 @@ class FakeAssetRepo implements AssetRepository {
 
 const ARTICLE_ID = '11111111-1111-4111-8111-111111111111';
 
+class FakeArticleRepo implements ArticleRepository {
+  articles = new Map<string, Article>();
+  async insert(article: Article): Promise<void> {
+    this.articles.set(article.id, article);
+  }
+  async findById(id: string): Promise<Article | null> {
+    return this.articles.get(id) ?? null;
+  }
+  async findBySlug(slug: string): Promise<Article | null> {
+    return [...this.articles.values()].find((a) => a.slug.value === slug) ?? null;
+  }
+  async findByStatus(): Promise<{ articles: Article[]; nextCursor: string | null }> {
+    return { articles: [...this.articles.values()], nextCursor: null };
+  }
+  async findAll(): Promise<Article[]> {
+    return [...this.articles.values()];
+  }
+  async update(article: Article): Promise<void> {
+    this.articles.set(article.id, article);
+  }
+  async updateStatus(id: string, status: Article['status']): Promise<void> {
+    const article = this.articles.get(id);
+    if (article) this.articles.set(id, article.withStatus(status));
+  }
+}
+
+function makeArticle(id = ARTICLE_ID): Article {
+  return new Article({
+    id,
+    researchId: '44444444-4444-4444-8444-444444444444',
+    title: 'Judul uji yang cukup panjang',
+    slug: Slug.fromString('judul-uji'),
+    dek: 'Dek uji yang cukup panjang untuk lolos validasi entitas.',
+    summary: 'ringkasan',
+    body: 'x'.repeat(120),
+    category: 'gaming',
+  });
+}
+
 const candidate = (overrides: Partial<ImageCandidate> = {}): ImageCandidate => ({
   provider: 'fake',
   url: 'https://img.test/a.png',
@@ -80,12 +120,23 @@ function okFetch(body = new Uint8Array([1, 2, 3]), contentType = 'image/png') {
   );
 }
 
-function setup(candidates: ImageCandidate[], fetchFn = okFetch(), maxBytes?: number) {
+function setup(
+  candidates: ImageCandidate[],
+  fetchFn = okFetch(),
+  maxBytes?: number,
+  articleRepo?: ArticleRepository
+) {
   const repo = new FakeAssetRepo();
   const storage = new FakeStorage();
   const registry = new AssetRegistryService(repo, storage);
   const sourcing = new ImageSourcingService([new FakeImageProvider(candidates)]);
-  const ingestion = new ImageIngestionService(sourcing, registry, fetchFn, 5000, maxBytes);
+  const ingestion = new ImageIngestionService({
+    imageSourcing: sourcing,
+    assetRegistry: registry,
+    articleRepo,
+    fetchFn,
+    maxBytes,
+  });
   return { repo, storage, registry, sourcing, ingestion };
 }
 
@@ -159,5 +210,37 @@ describe('ImageIngestionService', () => {
     const metadata = JSON.parse(result.ingested[0].asset.metadataJson) as Record<string, unknown>;
     expect(metadata.contentType).toBe('image/jpeg');
     expect(result.ingested[0].asset.storageKey.endsWith('.jpg')).toBe(true);
+  });
+
+  it('attaches the first ingested asset as the article hero when requested', async () => {
+    const articleRepo = new FakeArticleRepo();
+    await articleRepo.insert(makeArticle());
+    const { ingestion } = setup([candidate()], okFetch(), undefined, articleRepo);
+
+    const result = await ingestion.ingest(ARTICLE_ID, 'contoh', { limit: 1, setAsHero: true });
+
+    expect(result.heroAssetId).toBe(result.ingested[0].asset.id);
+    expect((await articleRepo.findById(ARTICLE_ID))?.heroAssetId).toBe(result.ingested[0].asset.id);
+  });
+
+  it('does not set a hero when the article is missing', async () => {
+    const articleRepo = new FakeArticleRepo();
+    const { ingestion } = setup([candidate()], okFetch(), undefined, articleRepo);
+
+    const result = await ingestion.ingest(ARTICLE_ID, 'contoh', { limit: 1, setAsHero: true });
+
+    expect(result.heroAssetId).toBeUndefined();
+    expect(articleRepo.articles.size).toBe(0);
+  });
+
+  it('does not set a hero unless setAsHero is requested', async () => {
+    const articleRepo = new FakeArticleRepo();
+    await articleRepo.insert(makeArticle());
+    const { ingestion } = setup([candidate()], okFetch(), undefined, articleRepo);
+
+    const result = await ingestion.ingest(ARTICLE_ID, 'contoh', { limit: 1 });
+
+    expect(result.heroAssetId).toBeUndefined();
+    expect((await articleRepo.findById(ARTICLE_ID))?.heroAssetId).toBeUndefined();
   });
 });

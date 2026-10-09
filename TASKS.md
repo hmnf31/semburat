@@ -133,7 +133,7 @@ Status:
 - [x] TASK-213 Structured data (WebSite, Organization, Article, BreadcrumbList)
 - [x] TASK-214 Footer policy links + AI transparency statement
 - [x] TASK-215 Fill `site-config.ts` with operator identity, emails and policy dates (owner task)
-- [ ] TASK-216 Affiliate and sponsored-content labels
+- [~] TASK-216 Affiliate and sponsored-content labels — ditunda sampai ada konten berbayar/afiliasi pertama (metadata TASK-100/101 dan kebijakan sudah siap; TASK-217 sudah menyediakan label)
 - [x] TASK-217 Enable asset storage and re-deploy production worker (Cloudflare R2 requires a payment method, so Cloudflare KV is used instead)
 - [x] TASK-218 Centralize operator data in `apps/web/src/data/site-config.ts` (values to be filled by owner)
 - [x] TASK-219 Add `/categories` index page and fix header nav link
@@ -155,6 +155,7 @@ Status:
 - [x] TASK-235 Extend the design validation rules with `fan_art`/`needs_permission` image types that always require credit
 - [x] TASK-236 Add a `KvStorageProvider` (Cloudflare KV, free without a card, 25 MiB/value) behind the `StorageProvider` interface, wire the `ASSETS` KV binding for staging/production, and serve stored assets publicly at `GET /media/*` via `ASSETS_PUBLIC_BASE_URL`
 - [x] TASK-237 Persist sourced images into the asset registry: `ImageIngestionService` downloads publishable candidates, stores the bytes in KV and records them in `assets` with license/credit/source provenance; endpoints `POST /api/pipeline/assets` and `GET /api/assets?articleId=`
+- [x] TASK-238 Auto-attach hero asset: `Article.withHeroAsset()`, optional `setAsHero` on `ImageIngestionService.ingest`/`POST /api/pipeline/assets` sets the first ingested asset as `articles.hero_asset_id`
 
 ## Kilo execution rule
 

@@ -157,6 +157,12 @@ The former `semburat-kit/` directory was a byte-identical copy of material that 
 - `AssetRegistryService` diperluas: metadata tambahan + `getPublicUrl()` (dari `ASSETS_PUBLIC_BASE_URL`); endpoint baru `POST /api/pipeline/assets` (ingest per artikel) dan `GET /api/assets?articleId=`
 - Terverifikasi live di staging: ingest Wikimedia (`public_domain`) → `GET /media/<key>` mengembalikan `200 image/png` (58 KB) → `GET /api/assets?articleId=` menunjukkan 1 aset; data uji dibersihkan
 
+### Tahap F — auto-attach hero (TASK-238)
+
+- `Article.withHeroAsset(assetId)` untuk memperbarui `articles.hero_asset_id`
+- `POST /api/pipeline/assets` menerima `setAsHero: true`: aset pertama yang berhasil di-ingest ditetapkan sebagai hero artikel dan dikembalikan sebagai `heroAssetId`; diabaikan jika artikel tidak ditemukan
+- Terverifikasi live di staging: ingest 2 aset dengan `setAsHero` → `hero_asset_id` terisi di D1 sejalan dengan `heroAssetId` respons, dan `GET /media/<key>` hero mengembalikan `200 image/jpeg` (164 KB); data uji dibersihkan
+
 ## 8. Next Steps
 
 1. Follow the roadmap starting at `docs/00-SEMBURAT_ROADMAP_TEST_REVENUE.md`

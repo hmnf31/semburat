@@ -140,7 +140,11 @@ export function createContainer(env: Env): Container {
     baseUrl: env.ASSETS_PUBLIC_BASE_URL ?? env.R2_PUBLIC_BASE_URL,
   });
   const assetRegistry = new AssetRegistryService(assetRepo, storage);
-  const imageIngestion = new ImageIngestionService(imageSourcing, assetRegistry);
+  const imageIngestion = new ImageIngestionService({
+    imageSourcing,
+    assetRegistry,
+    articleRepo,
+  });
 
   const factExtractionService = new FactExtractionService(
     aiProvider,
